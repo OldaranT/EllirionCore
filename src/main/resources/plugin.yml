@@ -1,7 +1,7 @@
+description: EllirionCore
 name: EllirionCore
 main: com.ellirion.core.EllirionCore
 version: 0.0.1
-description: introduction
 commands:
   createRace:
       description: allows the server to create a race. players are not allowed to do this.
@@ -10,3 +10,11 @@ commands:
       description: joins a race.
       usage: /joinRace <race name>
       aliasses: [jr]
+  CreatePlots:
+    description: Create plots
+    usage: /cp <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>
+    aliasses: [cp]
+  GetPlot:
+    description: Get plot from location
+    usage: /gp
+    aliasses: [gp]
