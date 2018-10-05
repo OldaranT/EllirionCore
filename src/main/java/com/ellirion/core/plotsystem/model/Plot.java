@@ -1,0 +1,39 @@
+package com.ellirion.core.plotsystem.model;
+
+import lombok.Getter;
+import org.bukkit.World;
+import com.ellirion.core.model.Point;
+
+import java.util.UUID;
+
+public class Plot {
+
+    @Getter private int id;
+    @Getter private String name;
+    @Getter private int plotSize;
+    @Getter private Point lowestCorner;
+    @Getter private Point highestCorner;
+    //public @Getter @Setter Race owner;
+    @Getter private World world;
+    @Getter private UUID worldUUID;
+
+    /**
+     * Model that defines a piece of land in the map.
+     * @param name name of the plot.
+     * @param lowestCorner Lowest corner of the cubic form of the plot.
+     * @param highestCorner Highest corner of the cubic form of the plot.
+     * @param plotSize The size of the plot.
+     * @param world The world that the plot is located in.
+     * @param worldUUID The UUID of the world the plot is located in.
+     */
+    public Plot(final String name, final Point lowestCorner, final Point highestCorner, final int plotSize,
+                final World world, final UUID worldUUID) {
+        this.name = name;
+        this.lowestCorner = lowestCorner;
+        this.highestCorner = highestCorner;
+        this.plotSize = plotSize;
+        this.world = world;
+        this.worldUUID = worldUUID;
+    }
+}
+
