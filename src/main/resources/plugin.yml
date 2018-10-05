@@ -1,0 +1,15 @@
+name: EllirionCore
+main: com.ellirion.core.EllirionCore
+version: 0.0.1
+description: EllirionCore
+authors: [OldaranT, Nick Kronenberg]
+commands:
+  CreatePlots:
+    description: Create plots
+    usage: /cp <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>
+    aliasses: [cp]
+  GetPlot:
+    description: Get plot from location
+    usage: /gp
+    aliasses: [gp]
+
