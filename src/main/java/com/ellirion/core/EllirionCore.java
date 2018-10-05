@@ -3,6 +3,7 @@ package com.ellirion.core;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.command.CreateRaceCommand;
+import com.ellirion.core.command.JoinRaceCommand;
 
 public class EllirionCore extends JavaPlugin {
 
@@ -34,6 +35,7 @@ public class EllirionCore extends JavaPlugin {
 
     private void registerCommands() {
         getCommand("createRace").setExecutor(new CreateRaceCommand());
+        getCommand("joinRace").setExecutor(new JoinRaceCommand());
     }
 
     private void registerEvents() {
