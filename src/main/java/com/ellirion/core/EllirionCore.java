@@ -2,8 +2,10 @@ package com.ellirion.core;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.ellirion.core.command.CreateRaceCommand;
 
 public class EllirionCore extends JavaPlugin {
+
     private static EllirionCore INSTANCE;
 
     /**
@@ -26,12 +28,12 @@ public class EllirionCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        registerCommands();
         getLogger().info("Introduction is enabled.");
     }
 
-
     private void registerCommands() {
-        throw new NotImplementedException();
+        getCommand("createRace").setExecutor(new CreateRaceCommand());
     }
 
     private void registerEvents() {
