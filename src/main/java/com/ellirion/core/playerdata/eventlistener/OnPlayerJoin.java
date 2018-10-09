@@ -9,16 +9,16 @@ import com.ellirion.core.playerdata.PlayerManager;
 public class OnPlayerJoin implements Listener {
 
     /**
-     * @param e the event.
+     * @param event the event.
      */
     @EventHandler
-    public void onPlayerJoinEventListener(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
+    public void onPlayerJoinEventListener(PlayerJoinEvent event) {
+        Player p = event.getPlayer();
         if (PlayerManager.playerexists(p)) {
-            e.setJoinMessage("Welcome back!");
+            event.setJoinMessage("Welcome back!");
             PlayerManager.updatePlayer(p);
         } else {
-            e.setJoinMessage("Welcome!");
+            event.setJoinMessage("Welcome!");
             PlayerManager.newPlayer(p, "Wildernis", "outsider", 0);
         }
     }

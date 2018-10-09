@@ -2,7 +2,7 @@ package com.ellirion.core.playerdata.model;
 
 import java.util.UUID;
 
-public class PlayerModel {
+public class PlayerData {
 
     private UUID playerID;
     private String raceName;
@@ -15,7 +15,7 @@ public class PlayerModel {
      * @param rank the player rank.
      * @param cash the player cash.
      */
-    public PlayerModel(final UUID playerID, final String raceName, final String rank, final int cash) {
+    public PlayerData(final UUID playerID, final String raceName, final String rank, final int cash) {
         this.playerID = playerID;
         this.raceName = raceName;
         this.rank = rank;

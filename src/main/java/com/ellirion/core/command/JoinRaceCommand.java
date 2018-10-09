@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.races.RaceManager;
 
 import java.util.Set;
@@ -41,12 +42,8 @@ public class JoinRaceCommand implements CommandExecutor {
             sendmsg("you already have a race");
             return false;
         }
-        // commented for later when player manager is implemented.
-        //        if (!PlayerManager.setPlayerRace(p, RaceManager.getRaceByName(args[0]))) {
-        //            sendmsg("something went wrong please try again with different arguments");
-        //            return false;
-        //        }
-        if (!RaceManager.addPlayerToRace(player, args[0])) {
+
+        if (!PlayerManager.setPlayerRace(player, args[0])) {
             sendmsg("something went wrong please try again with different arguments");
             return false;
         }
