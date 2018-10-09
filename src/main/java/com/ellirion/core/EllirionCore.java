@@ -2,13 +2,13 @@ package com.ellirion.core;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.ellirion.core.command.CreateRaceCommand;
-import com.ellirion.core.command.JoinRaceCommand;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
+import com.ellirion.core.races.command.CreateRaceCommand;
+import com.ellirion.core.races.command.JoinRaceCommand;
 import com.ellirion.core.races.eventlistener.OnFriendlyFire;
 
 public class EllirionCore extends JavaPlugin {
