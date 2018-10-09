@@ -1,0 +1,5 @@
+name: EllirionCore
+main: com.ellirion.core.EllirionCore
+version: 0.0.1
+description: EllirionCore
+authors: [OldaranT, Nick Kronenberg]

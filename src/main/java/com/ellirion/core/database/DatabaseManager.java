@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import com.ellirion.core.database.model.PlayerModel;
+import com.ellirion.core.database.model.RaceModel;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +17,7 @@ public class DatabaseManager {
     private Datastore datastore;
 
     private DatabaseAccessObject playerDAO;
+    private DatabaseAccessObject raceDAO;
 
     /**
      *
@@ -35,10 +37,12 @@ public class DatabaseManager {
 
     private void mapDataClasses() {
         morphia.map(PlayerModel.class);
+        morphia.map(RaceModel.class);
     }
 
     private void createDatabaseAccessObjects() {
         playerDAO = new DatabaseAccessObject(PlayerModel.class, datastore);
+        raceDAO = new DatabaseAccessObject(RaceModel.class, datastore);
     }
 
     /**
@@ -67,5 +71,17 @@ public class DatabaseManager {
      */
     public PlayerModel getOnePlayer(UUID uuid) {
         return (PlayerModel) playerDAO.findOne("_id", uuid);
+    }
+
+    public List<RaceModel> getAllRaces() {
+        return raceDAO.find().asList();
+    }
+
+    /**
+     * @param raceName The name of the race to fetch.
+     * @return return the found raceModel.
+     */
+    public RaceModel getSpecificRace(String raceName) {
+        return (RaceModel) raceDAO.findOne("_id", raceName);
     }
 }
