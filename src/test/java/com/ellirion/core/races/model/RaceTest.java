@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public class RaceModelTest {
+public class RaceTest {
 
     private static UUID PLAYER_ID = UUID.randomUUID();
     private static String RACE_NAME = "Slime";
@@ -17,7 +17,7 @@ public class RaceModelTest {
 
     @Test
     public void addPlayer_whenAddingAPlayerToTeam_shouldReturnTrueAndAddPlayerToSet() {
-        RaceModel race = new RaceModel(RACE_NAME, TEAMCOLOR);
+        Race race = new Race(RACE_NAME, TEAMCOLOR);
         Set<UUID> expected = new HashSet<>();
         expected.add(PLAYER_ID);
 
@@ -30,7 +30,7 @@ public class RaceModelTest {
 
     @Test
     public void addPlayer_whenAddingAnExistingPlayer_shouldReturnFalseAndNotAddThePlayer() {
-        RaceModel race = new RaceModel(RACE_NAME, TEAMCOLOR);
+        Race race = new Race(RACE_NAME, TEAMCOLOR);
         Set<UUID> expected = new HashSet<>();
         expected.add(PLAYER_ID);
         race.addPlayer(PLAYER_ID);
@@ -44,7 +44,7 @@ public class RaceModelTest {
 
     @Test
     public void hasPlayer_whenPlayerAdded_shouldReturnTrue() {
-        RaceModel race = new RaceModel(RACE_NAME, TEAMCOLOR);
+        Race race = new Race(RACE_NAME, TEAMCOLOR);
         race.addPlayer(PLAYER_ID);
 
         boolean result = race.hasPlayer(PLAYER_ID);
@@ -54,7 +54,7 @@ public class RaceModelTest {
 
     @Test
     public void hasPlayer_whenPlayerNotAdded_shouldReturnFalse() {
-        RaceModel race = new RaceModel(RACE_NAME, TEAMCOLOR);
+        Race race = new Race(RACE_NAME, TEAMCOLOR);
         race.addPlayer(UUID.randomUUID());
 
         boolean result = race.hasPlayer(PLAYER_ID);

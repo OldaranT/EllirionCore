@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class RaceModel {
+public class Race {
 
     private String raceName;
     private Set<UUID> players;
@@ -16,7 +16,7 @@ public class RaceModel {
      * @param raceName The name of the race.
      * @param teamColor The team color.
      */
-    public RaceModel(final String raceName, final ChatColor teamColor) {
+    public Race(final String raceName, final ChatColor teamColor) {
         this.raceName = raceName;
         players = new HashSet<>();
         this.teamColor = teamColor;

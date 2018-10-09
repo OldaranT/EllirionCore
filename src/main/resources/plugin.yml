@@ -7,6 +7,7 @@ commands:
   createRace:
       description: allows the server to create a race. players are not allowed to do this.
       usage: createRace <race name> <color>
+      alliasses: [cr]
   joinRace:
       description: joins a race.
       usage: /joinRace <race name>
