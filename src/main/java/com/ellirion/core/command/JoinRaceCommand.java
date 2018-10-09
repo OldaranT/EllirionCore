@@ -19,7 +19,7 @@ public class JoinRaceCommand implements CommandExecutor {
             sendmsg("only a player may join a team");
             return false;
         }
-        Player p = (Player) sender;
+        Player player = (Player) sender;
         Set<String> raceNames = RaceManager.getRaceNames();
         if (args.length <= 0) {
             String message = "";
@@ -37,7 +37,7 @@ public class JoinRaceCommand implements CommandExecutor {
             return false;
         }
 
-        if (RaceManager.hasRace(p)) {
+        if (RaceManager.hasRace(player)) {
             sendmsg("you already have a race");
             return false;
         }
@@ -46,7 +46,7 @@ public class JoinRaceCommand implements CommandExecutor {
         //            sendmsg("something went wrong please try again with different arguments");
         //            return false;
         //        }
-        if (!RaceManager.addPlayerToRace(p, args[0])) {
+        if (!RaceManager.addPlayerToRace(player, args[0])) {
             sendmsg("something went wrong please try again with different arguments");
             return false;
         }
