@@ -46,8 +46,8 @@ public class RaceManager {
         if (USED_COLORS.contains(color) || raceExists(name)) {
             return false;
         }
-        Race r = new Race(name, color);
-        RACES.putIfAbsent(name, r);
+        Race race = new Race(name, color);
+        RACES.putIfAbsent(name, race);
         USED_COLORS.add(color);
         return true;
     }
@@ -69,9 +69,9 @@ public class RaceManager {
         if (raceExists(newName)) {
             return false;
         }
-        Race r = RACES.remove(name);
-        r.setRaceName(newName);
-        RACES.putIfAbsent(newName, r);
+        Race race = RACES.remove(name);
+        race.setRaceName(newName);
+        RACES.putIfAbsent(newName, race);
         return true;
     }
 
@@ -80,22 +80,22 @@ public class RaceManager {
     }
 
     /**
-     * @param p The player to add to the race.
+     * @param player The player to add to the race.
      * @param raceName The name of the race to add the player to.
      * @return return true of successfully added player to race.
      */
-    public static boolean addPlayerToRace(Player p, String raceName) {
+    public static boolean addPlayerToRace(Player player, String raceName) {
         if (!raceExists(raceName)) {
-            p.sendMessage("Race does not exist.");
+            player.sendMessage("Race does not exist.");
             return false;
-        } else if (hasRace(p)) {
-            p.sendMessage("You are already in a race.");
+        } else if (hasRace(player)) {
+            player.sendMessage("You are already in a race.");
             return false;
         }
 
-        Race r = RACES.get(raceName);
-        r.addPlayer(p.getUniqueId());
-        p.setDisplayName(r.getTeamColor() + "[" + raceName + "] " + ChatColor.RESET + p.getName());
+        Race race = RACES.get(raceName);
+        race.addPlayer(player.getUniqueId());
+        player.setDisplayName(race.getTeamColor() + "[" + raceName + "] " + ChatColor.RESET + player.getName());
         return true;
     }
 
@@ -119,8 +119,8 @@ public class RaceManager {
      * @return Return true if player has a race.
      */
     public static boolean hasRace(Player player) {
-        for (Race r : RACES.values()) {
-            if (r.hasPlayer(player.getUniqueId())) {
+        for (Race race : RACES.values()) {
+            if (race.hasPlayer(player.getUniqueId())) {
                 return true;
             }
         }
@@ -128,13 +128,13 @@ public class RaceManager {
     }
 
     /**
-     * @param p The player to get the race from.
+     * @param player The player to get the race from.
      * @return The player race.
      */
-    public static Race getPlayerRace(Player p) {
-        for (Race r : RACES.values()) {
-            if (r.hasPlayer(p.getUniqueId())) {
-                return r;
+    public static Race getPlayerRace(Player player) {
+        for (Race race : RACES.values()) {
+            if (race.hasPlayer(player.getUniqueId())) {
+                return race;
             }
         }
         return null;

@@ -22,18 +22,18 @@ public class JoinRaceCommand implements CommandExecutor {
         Player p = (Player) sender;
         Set<String> raceNames = RaceManager.getRaceNames();
         if (args.length <= 0) {
-            String s = "";
-            s += "you forgot to add the race you want to join. you can join one of the following races:\n ";
-            s += raceNames;
-            sendmsg(s);
+            String message = "";
+            message += "you forgot to add the race you want to join. you can join one of the following races:\n ";
+            message += raceNames;
+            sendmsg(message);
             return false;
         }
 
         if (!RaceManager.raceExists(args[0])) {
-            String s = "";
-            s += "the given race does not exist. possible races to join are: \n";
-            s += raceNames;
-            sendmsg(s);
+            String message = "";
+            message += "the given race does not exist. possible races to join are: \n";
+            message += raceNames;
+            sendmsg(message);
             return false;
         }
 
@@ -41,7 +41,7 @@ public class JoinRaceCommand implements CommandExecutor {
             sendmsg("you already have a race");
             return false;
         }
-
+        // commented for later when player manager is implemented.
         //        if (!PlayerManager.setPlayerRace(p, RaceManager.getRaceByName(args[0]))) {
         //            sendmsg("something went wrong please try again with different arguments");
         //            return false;
