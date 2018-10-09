@@ -1,10 +1,16 @@
 package com.ellirion.core;
 
+import org.bukkit.Bukkit;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
+import com.ellirion.core.plotsystem.command.CreatePlotCommand;
+import com.ellirion.core.plotsystem.command.GetPlotCommand;
+import com.ellirion.core.plotsystem.listener.PlotListener;
+import com.ellirion.core.command.CreateRaceCommand;
+import com.ellirion.core.command.JoinRaceCommand;
 
 public class EllirionCore extends JavaPlugin {
 
@@ -30,17 +36,23 @@ public class EllirionCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        registerCommands();
         registerEvents();
         getLogger().info("Introduction is enabled.");
     }
 
     private void registerCommands() {
-        throw new NotImplementedException();
+        getCommand("createRace").setExecutor(new CreateRaceCommand());
+        getCommand("joinRace").setExecutor(new JoinRaceCommand());
+        getCommand("CreatePlots").setExecutor(new CreatePlotCommand());
+        getCommand("GetPlot").setExecutor(new GetPlotCommand());
     }
 
     private void registerEvents() {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new OnPlayerJoin(), this);
         pluginManager.registerEvents(new OnPlayerQuit(), this);
+        Bukkit.getServer().getPluginManager().registerEvents(new PlotListener(), this);
     }
 }
+
