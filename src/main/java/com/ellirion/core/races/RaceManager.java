@@ -40,7 +40,7 @@ public class RaceManager {
     /**
      * @param name The name of the team.
      * @param color The color of the team.
-     * @return Return true if successful
+     * @return Return true if successfully added the race.
      */
     public static boolean addRace(String name, ChatColor color) {
         if (USED_COLORS.contains(color) || raceExists(name)) {
