@@ -22,9 +22,11 @@ public class PlayerManager {
     public static boolean newPlayer(Player player, String raceName, String rank, int cash) {
         PlayerData d = new PlayerData(player.getUniqueId(), raceName, rank, cash);
         if (raceName == null) {
-            raceName = RaceManager.getDefaultRace().getRaceName();
+            d.setRace(null);
+        } else {
+            RaceManager.addPlayerToRace(player, raceName);
+            d.setRace(raceName);
         }
-        RaceManager.addPlayerToRace(player, raceName);
         UUID id = player.getUniqueId();
         PLAYERS.putIfAbsent(id, d);
         // commented for when the db get's implemented.

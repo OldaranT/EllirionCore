@@ -66,14 +66,4 @@ public class PlayerData {
         cash += change;
         return true;
     }
-
-    @Override
-    public String toString() {
-        String s = "";
-        s += playerID + " ";
-        s += raceName + " ";
-        s += rank + " ";
-        s += cash + " ";
-        return s;
-    }
 }
