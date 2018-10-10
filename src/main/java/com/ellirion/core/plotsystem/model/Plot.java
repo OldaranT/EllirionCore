@@ -8,14 +8,14 @@ import java.util.UUID;
 
 public class Plot {
 
-    @Getter private int id;
+    @Getter private UUID id;
     @Getter private String name;
     @Getter private int plotSize;
     @Getter private Point lowestCorner;
     @Getter private Point highestCorner;
-    //public @Getter @Setter Race owner;
     @Getter private World world;
     @Getter private UUID worldUUID;
+    @Getter private PlotOwner owner;
 
     /**
      * Model that defines a piece of land in the map.
@@ -34,6 +34,17 @@ public class Plot {
         this.plotSize = plotSize;
         this.world = world;
         this.worldUUID = worldUUID;
+        owner = Wilderness.getInstance();
+
+    }
+
+    /**
+     * Set the owner of the plot.
+     * @param owner The new owner of the plot.
+     */
+    public void setOwner(PlotOwner owner) {
+        this.owner = owner;
+        owner.addPlot(this);
     }
 }
 

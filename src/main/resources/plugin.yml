@@ -7,16 +7,20 @@ commands:
   createRace:
       description: allows the server to create a race. players are not allowed to do this.
       usage: createRace <race name> <color>
-      alliasses: [cr]
+      aliases: [cr]
   joinRace:
       description: joins a race.
       usage: /joinRace <race name>
-      aliasses: [jr]
+      aliases: [jr]
   CreatePlots:
-    description: Create plots
-    usage: /cp <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>
-    aliasses: [cp]
+      description: Create plots
+      usage: /cp <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>
+      aliases: [cp]
   GetPlot:
-    description: Get plot from location
-    usage: /gp
-    aliasses: [gp]
+      description: Get plot from location
+      usage: /gp
+      aliases: [gp]
+  SetOwner:
+      Description: Set the owner of the plot
+      usage: /so
+      aliases: [so]

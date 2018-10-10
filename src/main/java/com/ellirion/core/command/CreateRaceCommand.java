@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import com.ellirion.core.races.RaceManager;
 
 public class CreateRaceCommand implements CommandExecutor {
@@ -14,10 +13,6 @@ public class CreateRaceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         this.sender = sender;
-        if (sender instanceof Player) {
-            sendmsg("only the server may do this.");
-            return false;
-        }
         if (args.length <= 0) {
             sendmsg("please give a race name and color");
             return false;

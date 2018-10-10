@@ -30,6 +30,8 @@ public class GetPlotCommand implements CommandExecutor {
 
         player.sendMessage("World: " + plot.getWorld().getName());
 
+        player.sendMessage("Owner: \n" + plot.getOwner().getName());
+
         return true;
     }
 }

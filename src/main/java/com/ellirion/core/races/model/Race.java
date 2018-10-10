@@ -1,45 +1,34 @@
 package com.ellirion.core.races.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.ChatColor;
+
+import com.ellirion.core.plotsystem.model.PlotOwner;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class Race {
+public class Race extends PlotOwner {
 
-    private String raceName;
-    private Set<UUID> players;
-    private ChatColor teamColor;
+    @Getter @Setter private String name;
+    @Getter private Set<UUID> players;
+    @Getter @Setter private ChatColor teamColor;
 
     /**
-     * @param raceName The name of the race.
+     * @param name The name of the race.
      * @param teamColor The team color.
      */
-    public Race(final String raceName, final ChatColor teamColor) {
-        this.raceName = raceName;
+    public Race(final String name, final ChatColor teamColor) {
+        this.name = name;
+        super.setName(name);
         players = new HashSet<>();
         this.teamColor = teamColor;
     }
 
-    public String getRaceName() {
-        return raceName;
-    }
-
-    public void setRaceName(String raceName) {
-        this.raceName = raceName;
-    }
-
-    public Set<UUID> getPlayers() {
-        return players;
-    }
-
-    public ChatColor getTeamColor() {
-        return teamColor;
-    }
-
-    public void setTeamColor(ChatColor teamColor) {
-        this.teamColor = teamColor;
+    public String getNameWithColor() {
+        return teamColor + name + ChatColor.RESET;
     }
 
     /**
