@@ -20,15 +20,15 @@ public class PlayerManager {
      * @return return a boolean that indicates if creating the new player was a success.
      */
     public static boolean newPlayer(Player player, String raceName, String rank, int cash) {
-        PlayerData d = new PlayerData(player.getUniqueId(), raceName, rank, cash);
+        PlayerData data = new PlayerData(player.getUniqueId(), raceName, rank, cash);
         if (raceName == null) {
-            d.setRace(null);
+            data.setRace(null);
         } else {
             RaceManager.addPlayerToRace(player, raceName);
-            d.setRace(raceName);
+            data.setRace(raceName);
         }
         UUID id = player.getUniqueId();
-        PLAYERS.putIfAbsent(id, d);
+        PLAYERS.putIfAbsent(id, data);
         // commented for when the db get's implemented.
         //dbHandler.saveUser(d, p);
         return true;
@@ -54,9 +54,10 @@ public class PlayerManager {
      * @return return true if the update was a success.
      */
     public static boolean updatePlayer(Player player) {
-        //        PlayerData d = PLAYERS.get(p.getUniqueId());
-        //        dbHandler.saveUser(d, p);
-        //        return true;
+        // commented until there is a database.
+        // PlayerData d = PLAYERS.get(p.getUniqueId());
+        // dbHandler.saveUser(d, p);
+        // return true;
         throw new NotImplementedException();
     }
 
