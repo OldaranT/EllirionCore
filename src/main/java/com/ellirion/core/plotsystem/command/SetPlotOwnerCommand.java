@@ -14,7 +14,7 @@ import com.ellirion.core.races.model.Race;
 public class SetPlotOwnerCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String arg, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
