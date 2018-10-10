@@ -17,7 +17,7 @@ public class PlayerManager {
      * @param raceName The name of the race.
      * @param rank The player rank.
      * @param cash The player cash.
-     * @return return a boolean that indicates if it was a success.
+     * @return return a boolean that indicates if creating the new player was a success.
      */
     public static boolean newPlayer(Player player, String raceName, String rank, int cash) {
         PlayerData d = new PlayerData(player.getUniqueId(), raceName, rank, cash);
@@ -51,7 +51,7 @@ public class PlayerManager {
 
     /**
      * @param player The player.
-     * @return return true if it was a success.
+     * @return return true if the update was a success.
      */
     public static boolean updatePlayer(Player player) {
         //        PlayerData d = PLAYERS.get(p.getUniqueId());
@@ -73,7 +73,8 @@ public class PlayerManager {
         if (!(RaceManager.movePlayerToRace(player, getPlayerRace(player), raceName))) {
             return false;
         }
-        return getPlayerData(player).setRace(raceName);
+        getPlayerData(player).setRace(raceName);
+        return true;
     }
 
     private static String getPlayerRace(Player player) {
@@ -98,7 +99,7 @@ public class PlayerManager {
      * @param player The player.
      * @return return the player cash amount.
      */
-    public static int gerPlayerCash(Player player) {
+    public static int getPlayerCash(Player player) {
         if (!playerexists(player)) {
             return -1;
         }

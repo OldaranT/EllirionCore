@@ -1,57 +1,31 @@
 package com.ellirion.core.playerdata.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
 public class PlayerData {
 
+    @Getter
     private UUID playerID;
-    private String raceName;
+    @Getter @Setter
+    private String race;
+    @Getter @Setter
     private String rank;
+    @Getter @Setter
     private int cash;
 
     /**
      * @param playerID UUID of the player.
-     * @param raceName the name of the player race.
+     * @param race the name of the player race.
      * @param rank the player rank.
      * @param cash the player cash.
      */
-    public PlayerData(final UUID playerID, final String raceName, final String rank, final int cash) {
+    public PlayerData(final UUID playerID, final String race, final String rank, final int cash) {
         this.playerID = playerID;
-        this.raceName = raceName;
+        this.race = race;
         this.rank = rank;
-        this.cash = cash;
-    }
-
-    public UUID getPlayer() {
-        return playerID;
-    }
-
-    public String getRace() {
-        return raceName;
-    }
-
-    /**
-     * @param raceName the name of the race.
-     * @return whether it succeeded or not.
-     */
-    public boolean setRace(String raceName) {
-        this.raceName = raceName;
-        return true;
-    }
-
-    public String getRank() {
-        return rank;
-    }
-
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
-
-    public int getCash() {
-        return cash;
-    }
-
-    public void setCash(int cash) {
         this.cash = cash;
     }
 
