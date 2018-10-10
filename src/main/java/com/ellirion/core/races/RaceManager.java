@@ -14,6 +14,7 @@ public class RaceManager {
     private static HashMap<String, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
     private static Race DEFAULT_RACE;
+    private static HashMap<UUID, Race> PLAYER_RACES = new HashMap<>();
 
     /**
      * @param defaultRaceName The name of the default race.
@@ -24,7 +25,7 @@ public class RaceManager {
             return false;
         }
         Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY);
-        RACES.put(race.getRaceName(), race);
+        RACES.put(race.getName(), race);
         DEFAULT_RACE = race;
         USED_COLORS.add(ChatColor.DARK_GRAY);
         return true;
@@ -70,7 +71,7 @@ public class RaceManager {
             return false;
         }
         Race race = RACES.remove(name);
-        race.setRaceName(newName);
+        race.setName(newName);
         RACES.putIfAbsent(newName, race);
         return true;
     }

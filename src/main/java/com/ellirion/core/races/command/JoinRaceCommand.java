@@ -39,8 +39,12 @@ public class JoinRaceCommand implements CommandExecutor {
         }
 
         if (RaceManager.hasRace(player)) {
-            sendmsg("you already have a race");
-            return false;
+            String raceName = RaceManager.getPlayerRace(player).getName();
+            if (!RaceManager.movePlayerToRace(player, raceName, args[0])) {
+                sendmsg("couldn't move you to the other race. something went wrong!");
+                return false;
+            }
+            return true;
         }
 
         if (!PlayerManager.setPlayerRace(player, args[0])) {

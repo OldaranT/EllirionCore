@@ -16,7 +16,7 @@ public class PlotChangeEvent extends Event {
 
     /**
      * Create plot change event.
-     * @param player player that triggerd the event
+     * @param player player that triggered the event
      * @param plotFrom plot where they player is moving from.
      * @param plotTo plot where the player is moving to.
      */

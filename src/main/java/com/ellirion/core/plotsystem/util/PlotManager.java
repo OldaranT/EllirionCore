@@ -1,5 +1,6 @@
 package com.ellirion.core.plotsystem.util;
 
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 public class PlotManager {
 
     private static final HashMap<String, Plot> SAVED_PLOTS = new HashMap<>();
-    private static int PLOT_SIZE;
+    @Getter private static int PLOT_SIZE;
 
     public static HashMap<String, Plot> getSavedPlots() {
         return SAVED_PLOTS;

@@ -10,7 +10,7 @@ import com.ellirion.core.plotsystem.util.PlotManager;
 public class GetPlotCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
@@ -29,6 +29,8 @@ public class GetPlotCommand implements CommandExecutor {
         player.sendMessage("Highest Corner: " + plot.getHighestCorner().toString());
 
         player.sendMessage("World: " + plot.getWorld().getName());
+
+        player.sendMessage("Owner: \n" + plot.getOwner().getName());
 
         return true;
     }
