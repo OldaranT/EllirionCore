@@ -7,14 +7,10 @@ import java.util.UUID;
 
 public class PlayerData {
 
-    @Getter
-    private UUID playerID;
-    @Getter @Setter
-    private String race;
-    @Getter @Setter
-    private String rank;
-    @Getter @Setter
-    private int cash;
+    @Getter private UUID playerID;
+    @Getter @Setter private String race;
+    @Getter @Setter private String rank;
+    @Getter @Setter private int cash;
 
     /**
      * @param playerID UUID of the player.

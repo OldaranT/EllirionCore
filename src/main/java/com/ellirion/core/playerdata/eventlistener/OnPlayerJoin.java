@@ -13,13 +13,13 @@ public class OnPlayerJoin implements Listener {
      */
     @EventHandler
     public void onPlayerJoinEventListener(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
-        if (PlayerManager.playerexists(p)) {
+        Player player = event.getPlayer();
+        if (PlayerManager.playerexists(player)) {
             event.setJoinMessage("Welcome back!");
-            PlayerManager.updatePlayer(p);
+            PlayerManager.updatePlayer(player);
         } else {
             event.setJoinMessage("Welcome!");
-            PlayerManager.newPlayer(p, null, "outsider", 0);
+            PlayerManager.newPlayer(player, null, "outsider", 0);
         }
     }
 }

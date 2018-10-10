@@ -16,14 +16,14 @@ public class OnFriendlyFire implements Listener {
      */
     @EventHandler
     public void onEntityDamageEntityEvent(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        Entity damaged = event.getEntity();
+        Entity attacker = event.getDamager();
+        Entity defender = event.getEntity();
 
-        if (damaged instanceof Player && damager instanceof Player) {
-            UUID damagerID = damager.getUniqueId();
-            UUID damagedID = damaged.getUniqueId();
+        if (defender instanceof Player && attacker instanceof Player) {
+            UUID attackerID = attacker.getUniqueId();
+            UUID defenderID = defender.getUniqueId();
 
-            if (PlayerManager.comparePlayerTeams(damagerID, damagedID)) {
+            if (PlayerManager.comparePlayerTeams(attackerID, defenderID)) {
                 event.setCancelled(true);
             }
         }
