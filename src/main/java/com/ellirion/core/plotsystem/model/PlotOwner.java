@@ -1,14 +1,9 @@
 package com.ellirion.core.plotsystem.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlotOwner {
-
-    @Setter @Getter private String name;
 
     private List<Plot> plots = new ArrayList<>();
 

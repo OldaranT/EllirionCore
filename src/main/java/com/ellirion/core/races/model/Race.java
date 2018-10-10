@@ -22,7 +22,6 @@ public class Race extends PlotOwner {
      */
     public Race(final String name, final ChatColor teamColor) {
         this.name = name;
-        super.setName(name);
         players = new HashSet<>();
         this.teamColor = teamColor;
     }

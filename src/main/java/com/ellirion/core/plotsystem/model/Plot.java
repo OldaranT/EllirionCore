@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class Plot {
 
-    @Getter private UUID id;
+    //@Getter private UUID id;
     @Getter private String name;
     @Getter private int plotSize;
     @Getter private Point lowestCorner;
