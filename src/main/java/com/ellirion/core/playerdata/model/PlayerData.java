@@ -8,7 +8,7 @@ import java.util.UUID;
 public class PlayerData {
 
     @Getter private UUID playerID;
-    @Getter @Setter private String race;
+    @Getter @Setter private UUID race;
     @Getter @Setter private String rank;
     @Getter @Setter private int cash;
 
@@ -18,7 +18,7 @@ public class PlayerData {
      * @param rank the player rank.
      * @param cash the player cash.
      */
-    public PlayerData(final UUID playerID, final String race, final String rank, final int cash) {
+    public PlayerData(final UUID playerID, final UUID race, final String rank, final int cash) {
         this.playerID = playerID;
         this.race = race;
         this.rank = rank;

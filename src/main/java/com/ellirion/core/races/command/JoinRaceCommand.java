@@ -1,10 +1,12 @@
 package com.ellirion.core.races.command;
 
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.plotsystem.util.PlotManager;
 import com.ellirion.core.races.RaceManager;
 
 import java.util.Set;
@@ -21,7 +23,7 @@ public class JoinRaceCommand implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-        Set<String> raceNames = RaceManager.getRaceNames();
+        Set<String> raceNames = RaceManager.getRACENAMES();
         if (args.length <= 0) {
             String message = "";
             message += "you forgot to add the race you want to join. you can join one of the following races:\n ";
@@ -46,8 +48,8 @@ public class JoinRaceCommand implements CommandExecutor {
             }
             return true;
         }
-
-        if (!PlayerManager.setPlayerRace(player, args[0])) {
+        Location loc = player.getLocation();
+        if (!PlayerManager.setPlayerRace(player.getUniqueId(), PlotManager.getPlotFromLocation(loc).getOwner())) {
             sendmsg("something went wrong please try again with different arguments");
             return false;
         }

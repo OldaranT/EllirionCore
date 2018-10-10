@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.races.RaceManager;
 
 import java.util.HashMap;
 
@@ -61,7 +62,8 @@ public class PlotManager {
                                                currentZ + PLOT_SIZE - 1);
 
                 try {
-                    SAVED_PLOTS.put(name, new Plot(name, lowerPoint, highestPoint, PLOT_SIZE, world, world.getUID()));
+                    SAVED_PLOTS.put(name, new Plot(name, lowerPoint, highestPoint, PLOT_SIZE, world, world.getUID(),
+                                                   RaceManager.getDefaultRace().getRaceUUID()));
                 } catch (Exception e) {
                     return false;
                 }

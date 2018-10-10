@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class PlayerDataTest {
 
     private static UUID R_UUID = UUID.randomUUID();
-    private static String NAME = "john";
+    private static UUID NAME = UUID.randomUUID();
     private static String RANK = "outsider";
 
     @Test

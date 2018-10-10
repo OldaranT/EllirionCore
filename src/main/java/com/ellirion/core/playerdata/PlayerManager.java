@@ -14,18 +14,18 @@ public class PlayerManager {
 
     /**
      * @param player The player.
-     * @param raceName The name of the race.
+     * @param raceID The name of the race.
      * @param rank The player rank.
      * @param cash The player cash.
      * @return return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(Player player, String raceName, String rank, int cash) {
-        PlayerData data = new PlayerData(player.getUniqueId(), raceName, rank, cash);
-        if (raceName == null) {
+    public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
+        PlayerData data = new PlayerData(player.getUniqueId(), raceID, rank, cash);
+        if (raceID == null) {
             data.setRace(null);
         } else {
-            RaceManager.addPlayerToRace(player, raceName);
-            data.setRace(raceName);
+            RaceManager.addPlayerToRace(player, raceID);
+            data.setRace(raceID);
         }
         UUID id = player.getUniqueId();
         PLAYERS.putIfAbsent(id, data);
@@ -38,22 +38,22 @@ public class PlayerManager {
      * @param player The player.
      * @return Return a boolean whether the player exists.
      */
-    public static boolean playerexists(Player player) {
-        return PLAYERS.containsKey(player.getUniqueId());
+    public static boolean playerexists(UUID player) {
+        return PLAYERS.containsKey(player);
     }
 
-    private static PlayerData getPlayerData(Player player) {
+    private static PlayerData getPlayerData(UUID player) {
         if (!playerexists(player)) {
             return null;
         }
-        return PLAYERS.get(player.getUniqueId());
+        return PLAYERS.get(player);
     }
 
     /**
      * @param player The player.
      * @return return true if the update was a success.
      */
-    public static boolean updatePlayer(Player player) {
+    public static boolean updatePlayer(UUID player) {
         // commented until there is a database.
         // PlayerData d = PLAYERS.get(p.getUniqueId());
         // dbHandler.saveUser(d, p);
@@ -63,22 +63,22 @@ public class PlayerManager {
 
     /**
      * @param player The player that is changing race.
-     * @param raceName The race the player is changing to.
+     * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
-    public static boolean setPlayerRace(Player player, String raceName) {
+    public static boolean setPlayerRace(UUID player, UUID raceID) {
         if (!(playerexists(player))) {
             return false;
         }
 
-        if (!(RaceManager.movePlayerToRace(player, getPlayerRace(player), raceName))) {
+        if (!(RaceManager.movePlayerToRace(player, getPlayerRace(player), raceID))) {
             return false;
         }
-        getPlayerData(player).setRace(raceName);
+        getPlayerData(player).setRace(raceID);
         return true;
     }
 
-    private static String getPlayerRace(Player player) {
+    private static UUID getPlayerRace(UUID player) {
         if (!playerexists(player)) {
             return null;
         }
@@ -89,7 +89,7 @@ public class PlayerManager {
      * @param player The player.
      * @return return the player rank.
      */
-    public static String getPlayerRank(Player player) {
+    public static String getPlayerRank(UUID player) {
         if (!playerexists(player)) {
             return null;
         }
@@ -100,7 +100,7 @@ public class PlayerManager {
      * @param player The player.
      * @return return the player cash amount.
      */
-    public static int getPlayerCash(Player player) {
+    public static int getPlayerCash(UUID player) {
         if (!playerexists(player)) {
             return -1;
         }
@@ -113,9 +113,9 @@ public class PlayerManager {
      * @return Return true if the teams are the same.
      */
     public static boolean comparePlayerTeams(UUID player1, UUID player2) {
-        String raceName1 = PLAYERS.get(player1).getRace();
-        String raceName2 = PLAYERS.get(player2).getRace();
+        UUID raceID1 = PLAYERS.get(player1).getRace();
+        UUID raceID2 = PLAYERS.get(player2).getRace();
 
-        return raceName1.equals(raceName2);
+        return raceID1.equals(raceID2);
     }
 }

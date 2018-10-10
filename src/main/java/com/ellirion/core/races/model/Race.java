@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class Race extends PlotOwner {
 
+    @Getter private final UUID raceUUID;
     @Getter @Setter private String name;
     @Getter private Set<UUID> players;
     @Getter @Setter private ChatColor teamColor;
@@ -24,6 +25,7 @@ public class Race extends PlotOwner {
         this.name = name;
         players = new HashSet<>();
         this.teamColor = teamColor;
+        raceUUID = UUID.randomUUID();
     }
 
     public String getNameWithColor() {
