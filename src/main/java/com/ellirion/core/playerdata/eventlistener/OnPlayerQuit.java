@@ -9,12 +9,12 @@ import com.ellirion.core.playerdata.PlayerManager;
 public class OnPlayerQuit implements Listener {
 
     /**
-     * @param e The quit event.
+     * @param event The quit event.
      */
     @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        e.setQuitMessage("bye bye " + player.getName());
+    public void onPlayerQuitEvent(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        event.setQuitMessage("bye bye " + player.getName());
         player.getServer().broadcastMessage(player.getName() + " logged out");
         PlayerManager.updatePlayer(player);
     }
