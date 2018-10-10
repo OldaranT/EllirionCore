@@ -15,11 +15,18 @@ public class PlotListener implements Listener {
      */
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        Plot from = PlotManager.getPlotFromLocation(event.getFrom());
-        Plot to = PlotManager.getPlotFromLocation(event.getTo());
 
-        if (!from.equals(to)) {
-            new PlotChangeEvent(event.getPlayer(), from, to).call();
+        if (PlotManager.getPLOT_SIZE() != 0) {
+            Plot from = PlotManager.getPlotFromLocation(event.getFrom());
+            Plot to = PlotManager.getPlotFromLocation(event.getTo());
+
+            if (from == null || to == null) {
+                return;
+            }
+
+            if (!from.equals(to)) {
+                new PlotChangeEvent(event.getPlayer(), from, to).call();
+            }
         }
     }
 
