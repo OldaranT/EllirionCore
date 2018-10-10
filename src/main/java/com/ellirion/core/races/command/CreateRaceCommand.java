@@ -1,4 +1,4 @@
-package com.ellirion.core.command;
+package com.ellirion.core.races.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

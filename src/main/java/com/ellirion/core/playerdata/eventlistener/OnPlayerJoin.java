@@ -1,0 +1,25 @@
+package com.ellirion.core.playerdata.eventlistener;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import com.ellirion.core.playerdata.PlayerManager;
+
+public class OnPlayerJoin implements Listener {
+
+    /**
+     * @param event the event.
+     */
+    @EventHandler
+    public void onPlayerJoinEventListener(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (PlayerManager.playerexists(player)) {
+            event.setJoinMessage("Welcome back!");
+            PlayerManager.updatePlayer(player);
+        } else {
+            event.setJoinMessage("Welcome!");
+            PlayerManager.newPlayer(player, null, "outsider", 0);
+        }
+    }
+}
