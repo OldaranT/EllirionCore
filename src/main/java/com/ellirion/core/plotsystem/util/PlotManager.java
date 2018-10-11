@@ -57,7 +57,7 @@ public class PlotManager {
                 int currentZ = startCountZ * PLOT_SIZE;
 
                 Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
-                Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
+                Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock, 
                                                currentZ + PLOT_SIZE - 1);
 
                 try {
@@ -69,6 +69,15 @@ public class PlotManager {
         }
 
         return true;
+    }
+
+    /**
+     * Return the plot by name.
+     * @param name name of the plot to return.
+     * @return the plot that is requested.
+     */
+    public static Plot getPlotByName(String name) {
+        return SAVED_PLOTS.get(name);
     }
 }
 

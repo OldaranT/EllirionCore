@@ -24,3 +24,7 @@ commands:
       Description: Set the owner of the plot
       usage: /so
       aliases: [so]
+  TeleportToPlot:
+      Description: Teleport player to selected plot.
+      usage: /ttp <X> <Y>
+      aliases: [ttp]
