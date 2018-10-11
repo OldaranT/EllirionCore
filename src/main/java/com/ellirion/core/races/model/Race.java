@@ -3,7 +3,7 @@ package com.ellirion.core.races.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
-
+import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
 import java.util.HashSet;
@@ -12,16 +12,20 @@ import java.util.UUID;
 
 public class Race extends PlotOwner {
 
+    //    @Getter private final UUID raceUUID;
     @Getter @Setter private String name;
     @Getter private Set<UUID> players;
     @Getter @Setter private ChatColor teamColor;
+    @Getter private Plot homePlot;
 
     /**
      * @param name The name of the race.
      * @param teamColor The team color.
+     * @param homePlot The homeplot of the race.
      */
-    public Race(final String name, final ChatColor teamColor) {
+    public Race(final String name, final ChatColor teamColor, final Plot homePlot) {
         this.name = name;
+        this.homePlot = homePlot;
         players = new HashSet<>();
         this.teamColor = teamColor;
     }
