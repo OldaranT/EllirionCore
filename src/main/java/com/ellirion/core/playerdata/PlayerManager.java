@@ -73,8 +73,9 @@ public class PlayerManager {
             return false;
         }
         if ((getPlayerRaceID(playerID) == null) && !(RaceManager.addPlayerToRace(playerID, raceID))) {
-            getPlayerData(playerID).setRace(RaceManager.getRaceByID(raceID));
+            return false;
         }
+        getPlayerData(playerID).setRace(RaceManager.getRaceByID(raceID));
         return true;
     }
 
@@ -89,15 +90,16 @@ public class PlayerManager {
     }
 
     /**
-     * Get the player race by payer UUID.
-     * @param playerID UUID of the player to be checked.
-     * @return Race of the player.
+     *
+     * @param playerID The UUID of the player to get the race from.
+     * @return Return the player race.
      */
     public static Race getPlayerRace(UUID playerID) {
-        if (!playerexists(playerID)) {
+        PlayerData data = getPlayerData(playerID);
+        if (data == null) {
             return null;
         }
-        return getPlayerData(playerID).getRace();
+        return data.getRace();
     }
 
     /**
