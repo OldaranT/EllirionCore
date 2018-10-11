@@ -176,4 +176,12 @@ public class RaceManager {
         }
         return null;
     }
+
+    /**
+     * @param raceID The ID of the race to get.
+     * @return Return the race.
+     */
+    public static Race getRaceByID(UUID raceID) {
+        return RACES.get(raceID);
+    }
 }

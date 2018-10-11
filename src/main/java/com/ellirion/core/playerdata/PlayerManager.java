@@ -3,6 +3,7 @@ package com.ellirion.core.playerdata;
 import org.apache.commons.lang.NotImplementedException;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.races.RaceManager;
+import com.ellirion.core.races.model.Race;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -19,12 +20,9 @@ public class PlayerManager {
      * @return return a boolean that indicates if creating the new player was a success.
      */
     public static boolean newPlayer(UUID player, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(player, raceID, rank, cash);
-        if (raceID == null) {
-            data.setRace(null);
-        } else {
+        PlayerData data = new PlayerData(player, RaceManager.getRaceByID(raceID), rank, cash);
+        if (raceID != null) {
             RaceManager.addPlayerToRace(player, raceID);
-            data.setRace(raceID);
         }
         UUID id = player;
         PLAYERS.putIfAbsent(id, data);
@@ -70,16 +68,27 @@ public class PlayerManager {
             return false;
         }
 
-        if ((getPlayerRace(player) != null) && !(RaceManager.movePlayerToRace(player, getPlayerRace(player), raceID))) {
+        if ((getPlayerRaceID(player) != null) &&
+            !(RaceManager.movePlayerToRace(player, getPlayerRaceID(player), raceID))) {
             return false;
         }
-        if ((getPlayerRace(player) == null) && !(RaceManager.addPlayerToRace(player, raceID))) {
-            getPlayerData(player).setRace(raceID);
+        if ((getPlayerRaceID(player) == null) && !(RaceManager.addPlayerToRace(player, raceID))) {
+            getPlayerData(player).setRace(RaceManager.getRaceByID(raceID));
         }
         return true;
     }
 
-    private static UUID getPlayerRace(UUID player) {
+    private static UUID getPlayerRaceID(UUID player) {
+        if (!playerexists(player)) {
+            return null;
+        }
+        if (getPlayerData(player).getRace() == null) {
+            return null;
+        }
+        return getPlayerData(player).getRace().getRaceUUID();
+    }
+
+    private static Race getPlayerRace(UUID player) {
         if (!playerexists(player)) {
             return null;
         }
@@ -114,8 +123,8 @@ public class PlayerManager {
      * @return Return true if the teams are the same.
      */
     public static boolean comparePlayerTeams(UUID player1, UUID player2) {
-        UUID raceID1 = PLAYERS.get(player1).getRace();
-        UUID raceID2 = PLAYERS.get(player2).getRace();
+        UUID raceID1 = PLAYERS.get(player1).getRace().getRaceUUID();
+        UUID raceID2 = PLAYERS.get(player2).getRace().getRaceUUID();
 
         return raceID1.equals(raceID2);
     }
