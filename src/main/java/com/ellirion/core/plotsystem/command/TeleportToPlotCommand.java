@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.util.PlotManager;
 
 public class TeleportToPlotCommand implements CommandExecutor {
@@ -30,7 +31,9 @@ public class TeleportToPlotCommand implements CommandExecutor {
         int xCord = Integer.parseInt(args[0]);
         int zCord = Integer.parseInt(args[1]);
 
-        Plot plot = PlotManager.getPlotByName(xCord + " , " + zCord);
+        PlotCoord plotCoord = new PlotCoord(xCord, zCord);
+
+        Plot plot = PlotManager.getPlotByCoordinate(plotCoord);
 
         if (plot == null) {
             player.sendMessage(ChatColor.DARK_RED + "This plot does not exist.");

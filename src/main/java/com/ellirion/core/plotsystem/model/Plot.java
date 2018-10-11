@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
+import com.ellirion.core.plotsystem.util.PlotManager;
 
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ public class Plot {
 
     //@Getter private UUID id;
     @Getter private String name;
+    @Getter private PlotCoord plotCoord;
     @Getter private int plotSize;
     @Getter private Point lowestCorner;
     @Getter private Point highestCorner;
@@ -21,15 +23,17 @@ public class Plot {
     /**
      * Model that defines a piece of land in the map.
      * @param name name of the plot.
+     * @param plotCoord the coordinate of the plot.
      * @param lowestCorner Lowest corner of the cubic form of the plot.
      * @param highestCorner Highest corner of the cubic form of the plot.
      * @param plotSize The size of the plot.
      * @param world The world that the plot is located in.
      * @param worldUUID The UUID of the world the plot is located in.
      */
-    public Plot(final String name, final Point lowestCorner, final Point highestCorner, final int plotSize,
+    public Plot(final String name, final PlotCoord plotCoord, final Point lowestCorner, final Point highestCorner, final int plotSize,
                 final World world, final UUID worldUUID) {
         this.name = name;
+        this.plotCoord = plotCoord;
         this.lowestCorner = lowestCorner;
         this.highestCorner = highestCorner;
         this.plotSize = plotSize;
@@ -61,6 +65,20 @@ public class Plot {
         double centerY = world.getHighestBlockYAt((int) centerX, (int) centerZ);
 
         return new Location(world, centerX, centerY, centerZ, yaw, pitch);
+    }
+
+    /**
+     * Gets the neighbouring plots.
+     * @return returns a array of neighbouring plots.
+     */
+    public Plot[] getNeighbours() {
+
+        return new Plot[] {
+                PlotManager.getPlotByCoordinate(this.plotCoord.translate(0, 1)),
+                PlotManager.getPlotByCoordinate(this.plotCoord.translate(1, 0)),
+                PlotManager.getPlotByCoordinate(this.plotCoord.translate(0, -1)),
+                PlotManager.getPlotByCoordinate(this.plotCoord.translate(-1, 0)),
+                };
     }
 }
 

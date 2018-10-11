@@ -3,6 +3,7 @@ package com.ellirion.core.plotsystem.util;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 
@@ -10,10 +11,10 @@ import java.util.HashMap;
 
 public class PlotManager {
 
-    private static final HashMap<String, Plot> SAVED_PLOTS = new HashMap<>();
+    private static final HashMap<PlotCoord, Plot> SAVED_PLOTS = new HashMap<>();
     @Getter private static int PLOT_SIZE;
 
-    public static HashMap<String, Plot> getSavedPlots() {
+    public static HashMap<PlotCoord, Plot> getSavedPlots() {
         return SAVED_PLOTS;
     }
 
@@ -29,8 +30,9 @@ public class PlotManager {
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
-        String name = plotCordX + " , " + plotCordZ;
-        return SAVED_PLOTS.get(name);
+        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ);
+        Plot plot = SAVED_PLOTS.get(plotCoord);
+        return plot;
     }
 
     /**
@@ -60,8 +62,10 @@ public class PlotManager {
                 Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock, 
                                                currentZ + PLOT_SIZE - 1);
 
+                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
+
                 try {
-                    SAVED_PLOTS.put(name, new Plot(name, lowerPoint, highestPoint, PLOT_SIZE, world, world.getUID()));
+                    SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world, world.getUID()));
                 } catch (Exception e) {
                     return false;
                 }
@@ -73,11 +77,11 @@ public class PlotManager {
 
     /**
      * Return the plot by name.
-     * @param name name of the plot to return.
+     * @param plotCoord plotCoord of the plot to return.
      * @return the plot that is requested.
      */
-    public static Plot getPlotByName(String name) {
-        return SAVED_PLOTS.get(name);
+    public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
+        return SAVED_PLOTS.get(plotCoord);
     }
 }
 

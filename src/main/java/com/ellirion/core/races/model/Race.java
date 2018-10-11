@@ -53,4 +53,5 @@ public class Race extends PlotOwner {
     public boolean removePlayer(UUID playerID) {
         return players.remove(playerID);
     }
+
 }
