@@ -21,31 +21,7 @@ public class JoinRaceCommand implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-        //        Set<String> raceNames = RaceManager.getRACENAMES();
-        //        if (args.length <= 0) {
-        //            String message = "";
-        //            message += "you forgot to add the race you want to join. you can join one of the following races:\n ";
-        //            message += raceNames;
-        //            sendmsg(message);
-        //            return false;
-        //        }
-        //
-        //        if (!RaceManager.raceExists(args[0])) {
-        //            String message = "";
-        //            message += "the given race does not exist. possible races to join are: \n";
-        //            message += raceNames;
-        //            sendmsg(message);
-        //            return false;
-        //        }
 
-        //        if (RaceManager.hasRace(player)) {
-        //            String raceName = RaceManager.getPlayerRace(player).getName();
-        //            if (!RaceManager.movePlayerToRace(player, raceName, args[0])) {
-        //                sendmsg("couldn't move you to the other race. something went wrong!");
-        //                return false;
-        //            }
-        //            return true;
-        //        }
         Location loc = player.getLocation();
         if (!PlayerManager.setPlayerRace(player.getUniqueId(),
                                          PlotManager.getPlotFromLocation(loc).getOwner().getRaceUUID())) {

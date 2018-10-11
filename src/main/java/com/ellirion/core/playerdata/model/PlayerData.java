@@ -15,7 +15,7 @@ public class PlayerData {
 
     /**
      * @param playerID UUID of the player.
-     * @param race the name of the player race.
+     * @param race the player race.
      * @param rank the player rank.
      * @param cash the player cash.
      */

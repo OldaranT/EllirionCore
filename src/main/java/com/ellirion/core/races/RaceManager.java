@@ -51,7 +51,7 @@ public class RaceManager {
      * @return Return true if successfully added the race.
      */
     public static boolean addRace(String name, ChatColor color, Plot homePlot) {
-        if (USED_COLORS.contains(color) || raceExists(name)) {
+        if (USED_COLORS.contains(color) || raceNameExists(name)) {
             return false;
         }
         Race race = new Race(name, color, homePlot);
@@ -66,7 +66,7 @@ public class RaceManager {
      * @param raceName The name of the race.
      * @return Return true if the race exists else false.
      */
-    public static boolean raceExists(String raceName) {
+    public static boolean raceNameExists(String raceName) {
         return RACENAMES.contains(raceName);
     }
 
@@ -74,7 +74,7 @@ public class RaceManager {
      * @param raceID The ID of the race.
      * @return Return true if the race exists.
      */
-    public static boolean raceExists(UUID raceID) {
+    public static boolean raceNameExists(UUID raceID) {
         return RACES.containsKey(raceID);
     }
 
@@ -84,7 +84,7 @@ public class RaceManager {
      * @return Return true if successfully changed the name.
      */
     public static boolean changeRaceName(Race race, String newName) {
-        if (raceExists(newName)) {
+        if (raceNameExists(newName)) {
             return false;
         }
         RACENAMES.remove(race.getName());
@@ -99,7 +99,7 @@ public class RaceManager {
      * @return return true of successfully added player to race.
      */
     public static boolean addPlayerToRace(UUID player, UUID raceID) {
-        if (!raceExists(raceID)) {
+        if (!raceNameExists(raceID)) {
             return false;
         }
 
@@ -109,13 +109,13 @@ public class RaceManager {
     }
 
     /**
-     * @param playerID The player to move.
-     * @param oldRace The old race of the player.
-     * @param newRace The new race of the player.
+     * @param playerID The ID of the player to move.
+     * @param oldRace The UUID of the old race of the player.
+     * @param newRace The UUID of the new race of the player.
      * @return Return true if successful.
      */
-    public static boolean movePlayerToRace(UUID playerID, UUID oldRace, UUID newRace) {
-        if (!raceExists(oldRace) || !raceExists(newRace) || !RACES.get(oldRace).hasPlayer(playerID)) {
+    public static boolean changePlayerRace(UUID playerID, UUID oldRace, UUID newRace) {
+        if (!raceNameExists(oldRace) || !raceNameExists(newRace) || !RACES.get(oldRace).hasPlayer(playerID)) {
             return false;
         }
         RACES.get(oldRace).removePlayer(playerID);
@@ -167,7 +167,7 @@ public class RaceManager {
         return USED_COLORS.contains(color);
     }
 
-    private static UUID getUUIDfromName(String name) {
+    private static UUID getUUIDbyName(String name) {
         for (final Iterator<Map.Entry<UUID, String>> iter = RACE_ID_NAME.entrySet().iterator(); iter.hasNext();/**/) {
             Map.Entry<UUID, String> entry = iter.next();
             if (entry.getValue().equals(name)) {

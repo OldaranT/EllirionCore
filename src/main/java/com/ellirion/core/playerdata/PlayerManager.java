@@ -13,18 +13,18 @@ public class PlayerManager {
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
 
     /**
-     * @param player The player.
-     * @param raceID The name of the race.
+     * @param playerID The player UUID.
+     * @param raceID The UUID of the race.
      * @param rank The player rank.
      * @param cash The player cash.
      * @return return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(UUID player, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(player, RaceManager.getRaceByID(raceID), rank, cash);
+    public static boolean newPlayer(UUID playerID, UUID raceID, String rank, int cash) {
+        PlayerData data = new PlayerData(playerID, RaceManager.getRaceByID(raceID), rank, cash);
         if (raceID != null) {
-            RaceManager.addPlayerToRace(player, raceID);
+            RaceManager.addPlayerToRace(playerID, raceID);
         }
-        UUID id = player;
+        UUID id = playerID;
         PLAYERS.putIfAbsent(id, data);
         // commented for when the db get's implemented.
         //dbHandler.saveUser(d, p);
@@ -32,11 +32,11 @@ public class PlayerManager {
     }
 
     /**
-     * @param player The player.
+     * @param playerID The player UUID.
      * @return Return a boolean whether the player exists.
      */
-    public static boolean playerexists(UUID player) {
-        return PLAYERS.containsKey(player);
+    public static boolean playerexists(UUID playerID) {
+        return PLAYERS.containsKey(playerID);
     }
 
     private static PlayerData getPlayerData(UUID player) {
@@ -47,10 +47,10 @@ public class PlayerManager {
     }
 
     /**
-     * @param player The player.
+     * @param playerID The player UUID.
      * @return return true if the update was a success.
      */
-    public static boolean updatePlayer(UUID player) {
+    public static boolean updatePlayer(UUID playerID) {
         // commented until there is a database.
         // PlayerData d = PLAYERS.get(p.getUniqueId());
         // dbHandler.saveUser(d, p);
@@ -59,62 +59,62 @@ public class PlayerManager {
     }
 
     /**
-     * @param player The player that is changing race.
+     * @param playerID The player UUID from the player that is changing race.
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
-    public static boolean setPlayerRace(UUID player, UUID raceID) {
-        if (!(playerexists(player)) && !(newPlayer(player, raceID, "outsider", 0))) {
+    public static boolean setPlayerRace(UUID playerID, UUID raceID) {
+        if (!(playerexists(playerID)) && !(newPlayer(playerID, raceID, "outsider", 0))) {
             return false;
         }
 
-        if ((getPlayerRaceID(player) != null) &&
-            !(RaceManager.movePlayerToRace(player, getPlayerRaceID(player), raceID))) {
+        if ((getPlayerRaceID(playerID) != null) &&
+            !(RaceManager.changePlayerRace(playerID, getPlayerRaceID(playerID), raceID))) {
             return false;
         }
-        if ((getPlayerRaceID(player) == null) && !(RaceManager.addPlayerToRace(player, raceID))) {
-            getPlayerData(player).setRace(RaceManager.getRaceByID(raceID));
+        if ((getPlayerRaceID(playerID) == null) && !(RaceManager.addPlayerToRace(playerID, raceID))) {
+            getPlayerData(playerID).setRace(RaceManager.getRaceByID(raceID));
         }
         return true;
     }
 
-    private static UUID getPlayerRaceID(UUID player) {
-        if (!playerexists(player)) {
+    private static UUID getPlayerRaceID(UUID playerID) {
+        if (!playerexists(playerID)) {
             return null;
         }
-        if (getPlayerData(player).getRace() == null) {
+        if (getPlayerData(playerID).getRace() == null) {
             return null;
         }
-        return getPlayerData(player).getRace().getRaceUUID();
+        return getPlayerData(playerID).getRace().getRaceUUID();
     }
 
-    private static Race getPlayerRace(UUID player) {
-        if (!playerexists(player)) {
+    private static Race getPlayerRace(UUID playerID) {
+        if (!playerexists(playerID)) {
             return null;
         }
-        return getPlayerData(player).getRace();
+        return getPlayerData(playerID).getRace();
     }
 
     /**
-     * @param player The player.
+     * @param playerID The player UUID.
      * @return return the player rank.
      */
-    public static String getPlayerRank(UUID player) {
-        if (!playerexists(player)) {
+    public static String getPlayerRank(UUID playerID) {
+        if (!playerexists(playerID)) {
             return null;
         }
-        return getPlayerData(player).getRank();
+        return getPlayerData(playerID).getRank();
     }
 
     /**
-     * @param player The player.
+     * @param playerID The player UUID.
      * @return return the player cash amount.
      */
-    public static int getPlayerCash(UUID player) {
-        if (!playerexists(player)) {
+    public static int getPlayerCash(UUID playerID) {
+        if (!playerexists(playerID)) {
             return -1;
         }
-        return getPlayerData(player).getCash();
+        return getPlayerData(playerID).getCash();
     }
 
     /**

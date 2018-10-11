@@ -29,7 +29,7 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("you forgot either the color or the name");
             return false;
         }
-        if (RaceManager.raceExists(args[0])) {
+        if (RaceManager.raceNameExists(args[0])) {
             sendmsg("race already exists");
             return false;
         }
