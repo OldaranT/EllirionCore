@@ -174,13 +174,6 @@ public class RaceManager {
                 return entry.getKey();
             }
         }
-        //        for (UUID id : RACE_ID_NAME.) {
-        //            String value = RACE_ID_NAME.get(id);
-        //            if (value.equals(name)) {
-        //                return id;
-        //            }
-        //        }
-
         return null;
     }
 }
