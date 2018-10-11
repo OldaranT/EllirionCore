@@ -38,7 +38,8 @@ public class PlotListener implements Listener {
     public void onPlotChange(PlotChangeEvent event) {
         event.getPlayer().sendMessage(event.getPlayer().getDisplayName() + " moved from " +
                                       event.getPlotFrom().getName() + " to " +
-                                      event.getPlotTo().getName());
+                                      event.getPlotTo().getName() + "\nThis Plot is owned by " +
+                                      event.getPlotTo().getOwner().getName());
     }
 }
 

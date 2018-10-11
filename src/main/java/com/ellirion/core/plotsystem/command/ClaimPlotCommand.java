@@ -8,8 +8,11 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.Wilderness;
 import com.ellirion.core.plotsystem.util.PlotManager;
 import com.ellirion.core.races.model.Race;
+
+import java.util.UUID;
 
 public class ClaimPlotCommand implements CommandExecutor {
 
@@ -45,20 +48,42 @@ public class ClaimPlotCommand implements CommandExecutor {
             plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
         }
 
+        if (!(plotToCheck.getOwner() instanceof Wilderness)) {
+            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.");
+            return true;
+        }
+
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
 
         Race playerRace = PlayerManager.getPlayerRace(player.getUniqueId());
 
         if (playerRace == null) {
-            player.sendMessage(ChatColor.DARK_RED + "You need to be a race to claim a plot.");
+            player.sendMessage(ChatColor.DARK_RED + "You need to be in a race to claim a plot.");
             return true;
         }
 
         for (Plot plot : neighbourPlots) {
-            allowedToClaim = plot.getOwner().getRaceUUID().equals(playerRace.getRaceUUID());
+            UUID plotUUID = plot.getOwner().getRaceUUID();
+            UUID raceUUID = playerRace.getRaceUUID();
+            player.sendMessage("Plot: " + plot.getName() + " uuid:" + plotUUID.toString());
+            player.sendMessage("Race: " + raceUUID.toString());
+
+            allowedToClaim = plotUUID.equals(raceUUID);
+
+            if (allowedToClaim) {
+                break;
+            }
         }
 
-        player.sendMessage("Plot is claimable: " + allowedToClaim);
+        if (!allowedToClaim) {
+            player.sendMessage(ChatColor.DARK_RED + "There is no neighbouring plot to connect to.");
+            return true;
+        }
+
+        plotToCheck.setOwner(playerRace);
+        player.sendMessage(
+                ChatColor.GREEN + "Plot " + plotToCheck.getName() + " has been claimed by " +
+                playerRace.getNameWithColor() + "!");
 
         return true;
     }
