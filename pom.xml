@@ -42,7 +42,7 @@
                         </goals>
                         <configuration>
                             <minimizeJar>true</minimizeJar>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <finalName>${project.artifactId}</finalName>
                             <artifactSet>
                                 <includes>
                                     <include>org.mongodb</include>

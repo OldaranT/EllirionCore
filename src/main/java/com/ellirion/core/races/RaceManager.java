@@ -1,20 +1,25 @@
 package com.ellirion.core.races;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.races.model.Race;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class RaceManager {
 
-    private static HashMap<String, Race> RACES = new HashMap<>();
+    private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
     private static Race DEFAULT_RACE;
-    private static HashMap<UUID, Race> PLAYER_RACES = new HashMap<>();
+    @Getter private static HashSet<String> RACENAMES = new HashSet<>();
+    private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
 
     /**
      * @param defaultRaceName The name of the default race.
@@ -24,10 +29,11 @@ public class RaceManager {
         if (defaultRaceExists()) {
             return false;
         }
-        Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY);
-        RACES.put(race.getName(), race);
+        Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY, null);
+        RACES.put(race.getRaceUUID(), race);
         DEFAULT_RACE = race;
         USED_COLORS.add(ChatColor.DARK_GRAY);
+        RACENAMES.add(defaultRaceName);
         return true;
     }
 
@@ -41,15 +47,18 @@ public class RaceManager {
     /**
      * @param name The name of the team.
      * @param color The color of the team.
+     * @param homePlot The homeplot of the race.
      * @return Return true if successfully added the race.
      */
-    public static boolean addRace(String name, ChatColor color) {
-        if (USED_COLORS.contains(color) || raceExists(name)) {
+    public static boolean addRace(String name, ChatColor color, Plot homePlot) {
+        if (USED_COLORS.contains(color) || raceNameExists(name)) {
             return false;
         }
-        Race race = new Race(name, color);
-        RACES.putIfAbsent(name, race);
+        Race race = new Race(name, color, homePlot);
+        RACENAMES.add(name);
+        RACES.putIfAbsent(race.getRaceUUID(), race);
         USED_COLORS.add(color);
+        homePlot.setOwner(race);
         return true;
     }
 
@@ -57,58 +66,56 @@ public class RaceManager {
      * @param raceName The name of the race.
      * @return Return true if the race exists else false.
      */
-    public static boolean raceExists(String raceName) {
-        return RACES.containsKey(raceName);
+    public static boolean raceNameExists(String raceName) {
+        return RACENAMES.contains(raceName);
     }
 
     /**
-     * @param name The current name of the race.
+     * @param raceID The ID of the race.
+     * @return Return true if the race exists.
+     */
+    public static boolean raceNameExists(UUID raceID) {
+        return RACES.containsKey(raceID);
+    }
+
+    /**
+     * @param race The race you want to change the name of.
      * @param newName The new name of the race.
      * @return Return true if successfully changed the name.
      */
-    public static boolean changeRaceName(String name, String newName) {
-        if (raceExists(newName)) {
+    public static boolean changeRaceName(Race race, String newName) {
+        if (raceNameExists(newName)) {
             return false;
         }
-        Race race = RACES.remove(name);
+        RACENAMES.remove(race.getName());
         race.setName(newName);
-        RACES.putIfAbsent(newName, race);
+        RACENAMES.add(newName);
         return true;
-    }
-
-    public static Set<String> getRaceNames() {
-        return RACES.keySet();
     }
 
     /**
      * @param player The player to add to the race.
-     * @param raceName The name of the race to add the player to.
+     * @param raceID The UUID of the race to add the player to.
      * @return return true of successfully added player to race.
      */
-    public static boolean addPlayerToRace(Player player, String raceName) {
-        if (!raceExists(raceName)) {
-            player.sendMessage("Race does not exist.");
-            return false;
-        } else if (hasRace(player)) {
-            player.sendMessage("You are already in a race.");
+    public static boolean addPlayerToRace(UUID player, UUID raceID) {
+        if (!raceNameExists(raceID)) {
             return false;
         }
 
-        Race race = RACES.get(raceName);
-        race.addPlayer(player.getUniqueId());
-        player.setDisplayName(race.getTeamColor() + "[" + raceName + "] " + ChatColor.RESET + player.getName());
+        Race race = RACES.get(raceID);
+        race.addPlayer(player);
         return true;
     }
 
     /**
-     * @param player The player to move.
-     * @param oldRace The old race of the player.
-     * @param newRace The new race of the player.
+     * @param playerID The ID of the player to move.
+     * @param oldRace The UUID of the old race of the player.
+     * @param newRace The UUID of the new race of the player.
      * @return Return true if successful.
      */
-    public static boolean movePlayerToRace(Player player, String oldRace, String newRace) {
-        UUID playerID = player.getUniqueId();
-        if (!raceExists(oldRace) || !raceExists(newRace) || !RACES.get(oldRace).hasPlayer(playerID)) {
+    public static boolean changePlayerRace(UUID playerID, UUID oldRace, UUID newRace) {
+        if (!raceNameExists(oldRace) || !raceNameExists(newRace) || !RACES.get(oldRace).hasPlayer(playerID)) {
             return false;
         }
         RACES.get(oldRace).removePlayer(playerID);
@@ -160,14 +167,21 @@ public class RaceManager {
         return USED_COLORS.contains(color);
     }
 
-    /**
-     * @param raceName The name of the race.
-     * @return Return the race if it exists.
-     */
-    public static Race getRaceByName(String raceName) {
-        if (!raceExists(raceName)) {
-            return DEFAULT_RACE;
+    private static UUID getUUIDbyName(String name) {
+        for (final Iterator<Map.Entry<UUID, String>> iter = RACE_ID_NAME.entrySet().iterator(); iter.hasNext();/**/) {
+            Map.Entry<UUID, String> entry = iter.next();
+            if (entry.getValue().equals(name)) {
+                return entry.getKey();
+            }
         }
-        return RACES.get(raceName);
+        return null;
+    }
+
+    /**
+     * @param raceID The ID of the race to get.
+     * @return Return the race.
+     */
+    public static Race getRaceByID(UUID raceID) {
+        return RACES.get(raceID);
     }
 }

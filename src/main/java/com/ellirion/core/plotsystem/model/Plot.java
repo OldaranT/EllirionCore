@@ -36,7 +36,6 @@ public class Plot {
         this.world = world;
         this.worldUUID = worldUUID;
         owner = Wilderness.getInstance();
-
     }
 
     /**
