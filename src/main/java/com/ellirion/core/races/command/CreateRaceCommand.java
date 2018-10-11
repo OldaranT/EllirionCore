@@ -4,15 +4,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.Wilderness;
+import com.ellirion.core.plotsystem.util.PlotManager;
 import com.ellirion.core.races.RaceManager;
 
 public class CreateRaceCommand implements CommandExecutor {
 
-    private CommandSender sender;
+    private Player player;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        this.sender = sender;
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("this is the command for players.");
+        }
+        player = (Player) sender;
+
         if (args.length <= 0) {
             sendmsg("please give a race name and color");
             return false;
@@ -32,7 +40,13 @@ public class CreateRaceCommand implements CommandExecutor {
             return false;
         }
 
-        if (!RaceManager.addRace(args[0], color)) {
+        Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
+        if (!(plot.getOwner() instanceof Wilderness)) {
+            sendmsg(ChatColor.RED + "you can only create races on unowned plots!");
+            return true;
+        }
+
+        if (!RaceManager.addRace(args[0], color, plot)) {
             sendmsg("something went wrong please try with different values");
             return false;
         }
@@ -41,6 +55,6 @@ public class CreateRaceCommand implements CommandExecutor {
     }
 
     private void sendmsg(String msg) {
-        sender.sendMessage(msg);
+        player.sendMessage(msg);
     }
 }

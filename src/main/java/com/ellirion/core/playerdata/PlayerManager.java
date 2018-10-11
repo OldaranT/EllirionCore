@@ -1,7 +1,6 @@
 package com.ellirion.core.playerdata;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.races.RaceManager;
 
@@ -19,15 +18,15 @@ public class PlayerManager {
      * @param cash The player cash.
      * @return return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(player.getUniqueId(), raceID, rank, cash);
+    public static boolean newPlayer(UUID player, UUID raceID, String rank, int cash) {
+        PlayerData data = new PlayerData(player, raceID, rank, cash);
         if (raceID == null) {
             data.setRace(null);
         } else {
             RaceManager.addPlayerToRace(player, raceID);
             data.setRace(raceID);
         }
-        UUID id = player.getUniqueId();
+        UUID id = player;
         PLAYERS.putIfAbsent(id, data);
         // commented for when the db get's implemented.
         //dbHandler.saveUser(d, p);
@@ -67,14 +66,16 @@ public class PlayerManager {
      * @return Return true if the player changed race.
      */
     public static boolean setPlayerRace(UUID player, UUID raceID) {
-        if (!(playerexists(player))) {
+        if (!(playerexists(player)) && !(newPlayer(player, raceID, "outsider", 0))) {
             return false;
         }
 
-        if (!(RaceManager.movePlayerToRace(player, getPlayerRace(player), raceID))) {
+        if ((getPlayerRace(player) != null) && !(RaceManager.movePlayerToRace(player, getPlayerRace(player), raceID))) {
             return false;
         }
-        getPlayerData(player).setRace(raceID);
+        if ((getPlayerRace(player) == null) && !(RaceManager.addPlayerToRace(player, raceID))) {
+            getPlayerData(player).setRace(raceID);
+        }
         return true;
     }
 

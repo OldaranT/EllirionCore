@@ -1,6 +1,5 @@
 package com.ellirion.core.playerdata.eventlistener;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -15,14 +14,13 @@ public class OnPlayerJoin implements Listener {
      */
     @EventHandler
     public void onPlayerJoinEventListener(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        UUID playerID = player.getUniqueId();
+        UUID playerID = event.getPlayer().getUniqueId();
         if (PlayerManager.playerexists(playerID)) {
             event.setJoinMessage("Welcome back!");
             PlayerManager.updatePlayer(playerID);
         } else {
             event.setJoinMessage("Welcome!");
-            PlayerManager.newPlayer(player, null, "outsider", 0);
+            PlayerManager.newPlayer(playerID, null, "outsider", 0);
         }
     }
 }

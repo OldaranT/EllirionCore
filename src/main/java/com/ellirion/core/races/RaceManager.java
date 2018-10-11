@@ -3,10 +3,13 @@ package com.ellirion.core.races;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.races.model.Race;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,6 +19,7 @@ public class RaceManager {
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
     private static Race DEFAULT_RACE;
     @Getter private static HashSet<String> RACENAMES = new HashSet<>();
+    private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
 
     /**
      * @param defaultRaceName The name of the default race.
@@ -25,7 +29,7 @@ public class RaceManager {
         if (defaultRaceExists()) {
             return false;
         }
-        Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY);
+        Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY, null);
         RACES.put(race.getRaceUUID(), race);
         DEFAULT_RACE = race;
         USED_COLORS.add(ChatColor.DARK_GRAY);
@@ -43,16 +47,18 @@ public class RaceManager {
     /**
      * @param name The name of the team.
      * @param color The color of the team.
+     * @param homePlot The homeplot of the race.
      * @return Return true if successfully added the race.
      */
-    public static boolean addRace(String name, ChatColor color) {
+    public static boolean addRace(String name, ChatColor color, Plot homePlot) {
         if (USED_COLORS.contains(color) || raceExists(name)) {
             return false;
         }
-        Race race = new Race(name, color);
+        Race race = new Race(name, color, homePlot);
         RACENAMES.add(name);
         RACES.putIfAbsent(race.getRaceUUID(), race);
         USED_COLORS.add(color);
+        homePlot.setOwner(race);
         return true;
     }
 
@@ -92,15 +98,13 @@ public class RaceManager {
      * @param raceID The UUID of the race to add the player to.
      * @return return true of successfully added player to race.
      */
-    public static boolean addPlayerToRace(Player player, UUID raceID) {
+    public static boolean addPlayerToRace(UUID player, UUID raceID) {
         if (!raceExists(raceID)) {
-            player.sendMessage("Race does not exist.");
             return false;
         }
 
         Race race = RACES.get(raceID);
-        race.addPlayer(player.getUniqueId());
-        player.setDisplayName(race.getTeamColor() + "[" + race.getName() + "] " + ChatColor.RESET + player.getName());
+        race.addPlayer(player);
         return true;
     }
 
@@ -161,5 +165,22 @@ public class RaceManager {
      */
     public static boolean isColerInUse(ChatColor color) {
         return USED_COLORS.contains(color);
+    }
+
+    private static UUID getUUIDfromName(String name) {
+        for (final Iterator<Map.Entry<UUID, String>> iter = RACE_ID_NAME.entrySet().iterator(); iter.hasNext();/**/) {
+            Map.Entry<UUID, String> entry = iter.next();
+            if (entry.getValue().equals(name)) {
+                return entry.getKey();
+            }
+        }
+        //        for (UUID id : RACE_ID_NAME.) {
+        //            String value = RACE_ID_NAME.get(id);
+        //            if (value.equals(name)) {
+        //                return id;
+        //            }
+        //        }
+
+        return null;
     }
 }

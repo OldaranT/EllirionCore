@@ -1,7 +1,6 @@
 package com.ellirion.core.plotsystem.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
 
@@ -26,10 +25,9 @@ public class Plot {
      * @param plotSize The size of the plot.
      * @param world The world that the plot is located in.
      * @param worldUUID The UUID of the world the plot is located in.
-     * @param owner The UUID of the plot owner.
      */
     public Plot(final String name, final Point lowestCorner, final Point highestCorner, final int plotSize,
-                final World world, final UUID worldUUID, final UUID owner) {
+                final World world, final UUID worldUUID) {
         this.name = name;
         this.lowestCorner = lowestCorner;
         this.highestCorner = highestCorner;
@@ -37,7 +35,6 @@ public class Plot {
         this.world = world;
         this.worldUUID = worldUUID;
         owner = Wilderness.getInstance();
-
     }
 
     /**
