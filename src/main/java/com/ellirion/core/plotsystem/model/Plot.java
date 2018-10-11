@@ -1,6 +1,7 @@
 package com.ellirion.core.plotsystem.model;
 
 import lombok.Getter;
+import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
 
@@ -44,6 +45,21 @@ public class Plot {
     public void setOwner(PlotOwner owner) {
         this.owner = owner;
         owner.addPlot(this);
+    }
+
+    /**
+     * Get highest center location of a plot.
+     * @param yaw yaw of the player to teleport.
+     * @param pitch pitch of the player to teleport.
+     * @return Location of the teleport location.
+     */
+    public Location getCenterLocation(float yaw, float pitch) {
+
+        double centerX = highestCorner.getX() - ((highestCorner.getX() - lowestCorner.getX()) / 2);
+        double centerZ = highestCorner.getZ() - ((highestCorner.getZ() - lowestCorner.getZ()) / 2);
+        double centerY = world.getHighestBlockYAt((int) centerX, (int) centerZ);
+
+        return new Location(world, centerX, centerY, centerZ, yaw, pitch);
     }
 }
 
