@@ -5,10 +5,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.util.PlotManager;
-import com.ellirion.core.races.RaceManager;
 import com.ellirion.core.races.model.Race;
 
 public class ClaimPlotCommand implements CommandExecutor {
@@ -47,10 +47,15 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
 
-        Race playerRace = RaceManager.getPlayerRace(player);
+        Race playerRace = PlayerManager.getPlayerRace(player.getUniqueId());
 
-        for (Plot plot: neighbourPlots) {
-            allowedToClaim = plot.getOwner().getName().equals(playerRace.getName());
+        if (playerRace == null) {
+            player.sendMessage(ChatColor.DARK_RED + "You need to be a race to claim a plot.");
+            return true;
+        }
+
+        for (Plot plot : neighbourPlots) {
+            allowedToClaim = plot.getOwner().getRaceUUID().equals(playerRace.getRaceUUID());
         }
 
         player.sendMessage("Plot is claimable: " + allowedToClaim);

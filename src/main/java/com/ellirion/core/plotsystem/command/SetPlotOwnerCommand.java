@@ -5,10 +5,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.Wilderness;
 import com.ellirion.core.plotsystem.util.PlotManager;
-import com.ellirion.core.races.RaceManager;
 import com.ellirion.core.races.model.Race;
 
 public class SetPlotOwnerCommand implements CommandExecutor {
@@ -22,7 +22,7 @@ public class SetPlotOwnerCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        Race playerRace = RaceManager.getPlayerRace(player);
+        Race playerRace = PlayerManager.getPlayerRace(player.getUniqueId());
 
         if (playerRace == null) {
             player.sendMessage(ChatColor.DARK_RED + "You must be in a race to claim a plot.");
@@ -37,7 +37,7 @@ public class SetPlotOwnerCommand implements CommandExecutor {
         }
 
         plot.setOwner(playerRace);
-        player.sendMessage(ChatColor.GREEN  + "Your race is now the owner of plot: " + plot.getName());
+        player.sendMessage(ChatColor.GREEN + "Your race is now the owner of plot: " + plot.getName());
 
         return true;
     }

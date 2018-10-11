@@ -88,7 +88,12 @@ public class PlayerManager {
         return getPlayerData(playerID).getRace().getRaceUUID();
     }
 
-    private static Race getPlayerRace(UUID playerID) {
+    /**
+     * Get the player race by payer UUID.
+     * @param playerID UUID of the player to be checked.
+     * @return Race of the player.
+     */
+    public static Race getPlayerRace(UUID playerID) {
         if (!playerexists(playerID)) {
             return null;
         }

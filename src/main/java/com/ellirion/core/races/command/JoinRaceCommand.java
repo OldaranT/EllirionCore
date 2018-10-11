@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.util.PlotManager;
-import com.ellirion.core.races.RaceManager;
 
 public class JoinRaceCommand implements CommandExecutor {
 
@@ -28,7 +27,7 @@ public class JoinRaceCommand implements CommandExecutor {
             sendmsg("something went wrong please try again with different arguments");
             return false;
         }
-        String raceName = RaceManager.getPlayerRace(player).getName();
+        String raceName = PlayerManager.getPlayerRace(player.getUniqueId()).getName();
         sender.getServer().broadcastMessage(sender.getName() + " joined " + raceName);
         return true;
     }
