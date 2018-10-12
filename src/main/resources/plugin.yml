@@ -30,5 +30,5 @@ commands:
       aliases: [ttp]
   RemoveRace:
       Description: Removes the specified race.
-      usage: /rc <raceName>
-      aliases: [rc]
+      usage: /rr <raceName>
+      aliases: [rr]

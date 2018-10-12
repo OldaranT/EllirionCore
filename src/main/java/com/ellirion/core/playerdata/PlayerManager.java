@@ -1,6 +1,5 @@
 package com.ellirion.core.playerdata;
 
-import org.apache.commons.lang.NotImplementedException;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.races.RaceManager;
 import com.ellirion.core.races.model.Race;
@@ -48,14 +47,11 @@ public class PlayerManager {
 
     /**
      * @param playerID The player UUID.
-     * @return return true if the update was a success.
      */
-    public static boolean updatePlayer(UUID playerID) {
+    public static void updatePlayer(UUID playerID) {
         // commented until there is a database.
         // PlayerData d = PLAYERS.get(p.getUniqueId());
         // dbHandler.saveUser(d, p);
-        // return true;
-        throw new NotImplementedException();
     }
 
     /**
@@ -90,7 +86,6 @@ public class PlayerManager {
     }
 
     /**
-     *
      * @param playerID The UUID of the player to get the race from.
      * @return Return the player race.
      */

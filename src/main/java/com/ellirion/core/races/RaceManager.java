@@ -37,6 +37,7 @@ public class RaceManager {
         DEFAULT_RACE = race;
         USED_COLORS.add(ChatColor.DARK_GRAY);
         RACENAMES.add(defaultRaceName);
+        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return true;
     }
 
@@ -65,6 +66,7 @@ public class RaceManager {
         RACES.putIfAbsent(race.getRaceUUID(), race);
         USED_COLORS.add(color);
         homePlot.setOwner(race);
+        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return true;
     }
 
@@ -198,7 +200,7 @@ public class RaceManager {
             return "";
         }
         String firstLetter = ("" + string.charAt(0)).toUpperCase();
-        String nonFirstLetter = string.substring(1).toUpperCase();
+        String nonFirstLetter = string.substring(1).toLowerCase();
         return (firstLetter + nonFirstLetter);
     }
 
@@ -223,6 +225,8 @@ public class RaceManager {
         for (Plot plot : race.getPlots()) {
             plot.setOwner(Wilderness.getInstance());
         }
+
+        RACE_ID_NAME.remove(raceID);
         return true;
     }
 }

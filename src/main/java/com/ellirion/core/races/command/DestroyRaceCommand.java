@@ -23,6 +23,7 @@ public class DestroyRaceCommand implements CommandExecutor {
             sendmsg("could not delete the race.");
             return true;
         }
+        sendmsg(args[0] + " is no more!");
         return true;
     }
 
