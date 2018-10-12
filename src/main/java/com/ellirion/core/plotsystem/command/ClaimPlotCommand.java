@@ -6,10 +6,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.Wilderness;
-import com.ellirion.core.plotsystem.util.PlotManager;
 import com.ellirion.core.races.model.Race;
 
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         boolean allowedToClaim = false;
 
-        // Check if a name was entered
+        // Check if coords where entered.
         if (args.length > 0) {
             if (args.length < 2 || args.length > 2) {
                 player.sendMessage(ChatColor.DARK_RED +
@@ -48,11 +48,7 @@ public class ClaimPlotCommand implements CommandExecutor {
             plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
         }
 
-        if (!(plotToCheck.getOwner() instanceof Wilderness)) {
-            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.");
-            return true;
-        }
-
+        //Get neighbouring plots to check if there is a plot to connect to.
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
 
         Race playerRace = PlayerManager.getPlayerRace(player.getUniqueId());
@@ -63,6 +59,9 @@ public class ClaimPlotCommand implements CommandExecutor {
         }
 
         for (Plot plot : neighbourPlots) {
+            if (plot == null) {
+                continue;
+            }
             UUID plotUUID = plot.getOwner().getRaceUUID();
             UUID raceUUID = playerRace.getRaceUUID();
             player.sendMessage("Plot: " + plot.getName() + " uuid:" + plotUUID.toString());
@@ -77,6 +76,13 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         if (!allowedToClaim) {
             player.sendMessage(ChatColor.DARK_RED + "There is no neighbouring plot to connect to.");
+            return true;
+        }
+
+        //If the plot is already owned by different race advice to start a ground war instead.
+        if (!(plotToCheck.getOwner() instanceof Wilderness)) {
+            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.\n" +
+                               "If you still like to claim this plot you need to start a ground war.");
             return true;
         }
 

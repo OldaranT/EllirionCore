@@ -6,9 +6,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
-import com.ellirion.core.plotsystem.util.PlotManager;
 
 public class TeleportToPlotCommand implements CommandExecutor {
 
@@ -40,11 +40,11 @@ public class TeleportToPlotCommand implements CommandExecutor {
             return true;
         }
 
-        Location teleportToLocation = plot.getCenterLocation(player.getLocation().getYaw(), player.getLocation().getPitch());
+        Location teleportToLocation = plot.getCenterLocation(player.getLocation().getYaw(),
+                                                             player.getLocation().getPitch());
 
         player.teleport(teleportToLocation);
 
         return true;
-
     }
 }

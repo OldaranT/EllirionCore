@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
-import com.ellirion.core.plotsystem.util.PlotManager;
+import com.ellirion.core.plotsystem.PlotManager;
 
 import java.util.UUID;
 
@@ -30,7 +30,8 @@ public class Plot {
      * @param world The world that the plot is located in.
      * @param worldUUID The UUID of the world the plot is located in.
      */
-    public Plot(final String name, final PlotCoord plotCoord, final Point lowestCorner, final Point highestCorner, final int plotSize,
+    public Plot(final String name, final PlotCoord plotCoord, final Point lowestCorner, final Point highestCorner,
+                final int plotSize,
                 final World world, final UUID worldUUID) {
         this.name = name;
         this.plotCoord = plotCoord;
@@ -73,10 +74,10 @@ public class Plot {
     public Plot[] getNeighbours() {
 
         return new Plot[] {
-                PlotManager.getPlotByCoordinate(this.plotCoord.translate(0, 1)),
-                PlotManager.getPlotByCoordinate(this.plotCoord.translate(1, 0)),
-                PlotManager.getPlotByCoordinate(this.plotCoord.translate(0, -1)),
-                PlotManager.getPlotByCoordinate(this.plotCoord.translate(-1, 0)),
+                PlotManager.getPlotByCoordinate(plotCoord.translate(0, 1)),
+                PlotManager.getPlotByCoordinate(plotCoord.translate(1, 0)),
+                PlotManager.getPlotByCoordinate(plotCoord.translate(0, -1)),
+                PlotManager.getPlotByCoordinate(plotCoord.translate(-1, 0)),
                 };
     }
 }

@@ -1,11 +1,11 @@
-package com.ellirion.core.plotsystem.util;
+package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
-import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 
 import java.util.HashMap;
 
@@ -31,8 +31,17 @@ public class PlotManager {
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
         PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ);
-        Plot plot = SAVED_PLOTS.get(plotCoord);
-        return plot;
+
+        return SAVED_PLOTS.get(plotCoord);
+    }
+
+    /**
+     * Return the plot by name.
+     * @param plotCoord plotCoord of the plot to return.
+     * @return the plot that is requested.
+     */
+    public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
+        return SAVED_PLOTS.get(plotCoord);
     }
 
     /**
@@ -59,13 +68,17 @@ public class PlotManager {
                 int currentZ = startCountZ * PLOT_SIZE;
 
                 Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
-                Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock, 
+                Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
                                                currentZ + PLOT_SIZE - 1);
 
                 PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
 
                 try {
-                    SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world, world.getUID()));
+                    //If plot already exist skip it.
+                    if (SAVED_PLOTS.get(plotCoord) == null) {
+                        SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
+                                                            world.getUID()));
+                    }
                 } catch (Exception e) {
                     return false;
                 }
@@ -73,15 +86,6 @@ public class PlotManager {
         }
 
         return true;
-    }
-
-    /**
-     * Return the plot by name.
-     * @param plotCoord plotCoord of the plot to return.
-     * @return the plot that is requested.
-     */
-    public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
-        return SAVED_PLOTS.get(plotCoord);
     }
 }
 

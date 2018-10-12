@@ -3,9 +3,9 @@ package com.ellirion.core.plotsystem.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.util.PlotManager;
 
 public class PlotListener implements Listener {
 
