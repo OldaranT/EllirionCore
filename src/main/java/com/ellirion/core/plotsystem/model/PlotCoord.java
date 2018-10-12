@@ -2,7 +2,7 @@ package com.ellirion.core.plotsystem.model;
 
 import lombok.Getter;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 public class PlotCoord {
 
@@ -31,7 +31,7 @@ public class PlotCoord {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(getClass().getFields());
+        return Objects.hash(x, z);
     }
 
     @Override

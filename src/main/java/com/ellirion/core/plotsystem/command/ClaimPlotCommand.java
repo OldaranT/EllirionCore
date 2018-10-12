@@ -9,10 +9,9 @@ import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
-import com.ellirion.core.plotsystem.model.Wilderness;
+import com.ellirion.core.plotsystem.model.PlotOwner;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.races.model.Race;
-
-import java.util.UUID;
 
 public class ClaimPlotCommand implements CommandExecutor {
 
@@ -30,22 +29,24 @@ public class ClaimPlotCommand implements CommandExecutor {
         Plot plotToCheck;
 
         // Check if coords where entered.
-        if (args.length > 0) {
-            if (args.length < 2 || args.length > 2) {
-                player.sendMessage(ChatColor.DARK_RED +
-                                   "Please give the coordinates of the plot: <X-Cord> <Z-Cord>. \n " +
-                                   "You can also give no coordinates to claim the plot you are standing in.");
-                return true;
-            }
-
+        if (args.length == 2) {
             int xCoord = Integer.parseInt(args[0]);
             int zCoord = Integer.parseInt(args[1]);
 
             PlotCoord plotCoord = new PlotCoord(xCoord, zCoord);
 
             plotToCheck = PlotManager.getPlotByCoordinate(plotCoord);
-        } else {
+        } else if (args.length == 0) {
             plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
+        } else {
+            player.sendMessage(ChatColor.DARK_RED +
+                               "Please give the coordinates of the plot: <X-Cord> <Z-Cord>. \n " +
+                               "You can also give no coordinates to claim the plot you are standing in.");
+            return true;
+        }
+
+        if (!(plotToCheck.getOwner() instanceof TradingCenter)) {
+            player.sendMessage(ChatColor.DARK_RED + "This plot is a game plot. you can't claim this plot.");
         }
 
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
@@ -58,14 +59,13 @@ public class ClaimPlotCommand implements CommandExecutor {
         }
 
         //check if there is a plot to connect to.
-
         if (!ownsNeighbour(neighbourPlots, playerRace)) {
             player.sendMessage(ChatColor.DARK_RED + "There is no neighbouring plot to connect to.");
             return true;
         }
 
         //If the plot is already owned by different race advice to start a ground war instead.
-        if (!(plotToCheck.getOwner() instanceof Wilderness)) {
+        if ((plotToCheck.getOwner() instanceof Race)) {
             player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.\n" +
                                "If you still like to claim this plot you need to start a ground war.");
             return true;
@@ -79,18 +79,17 @@ public class ClaimPlotCommand implements CommandExecutor {
         return true;
     }
 
-    private boolean ownsNeighbour(Plot[] plotsToCheck, Race raceToCompare) {
+    private boolean ownsNeighbour(Plot[] plotsToCheck, PlotOwner playerRace) {
 
         for (Plot plot : plotsToCheck) {
             if (plot == null) {
                 continue;
             }
-            UUID plotUUID = plot.getOwner().getRaceUUID();
-            UUID raceUUID = raceToCompare.getRaceUUID();
-            player.sendMessage("Plot: " + plot.getName() + " uuid:" + plotUUID.toString());
-            player.sendMessage("Race: " + raceUUID.toString());
+            PlotOwner plotOwner = plot.getOwner();
+            player.sendMessage("Plot: " + plotOwner.getName());
+            player.sendMessage("Race: " + playerRace.getName());
 
-            if (plotUUID.equals(raceUUID)) {
+            if (plotOwner.equals(playerRace)) {
                 return true;
             }
         }

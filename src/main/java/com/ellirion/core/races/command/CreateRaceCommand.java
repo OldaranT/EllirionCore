@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.model.Wilderness;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.races.RaceManager;
 
 public class CreateRaceCommand implements CommandExecutor {

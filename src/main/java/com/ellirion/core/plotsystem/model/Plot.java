@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 
 import java.util.UUID;
 

@@ -62,20 +62,21 @@ public class PlotManager {
         for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
             for (int startCountZ = mapRadius * -1 + centerZ; startCountZ < mapRadius + centerZ; startCountZ++) {
 
-                String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
-
-                int currentX = startCountX * PLOT_SIZE;
-                int currentZ = startCountZ * PLOT_SIZE;
-
-                Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
-                Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
-                                               currentZ + PLOT_SIZE - 1);
-
                 PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
 
                 try {
                     //If plot already exist skip it.
                     if (SAVED_PLOTS.get(plotCoord) == null) {
+
+                        String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
+
+                        int currentX = startCountX * PLOT_SIZE;
+                        int currentZ = startCountZ * PLOT_SIZE;
+
+                        Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
+                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
+                                                       currentZ + PLOT_SIZE - 1);
+
                         SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
                                                             world.getUID()));
                     }

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.model.Wilderness;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.races.model.Race;
 
 public class SetPlotOwnerCommand implements CommandExecutor {
