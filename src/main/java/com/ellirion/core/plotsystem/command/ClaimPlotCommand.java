@@ -29,7 +29,7 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         Plot plotToCheck;
 
-        boolean allowedToClaim = false;
+        boolean allowedToClaim;
 
         // Check if coords where entered.
         if (args.length > 0) {
