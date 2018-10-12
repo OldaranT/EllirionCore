@@ -50,7 +50,7 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("something went wrong please try with different values");
             return false;
         }
-        sendmsg("race created");
+        sendmsg(plot.getOwner().getName() + " created");
         return true;
     }
 

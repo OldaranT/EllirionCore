@@ -28,3 +28,7 @@ commands:
       Description: Teleport player to selected plot.
       usage: /ttp <X> <Y>
       aliases: [ttp]
+  RemoveRace:
+      Description: Removes the specified race.
+      usage: /rc <raceName>
+      aliases: [rc]
