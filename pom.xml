@@ -42,10 +42,10 @@
                         </goals>
                         <configuration>
                             <minimizeJar>true</minimizeJar>
-                            <finalName>${project.artifactId}</finalName>
+                            <finalName>${project.build.finalName}</finalName>
                             <artifactSet>
                                 <includes>
-                                    <!--<include>org.mongodb</include>-->
+                                    <include>org.mongodb</include>
                                     <include>org.mongodb.morphia</include>
                                 </includes>
                             </artifactSet>

@@ -2,6 +2,7 @@ package com.ellirion.core;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
@@ -13,7 +14,6 @@ import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.races.command.CreateRaceCommand;
 import com.ellirion.core.races.command.JoinRaceCommand;
 import com.ellirion.core.races.eventlistener.OnFriendlyFire;
-import com.ellirion.core.database.DatabaseManager;
 
 public class EllirionCore extends JavaPlugin {
 
@@ -31,14 +31,6 @@ public class EllirionCore extends JavaPlugin {
 
     public static EllirionCore getINSTANCE() {
         return INSTANCE;
-    }
-
-    private static void registerCommands() {
-        throw new NotImplementedException();
-    }
-
-    private static void registerEvents() {
-        throw new NotImplementedException();
     }
 
     @Override
@@ -71,7 +63,7 @@ public class EllirionCore extends JavaPlugin {
         pluginManager.registerEvents(new PlotListener(), this);
         pluginManager.registerEvents(new OnFriendlyFire(), this);
     }
-    
+
     public DatabaseManager getDbManager() {
         return dbManager;
     }
