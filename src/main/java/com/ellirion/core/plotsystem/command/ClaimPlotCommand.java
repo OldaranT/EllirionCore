@@ -17,7 +17,6 @@ import java.util.UUID;
 public class ClaimPlotCommand implements CommandExecutor {
 
     private Player player;
-    private boolean allowedToClaim;
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
@@ -59,9 +58,8 @@ public class ClaimPlotCommand implements CommandExecutor {
         }
 
         //check if there is a plot to connect to.
-        claimableCheck(neighbourPlots, playerRace);
 
-        if (!allowedToClaim) {
+        if (!ownsNeighbour(neighbourPlots, playerRace)) {
             player.sendMessage(ChatColor.DARK_RED + "There is no neighbouring plot to connect to.");
             return true;
         }
@@ -81,7 +79,7 @@ public class ClaimPlotCommand implements CommandExecutor {
         return true;
     }
 
-    private void claimableCheck(Plot[] plotsToCheck, Race raceToCompare) {
+    private boolean ownsNeighbour(Plot[] plotsToCheck, Race raceToCompare) {
 
         for (Plot plot : plotsToCheck) {
             if (plot == null) {
@@ -92,11 +90,11 @@ public class ClaimPlotCommand implements CommandExecutor {
             player.sendMessage("Plot: " + plot.getName() + " uuid:" + plotUUID.toString());
             player.sendMessage("Race: " + raceUUID.toString());
 
-            allowedToClaim = plotUUID.equals(raceUUID);
-
-            if (allowedToClaim) {
-                break;
+            if (plotUUID.equals(raceUUID)) {
+                return true;
             }
         }
+
+        return false;
     }
 }
