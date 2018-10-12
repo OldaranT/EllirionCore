@@ -10,6 +10,8 @@ import com.ellirion.core.plotsystem.model.Wilderness;
 import com.ellirion.core.plotsystem.util.PlotManager;
 import com.ellirion.core.races.RaceManager;
 
+import java.util.Arrays;
+
 public class CreateRaceCommand implements CommandExecutor {
 
     private Player player;
@@ -29,12 +31,12 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("you forgot either the color or the name");
             return false;
         }
-        if (RaceManager.raceNameExists(args[0])) {
+        String raceName = String.join(" ", Arrays.copyOf(args, args.length - 1));
+        if (RaceManager.raceNameExists(raceName)) {
             sendmsg("race already exists");
             return false;
         }
-        ChatColor color = ChatColor.valueOf(args[1].toUpperCase());
-
+        ChatColor color = ChatColor.valueOf(args[args.length - 1].toUpperCase());
         if (color == null || RaceManager.isColerInUse(color)) {
             sendmsg("you either miss spelled the color or the color is in use");
             return false;
@@ -46,7 +48,7 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (!RaceManager.addRace(args[0], color, plot)) {
+        if (!RaceManager.addRace(raceName, color, plot)) {
             sendmsg("something went wrong please try with different values");
             return false;
         }

@@ -7,6 +7,7 @@ import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.Wilderness;
 import com.ellirion.core.races.model.Race;
+import com.ellirion.core.utils.StringUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -196,12 +197,7 @@ public class RaceManager {
     }
 
     private static String normalCasing(String string) {
-        if (string == null || string.length() == 0) {
-            return "";
-        }
-        String firstLetter = ("" + string.charAt(0)).toUpperCase();
-        String nonFirstLetter = string.substring(1).toLowerCase();
-        return (firstLetter + nonFirstLetter);
+        return StringUtil.normalNameCasing(string);
     }
 
     /**

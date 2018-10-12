@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import com.ellirion.core.races.RaceManager;
+import com.ellirion.core.utils.StringUtil;
 
 public class DestroyRaceCommand implements CommandExecutor {
 
@@ -12,18 +13,19 @@ public class DestroyRaceCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         this.sender = sender;
-        if (args.length <= 0 || args.length >= 2) {
+        if (args.length <= 0) {
             sendmsg("wrong number of arguments.");
             return true;
         }
-        if (!RaceManager.raceNameExists(args[0])) {
+        String raceName = String.join(" ", args);
+        if (!RaceManager.raceNameExists(raceName)) {
             sendmsg("given race does not exist.");
         }
-        if (!RaceManager.deleteRaceByName(args[0])) {
+        if (!RaceManager.deleteRaceByName(raceName)) {
             sendmsg("could not delete the race.");
             return true;
         }
-        sendmsg(args[0] + " is no more!");
+        sendmsg(StringUtil.normalNameCasing(raceName) + " is no more!");
         return true;
     }
 
