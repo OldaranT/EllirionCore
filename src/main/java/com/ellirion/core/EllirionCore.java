@@ -89,6 +89,7 @@ public class EllirionCore extends JavaPlugin {
         dbConnectionConfig.addDefault(sshHeader + "username", "root");
         dbConnectionConfig.addDefault(sshHeader + "host", "the host ip");
         dbConnectionConfig.addDefault(sshHeader + "port", 22);
+        dbConnectionConfig.addDefault(sshHeader + "passPhrase", "The passPhrase for your private key.");
 
         String forwardingHeader = "forwarding_data.";
         dbConnectionConfig.addDefault("forwardingHeader", forwardingHeader);

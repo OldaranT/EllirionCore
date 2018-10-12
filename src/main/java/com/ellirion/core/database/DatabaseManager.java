@@ -8,19 +8,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.dao.BasicDAO;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.model.PlayerModel;
 import com.ellirion.core.database.model.RaceModel;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
 public class DatabaseManager {
 
-    private FileConfiguration connectioConfig;
+    private FileConfiguration connectionConfig;
 
     private Session session = null;
     private JSch jsch = new JSch();
@@ -30,6 +30,7 @@ public class DatabaseManager {
     private String host;// = "206.189.4.235";
     private int port;// = 22;
     private String privateKeyPath;// = getPathToKey();
+    private String passPhrase;
 
     // forwarding ports
     private int localPort;// = 27017;
@@ -40,25 +41,30 @@ public class DatabaseManager {
     private MongoClient mc;
     private Morphia morphia;
     private Datastore datastore;
-    private DatabaseAccessObject playerDAO;
-    private DatabaseAccessObject raceDAO;
+    private BasicDAO playerDAO;
+    private BasicDAO raceDAO;
 
     /**
+     * The database manager opens a session the moment it gets created which allows for access to a remote db server.
      * @param configuration The connection configuration that contains the data to be used to connect.
      */
     public DatabaseManager(final FileConfiguration configuration) {
-        connectioConfig = configuration;
+        connectionConfig = configuration;
         applyConfig();
+        // try to reach the remote database.
         try {
-            jsch.addIdentity(privateKeyPath, "nikro");
+            // tell JSch to use your private key with pass phrase as login method.
+            jsch.addIdentity(privateKeyPath, passPhrase);
+            // create a session with the location of the remote db server.
             session = jsch.getSession(username, host, port);
             session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
             java.util.Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             session.setConfig(config);
             session.connect();
+            // tell the session to forward any request to our local port to the remote db server.
             session.setPortForwardingL(localPort, remoteHost, remotePort);
-
+            // create your mongo client.
             mc = new MongoClient(localHost, localPort);
 
             morphia = new Morphia();
@@ -70,23 +76,24 @@ public class DatabaseManager {
 
             createDatabaseAccessObjects();
         } catch (JSchException e) {
-            e.printStackTrace();
+            printStackTrace(e);
         }
     }
 
     private void applyConfig() {
         // ssh connection data.
-        String sshHeader = connectioConfig.getString("sshHeader", "ssh_connection.");
-        username = connectioConfig.getString(sshHeader + "username", "root");
-        host = connectioConfig.getString(sshHeader + "host");
-        port = connectioConfig.getInt(sshHeader + "port", 22);
-        privateKeyPath = connectioConfig.getString(sshHeader + "privateKeyPath");
+        String sshHeader = connectionConfig.getString("sshHeader", "ssh_connection.");
+        username = connectionConfig.getString(sshHeader + "username", "root");
+        host = connectionConfig.getString(sshHeader + "host");
+        port = connectionConfig.getInt(sshHeader + "port", 22);
+        privateKeyPath = connectionConfig.getString(sshHeader + "privateKeyPath");
+        passPhrase = connectionConfig.getString(sshHeader + "passPhrase");
         // db coonection data.
-        String forwardingHeader = connectioConfig.getString("forwardingHeader", "forwarding_data.");
-        localPort = connectioConfig.getInt(forwardingHeader + "localPort", 27017);
-        remotePort = connectioConfig.getInt(forwardingHeader + "remotePort", 27017);
-        localHost = connectioConfig.getString(forwardingHeader + "localHost", "localhost");
-        remoteHost = connectioConfig.getString(forwardingHeader + "remoteHost", "localhost");
+        String forwardingHeader = connectionConfig.getString("forwardingHeader", "forwarding_data.");
+        localPort = connectionConfig.getInt(forwardingHeader + "localPort", 27017);
+        remotePort = connectionConfig.getInt(forwardingHeader + "remotePort", 27017);
+        localHost = connectionConfig.getString(forwardingHeader + "localHost", "localhost");
+        remoteHost = connectionConfig.getString(forwardingHeader + "remoteHost", "localhost");
     }
 
     private void mapDataClasses() {
@@ -95,24 +102,24 @@ public class DatabaseManager {
     }
 
     private void createDatabaseAccessObjects() {
-        playerDAO = new DatabaseAccessObject(PlayerModel.class, datastore);
-        raceDAO = new DatabaseAccessObject(RaceModel.class, datastore);
+        playerDAO = new BasicDAO(PlayerModel.class, datastore);
+        raceDAO = new BasicDAO(RaceModel.class, datastore);
     }
 
     /**
-     * save the player to the database.
+     * save a player to the database.
      * @param player the player.
      * @param cash amount of cash.
      * @param race the race.
      * @param rank the rank.
      */
     public void savePlayer(Player player, int cash, String race, String rank) {
-        PlayerModel playerModel = new PlayerModel(player.getUniqueId(), player.getName(),
-                                                  player.getAddress().getHostName(), cash, race, rank);
+        PlayerModel playerModel = new PlayerModel(player, cash, race, rank);
         playerDAO.save(playerModel);
     }
 
     /**
+     * Get all players from the database.
      * @return return all the users.
      */
     public List<PlayerModel> getAllPlayers() {
@@ -120,6 +127,7 @@ public class DatabaseManager {
     }
 
     /**
+     * Get a specific player from the database.
      * @param uuid the id of the player
      * @return the player model
      */
@@ -132,25 +140,12 @@ public class DatabaseManager {
     }
 
     /**
+     * Get a specific race from the database.
      * @param raceName The name of the race to fetch.
      * @return return the found raceModel.
      */
     public RaceModel getSpecificRace(String raceName) {
         return (RaceModel) raceDAO.findOne("_id", raceName);
-    }
-
-    private String getPathToKey() {
-        String path = "";
-        try {
-            path = EllirionCore.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            path = path.substring(0, path.lastIndexOf("/"));
-            path = path.substring(0, path.lastIndexOf("/"));
-            path += "/key/privateKey";
-        } catch (URISyntaxException e) {
-            EllirionCore.getINSTANCE().getLogger().severe("key path not found!");
-        }
-
-        return path;
     }
 
     /**
@@ -161,9 +156,13 @@ public class DatabaseManager {
             session.delPortForwardingL(localPort);
             session.disconnect();
         } catch (JSchException e) {
-            StringWriter errors = new StringWriter();
-            e.printStackTrace(new PrintWriter(errors));
-            EllirionCore.getINSTANCE().getLogger().severe(errors.toString());
+            printStackTrace(e);
         }
+    }
+
+    private void printStackTrace(Exception e) {
+        StringWriter errors = new StringWriter();
+        e.printStackTrace(new PrintWriter(errors));
+        EllirionCore.getINSTANCE().getLogger().severe(errors.toString());
     }
 }

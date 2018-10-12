@@ -1,5 +1,6 @@
 package com.ellirion.core.database.model;
 
+import org.bukkit.entity.Player;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
@@ -36,18 +37,16 @@ public class PlayerModel {
     private Set<String> nameHistory = new HashSet<>();
 
     /**
-     * @param playerID UUID of the player.
-     * @param username the Username of the player.
-     * @param ip the IP adress of the player.
+     * @param player The player who owns this data.
      * @param cash the amount of cash the player has.
      * @param race the player race.
      * @param rank the player rank
      */
-    public PlayerModel(final UUID playerID, final String username, final String ip, final int cash, final String race,
+    public PlayerModel(final Player player, final int cash, final String race,
                        final String rank) {
-        this.playerID = playerID;
-        this.username = username;
-        this.ip = ip;
+        playerID = player.getUniqueId();
+        username = player.getName();
+        ip = player.getAddress().getHostName();
         this.cash = cash;
         this.race = race;
         this.rank = rank;
