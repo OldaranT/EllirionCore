@@ -66,8 +66,8 @@ public class ClaimPlotCommand implements CommandExecutor {
         }
 
         //If the plot is already owned by different race advice to start a ground war instead.
-        if ((plotToCheck.getOwner() instanceof Race)) {
-            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.\n " +
+        if (plotToCheck.getOwner() instanceof Race) {
+            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.\n" +
                                "If you still like to claim this plot you need to start a ground war.");
             return true;
         }
