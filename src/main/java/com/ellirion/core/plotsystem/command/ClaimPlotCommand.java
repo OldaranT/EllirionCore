@@ -45,7 +45,7 @@ public class ClaimPlotCommand implements CommandExecutor {
             return true;
         }
 
-        if ((plotToCheck.getOwner() instanceof TradingCenter)) {
+        if (plotToCheck.getOwner() instanceof TradingCenter) {
             player.sendMessage(ChatColor.DARK_RED + "This plot is a game plot. you can't claim this plot.");
             return false;
         }
