@@ -1,19 +1,20 @@
-package com.ellirion.core.plotsystem.util;
+package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 
 import java.util.HashMap;
 
 public class PlotManager {
 
-    private static final HashMap<String, Plot> SAVED_PLOTS = new HashMap<>();
+    private static final HashMap<PlotCoord, Plot> SAVED_PLOTS = new HashMap<>();
     @Getter private static int PLOT_SIZE;
 
-    public static HashMap<String, Plot> getSavedPlots() {
+    public static HashMap<PlotCoord, Plot> getSavedPlots() {
         return SAVED_PLOTS;
     }
 
@@ -29,8 +30,18 @@ public class PlotManager {
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
-        String name = plotCordX + " , " + plotCordZ;
-        return SAVED_PLOTS.get(name);
+        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ);
+
+        return SAVED_PLOTS.get(plotCoord);
+    }
+
+    /**
+     * Return the plot by coordinate.
+     * @param plotCoord plotCoord of the plot to return.
+     * @return the plot that is requested.
+     */
+    public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
+        return SAVED_PLOTS.get(plotCoord);
     }
 
     /**
@@ -51,17 +62,24 @@ public class PlotManager {
         for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
             for (int startCountZ = mapRadius * -1 + centerZ; startCountZ < mapRadius + centerZ; startCountZ++) {
 
-                String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
-
-                int currentX = startCountX * PLOT_SIZE;
-                int currentZ = startCountZ * PLOT_SIZE;
-
-                Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
-                Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock, 
-                                               currentZ + PLOT_SIZE - 1);
+                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
 
                 try {
-                    SAVED_PLOTS.put(name, new Plot(name, lowerPoint, highestPoint, PLOT_SIZE, world, world.getUID()));
+                    //If plot already exist skip it.
+                    if (SAVED_PLOTS.get(plotCoord) == null) {
+
+                        String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
+
+                        int currentX = startCountX * PLOT_SIZE;
+                        int currentZ = startCountZ * PLOT_SIZE;
+
+                        Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
+                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
+                                                       currentZ + PLOT_SIZE - 1);
+
+                        SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
+                                                            world.getUID()));
+                    }
                 } catch (Exception e) {
                     return false;
                 }
@@ -69,15 +87,6 @@ public class PlotManager {
         }
 
         return true;
-    }
-
-    /**
-     * Return the plot by name.
-     * @param name name of the plot to return.
-     * @return the plot that is requested.
-     */
-    public static Plot getPlotByName(String name) {
-        return SAVED_PLOTS.get(name);
     }
 }
 

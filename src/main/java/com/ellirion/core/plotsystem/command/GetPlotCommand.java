@@ -1,11 +1,12 @@
 package com.ellirion.core.plotsystem.command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.util.PlotManager;
 
 public class GetPlotCommand implements CommandExecutor {
 
@@ -19,6 +20,11 @@ public class GetPlotCommand implements CommandExecutor {
         Player player = (Player) commandSender;
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
+
+        if (plot == null) {
+            player.sendMessage(ChatColor.DARK_RED + "You need to be in a plot to use this command.");
+            return true;
+        }
 
         player.sendMessage("Name: " + plot.getName());
 

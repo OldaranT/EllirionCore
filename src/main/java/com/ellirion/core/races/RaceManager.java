@@ -150,6 +150,7 @@ public class RaceManager {
      * @param player The player to get the race from.
      * @return The player race.
      */
+    @Deprecated
     public static Race getPlayerRace(Player player) {
         for (Race race : RACES.values()) {
             if (race.hasPlayer(player.getUniqueId())) {

@@ -6,8 +6,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.util.PlotManager;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 
 public class TeleportToPlotCommand implements CommandExecutor {
 
@@ -23,25 +24,27 @@ public class TeleportToPlotCommand implements CommandExecutor {
         // Check if a name was entered
         if (args.length < 2 || args.length > 2) {
             player.sendMessage(ChatColor.DARK_RED +
-                               "Please give the coordinates of the plot: <X-Cord> <Z-Cord>");
+                               "Please give the coordinates of the plot: <X> <Z>");
             return true;
         }
 
         int xCord = Integer.parseInt(args[0]);
         int zCord = Integer.parseInt(args[1]);
 
-        Plot plot = PlotManager.getPlotByName(xCord + " , " + zCord);
+        PlotCoord plotCoord = new PlotCoord(xCord, zCord);
+
+        Plot plot = PlotManager.getPlotByCoordinate(plotCoord);
 
         if (plot == null) {
             player.sendMessage(ChatColor.DARK_RED + "This plot does not exist.");
             return true;
         }
 
-        Location teleportToLocation = plot.getCenterLocation(player.getLocation().getYaw(), player.getLocation().getPitch());
+        Location teleportToLocation = plot.getCenterLocation(player.getLocation().getYaw(),
+                                                             player.getLocation().getPitch());
 
         player.teleport(teleportToLocation);
 
         return true;
-
     }
 }

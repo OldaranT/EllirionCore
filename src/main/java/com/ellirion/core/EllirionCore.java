@@ -4,6 +4,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
+import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.SetPlotOwnerCommand;
@@ -50,6 +51,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
         getCommand("SetOwner").setExecutor(new SetPlotOwnerCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
+        getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
         getCommand("RemoveRace").setExecutor(new DestroyRaceCommand());
     }
 
