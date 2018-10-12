@@ -36,7 +36,7 @@ public class PlotManager {
     }
 
     /**
-     * Return the plot by name.
+     * Return the plot by coordinate.
      * @param plotCoord plotCoord of the plot to return.
      * @return the plot that is requested.
      */
