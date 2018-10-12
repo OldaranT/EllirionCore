@@ -16,8 +16,12 @@ public class StringUtil {
      * @param regex The regex to clean it with.
      * @return Return a cleaned string.
      */
-    public static String stringCleaner(String[] strings, String regex) {
-        return stringCleaner(String.join(" ", strings), regex);
+    public static String[] stringArrayCleaner(String[] strings, String regex) {
+        String[] result = new String[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            result[i] = stringCleaner(strings[i], regex);
+        }
+        return result;
     }
 
     /**

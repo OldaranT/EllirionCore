@@ -9,6 +9,7 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.Wilderness;
 import com.ellirion.core.plotsystem.util.PlotManager;
 import com.ellirion.core.races.RaceManager;
+import com.ellirion.core.utils.StringUtil;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("you forgot either the color or the name");
             return false;
         }
-        String raceName = String.join(" ", Arrays.copyOf(args, args.length - 1));
+        String raceName = StringUtil.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
         if (RaceManager.raceNameExists(raceName)) {
             sendmsg("race already exists");
             return false;
@@ -52,7 +53,7 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("something went wrong please try with different values");
             return false;
         }
-        sendmsg(plot.getOwner().getName() + " created");
+        sendmsg(raceName + " created");
         return true;
     }
 

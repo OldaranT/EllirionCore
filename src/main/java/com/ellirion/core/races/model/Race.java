@@ -14,7 +14,7 @@ public class Race extends PlotOwner {
 
     //    @Getter private final UUID raceUUID;
     @Getter @Setter private String name;
-    @Getter private Set<UUID> players = new HashSet<>();
+    @Getter private Set<UUID> players;
     @Getter @Setter private ChatColor teamColor;
     @Getter private Plot homePlot;
 
@@ -27,6 +27,7 @@ public class Race extends PlotOwner {
         this.name = name;
         this.homePlot = homePlot;
         this.teamColor = teamColor;
+        players = new HashSet<>();
     }
 
     public String getNameWithColor() {

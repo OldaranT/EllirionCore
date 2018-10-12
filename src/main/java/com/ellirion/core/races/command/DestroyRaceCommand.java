@@ -14,15 +14,15 @@ public class DestroyRaceCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         this.sender = sender;
         if (args.length <= 0) {
-            sendmsg("wrong number of arguments.");
+            sendmsg("Wrong number of arguments.");
             return true;
         }
         String raceName = String.join(" ", args);
         if (!RaceManager.raceNameExists(raceName)) {
-            sendmsg("given race does not exist.");
+            sendmsg("Given race does not exist.");
         }
         if (!RaceManager.deleteRaceByName(raceName)) {
-            sendmsg("could not delete the race.");
+            sendmsg("Could not delete the race.");
             return true;
         }
         sendmsg(StringUtil.normalNameCasing(raceName) + " is no more!");
