@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.plotsystem.util.PlotManager;
+import com.ellirion.core.plotsystem.PlotManager;
 
 public class CreatePlotCommand implements CommandExecutor {
 
