@@ -26,16 +26,16 @@ public class DatabaseManager {
     private JSch jsch = new JSch();
 
     // ssh connection
-    private String username = "root";
-    private String host = "206.189.4.235";
-    private int port = 22;
-    private String privateKeyPath = getPathToKey();
+    private String username;// = "root";
+    private String host;// = "206.189.4.235";
+    private int port;// = 22;
+    private String privateKeyPath;// = getPathToKey();
 
     // forwarding ports
-    private int localPort = 27017;
-    private int remotePort = 27017;
-    private String localHost = "localhost";
-    private String remoteHost = "localhost";
+    private int localPort;// = 27017;
+    private int remotePort;// = 27017;
+    private String localHost;// = "localhost";
+    private String remoteHost;// = "localhost";
 
     private MongoClient mc;
     private Morphia morphia;
@@ -44,7 +44,7 @@ public class DatabaseManager {
     private DatabaseAccessObject raceDAO;
 
     /**
-     *
+     * @param configuration The connection configuration that contains the data to be used to connect.
      */
     public DatabaseManager(final FileConfiguration configuration) {
         connectioConfig = configuration;

@@ -50,8 +50,8 @@ public class EllirionCore extends JavaPlugin {
     public void onEnable() {
         registerCommands();
         registerEvents();
-        getLogger().info("Introduction is enabled.");
         createDBconnectionConfig();
+        getLogger().info("Introduction is enabled.");
         dbManager = new DatabaseManager(dbConnectionConfig);
     }
 
@@ -97,7 +97,7 @@ public class EllirionCore extends JavaPlugin {
         dbConnectionConfig.addDefault(forwardingHeader + "localHost", "localhost");
         dbConnectionConfig.addDefault(forwardingHeader + "remoteHost", "localhost");
 
-        dbConnectionConfig.options().copyDefaults();
+        dbConnectionConfig.options().copyDefaults(true);
         try {
             dbConnectionConfig.save(dbConnectionConfigFile);
         } catch (IOException e) {
