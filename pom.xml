@@ -41,12 +41,13 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
+                            <minimizeJar>false</minimizeJar>
                             <finalName>${project.build.finalName}</finalName>
                             <artifactSet>
                                 <includes>
                                     <include>org.mongodb</include>
                                     <include>org.mongodb.morphia</include>
+                                    <include>com.jcraft</include>
                                 </includes>
                             </artifactSet>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -54,29 +55,29 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.8</version>
-                <configuration>
-                    <failOnViolation>true
-                    </failOnViolation><!-- this is actually true by default, but can be disabled -->
-                    <printFailingErrors>true</printFailingErrors>
-                    <rulesets>
-                        <ruleset>/ruleSets/pmd-ruleset_xml.xml</ruleset>
-                    </rulesets>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>pmd</goal>
-                            <goal>check</goal>
-                            <goal>cpd</goal>
-                            <goal>cpd-check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-pmd-plugin</artifactId>-->
+            <!--<version>3.8</version>-->
+            <!--<configuration>-->
+            <!--<failOnViolation>true-->
+            <!--</failOnViolation>&lt;!&ndash; this is actually true by default, but can be disabled &ndash;&gt;-->
+            <!--<printFailingErrors>true</printFailingErrors>-->
+            <!--<rulesets>-->
+            <!--<ruleset>/ruleSets/pmd-ruleset_xml.xml</ruleset>-->
+            <!--</rulesets>-->
+            <!--</configuration>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<goals>-->
+            <!--<goal>pmd</goal>-->
+            <!--<goal>check</goal>-->
+            <!--<goal>cpd</goal>-->
+            <!--<goal>cpd-check</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -247,6 +248,12 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-commons</artifactId>
             <version>RELEASE</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
         </dependency>
     </dependencies>
 </project>

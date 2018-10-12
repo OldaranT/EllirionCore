@@ -1,38 +1,92 @@
 package com.ellirion.core.database;
 
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.model.PlayerModel;
 import com.ellirion.core.database.model.RaceModel;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
 public class DatabaseManager {
 
+    private FileConfiguration connectioConfig;
+
+    private Session session = null;
+    private JSch jsch = new JSch();
+
+    // ssh connection
+    private String username = "root";
+    private String host = "206.189.4.235";
+    private int port = 22;
+    private String privateKeyPath = getPathToKey();
+
+    // forwarding ports
+    private int localPort = 27017;
+    private int remotePort = 27017;
+    private String localHost = "localhost";
+    private String remoteHost = "localhost";
+
     private MongoClient mc;
     private Morphia morphia;
     private Datastore datastore;
-
     private DatabaseAccessObject playerDAO;
     private DatabaseAccessObject raceDAO;
 
     /**
      *
      */
-    public DatabaseManager() {
-        mc = new MongoClient();
+    public DatabaseManager(final FileConfiguration configuration) {
+        connectioConfig = configuration;
+        applyConfig();
+        try {
+            jsch.addIdentity(privateKeyPath, "nikro");
+            session = jsch.getSession(username, host, port);
+            session.setConfig("PreferredAuthentications", "publickey,keyboard-interactive,password");
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            session.setConfig(config);
+            session.connect();
+            session.setPortForwardingL(localPort, remoteHost, remotePort);
 
-        morphia = new Morphia();
+            mc = new MongoClient(localHost, localPort);
 
-        mapDataClasses();
+            morphia = new Morphia();
 
-        datastore = morphia.createDatastore(mc, "EllirionCore");
-        datastore.ensureIndexes();
+            mapDataClasses();
 
-        createDatabaseAccessObjects();
+            datastore = morphia.createDatastore(mc, "EllirionCore");
+            datastore.ensureIndexes();
+
+            createDatabaseAccessObjects();
+        } catch (JSchException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void applyConfig() {
+        // ssh connection data.
+        String sshHeader = connectioConfig.getString("sshHeader", "ssh_connection.");
+        username = connectioConfig.getString(sshHeader + "username", "root");
+        host = connectioConfig.getString(sshHeader + "host");
+        port = connectioConfig.getInt(sshHeader + "port", 22);
+        privateKeyPath = connectioConfig.getString(sshHeader + "privateKeyPath");
+        // db coonection data.
+        String forwardingHeader = connectioConfig.getString("forwardingHeader", "forwarding_data.");
+        localPort = connectioConfig.getInt(forwardingHeader + "localPort", 27017);
+        remotePort = connectioConfig.getInt(forwardingHeader + "remotePort", 27017);
+        localHost = connectioConfig.getString(forwardingHeader + "localHost", "localhost");
+        remoteHost = connectioConfig.getString(forwardingHeader + "remoteHost", "localhost");
     }
 
     private void mapDataClasses() {
@@ -83,5 +137,33 @@ public class DatabaseManager {
      */
     public RaceModel getSpecificRace(String raceName) {
         return (RaceModel) raceDAO.findOne("_id", raceName);
+    }
+
+    private String getPathToKey() {
+        String path = "";
+        try {
+            path = EllirionCore.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            path = path.substring(0, path.lastIndexOf("/"));
+            path = path.substring(0, path.lastIndexOf("/"));
+            path += "/key/privateKey";
+        } catch (URISyntaxException e) {
+            EllirionCore.getINSTANCE().getLogger().severe("key path not found!");
+        }
+
+        return path;
+    }
+
+    /**
+     * This function should be called in the onDisable function to close the connection.
+     */
+    public void closeSession() {
+        try {
+            session.delPortForwardingL(localPort);
+            session.disconnect();
+        } catch (JSchException e) {
+            StringWriter errors = new StringWriter();
+            e.printStackTrace(new PrintWriter(errors));
+            EllirionCore.getINSTANCE().getLogger().severe(errors.toString());
+        }
     }
 }
