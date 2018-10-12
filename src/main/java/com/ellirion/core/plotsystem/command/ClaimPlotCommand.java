@@ -16,6 +16,8 @@ import java.util.UUID;
 
 public class ClaimPlotCommand implements CommandExecutor {
 
+    private Player player;
+
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (!(commandSender instanceof Player)) {
@@ -23,7 +25,7 @@ public class ClaimPlotCommand implements CommandExecutor {
             return true;
         }
 
-        Player player = (Player) commandSender;
+        player = (Player) commandSender;
 
         Plot plotToCheck;
 
@@ -48,7 +50,6 @@ public class ClaimPlotCommand implements CommandExecutor {
             plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
         }
 
-        //Get neighbouring plots to check if there is a plot to connect to.
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
 
         Race playerRace = PlayerManager.getPlayerRace(player.getUniqueId());
@@ -58,21 +59,8 @@ public class ClaimPlotCommand implements CommandExecutor {
             return true;
         }
 
-        for (Plot plot : neighbourPlots) {
-            if (plot == null) {
-                continue;
-            }
-            UUID plotUUID = plot.getOwner().getRaceUUID();
-            UUID raceUUID = playerRace.getRaceUUID();
-            player.sendMessage("Plot: " + plot.getName() + " uuid:" + plotUUID.toString());
-            player.sendMessage("Race: " + raceUUID.toString());
-
-            allowedToClaim = plotUUID.equals(raceUUID);
-
-            if (allowedToClaim) {
-                break;
-            }
-        }
+        //check if there is a plot to connect to.
+        allowedToClaim = claimableCheck(neighbourPlots, playerRace);
 
         if (!allowedToClaim) {
             player.sendMessage(ChatColor.DARK_RED + "There is no neighbouring plot to connect to.");
@@ -92,5 +80,28 @@ public class ClaimPlotCommand implements CommandExecutor {
                 playerRace.getNameWithColor() + "!");
 
         return true;
+    }
+
+    private boolean claimableCheck(Plot[] plotsToCheck, Race raceToCompare) {
+
+        boolean allowedToClaim = false;
+
+        for (Plot plot : plotsToCheck) {
+            if (plot == null) {
+                continue;
+            }
+            UUID plotUUID = plot.getOwner().getRaceUUID();
+            UUID raceUUID = raceToCompare.getRaceUUID();
+            player.sendMessage("Plot: " + plot.getName() + " uuid:" + plotUUID.toString());
+            player.sendMessage("Race: " + raceUUID.toString());
+
+            allowedToClaim = plotUUID.equals(raceUUID);
+
+            if (allowedToClaim) {
+                break;
+            }
+        }
+
+        return allowedToClaim;
     }
 }
