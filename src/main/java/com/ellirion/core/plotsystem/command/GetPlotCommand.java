@@ -22,7 +22,7 @@ public class GetPlotCommand implements CommandExecutor {
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
 
         if (plot == null) {
-            player.sendMessage(ChatColor.DARK_RED + "No plot found.");
+            player.sendMessage(ChatColor.DARK_RED + "You need to be in a plot to use this command.");
             return true;
         }
 

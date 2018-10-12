@@ -40,13 +40,14 @@ public class ClaimPlotCommand implements CommandExecutor {
             plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
         } else {
             player.sendMessage(ChatColor.DARK_RED +
-                               "Please give the coordinates of the plot: <X-Cord> <Z-Cord>. \n " +
+                               "Please give the coordinates of the plot: <X> <Z>. \n " +
                                "You can also give no coordinates to claim the plot you are standing in.");
             return true;
         }
 
-        if (!(plotToCheck.getOwner() instanceof TradingCenter)) {
+        if ((plotToCheck.getOwner() instanceof TradingCenter)) {
             player.sendMessage(ChatColor.DARK_RED + "This plot is a game plot. you can't claim this plot.");
+            return false;
         }
 
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
@@ -60,13 +61,13 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         //check if there is a plot to connect to.
         if (!ownsNeighbour(neighbourPlots, playerRace)) {
-            player.sendMessage(ChatColor.DARK_RED + "There is no neighbouring plot to connect to.");
+            player.sendMessage(ChatColor.DARK_RED + "None of the neighbouring plots are owned by your race.");
             return true;
         }
 
         //If the plot is already owned by different race advice to start a ground war instead.
         if ((plotToCheck.getOwner() instanceof Race)) {
-            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.\n" +
+            player.sendMessage(ChatColor.DARK_RED + "This plot is already owned by a different race.\n " +
                                "If you still like to claim this plot you need to start a ground war.");
             return true;
         }
@@ -93,7 +94,6 @@ public class ClaimPlotCommand implements CommandExecutor {
                 return true;
             }
         }
-
         return false;
     }
 }

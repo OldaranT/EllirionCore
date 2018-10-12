@@ -24,7 +24,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
         // Check if a name was entered
         if (args.length < 2 || args.length > 2) {
             player.sendMessage(ChatColor.DARK_RED +
-                               "Please give the coordinates of the plot: <X-Cord> <Z-Cord>");
+                               "Please give the coordinates of the plot: <X> <Z>");
             return true;
         }
 
