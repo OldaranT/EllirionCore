@@ -41,12 +41,13 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <finalName>${project.artifactId}</finalName>
+                            <minimizeJar>false</minimizeJar>
+                            <finalName>${project.build.finalName}</finalName>
                             <artifactSet>
                                 <includes>
                                     <include>org.mongodb</include>
                                     <include>org.mongodb.morphia</include>
+                                    <include>com.jcraft</include>
                                 </includes>
                             </artifactSet>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -247,6 +248,12 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-commons</artifactId>
             <version>RELEASE</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
         </dependency>
     </dependencies>
 </project>
