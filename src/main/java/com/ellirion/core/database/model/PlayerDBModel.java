@@ -28,8 +28,7 @@ public class PlayerDBModel {
     @Property(value = "money")
     @Getter @Setter private int cash;
 
-    @Property(value = "raceID")
-    @Getter @Setter private UUID raceID;
+    @Getter private UUID raceID;
 
     @Property(value = "rank")
     @Getter @Setter private String rank;
@@ -69,11 +68,7 @@ public class PlayerDBModel {
         ip = player.getAddress().getHostName();
         cash = data.getCash();
         Race race = data.getRace();
-        if (race == null) {
-            raceID = null;
-        } else {
-            raceID = race.getRaceUUID();
-        }
+        setRaceID(race);
         rank = data.getRank();
         ipHistory.add(ip);
         nameHistory.add(username);
@@ -101,5 +96,26 @@ public class PlayerDBModel {
 
     public Set<String> getNameHistory() {
         return nameHistory;
+    }
+
+    /**
+     * This method updates the data in this database model.
+     * @param data The playerData that is to be copied to this DB model.
+     * @param player The player that this DB model belongs to.
+     */
+    public void update(PlayerData data, Player player) {
+        cash = data.getCash();
+        setRaceID(data.getRace());
+        rank = data.getRank();
+        setIp(player.getAddress().getHostName());
+        setUsername(player.getName());
+    }
+
+    private void setRaceID(Race race) {
+        if (race == null) {
+            raceID = null;
+        } else {
+            raceID = race.getRaceUUID();
+        }
     }
 }

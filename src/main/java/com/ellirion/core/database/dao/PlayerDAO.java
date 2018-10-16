@@ -3,8 +3,12 @@ package com.ellirion.core.database.dao;
 import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
+import org.mongodb.morphia.query.Query;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
+
+import java.util.List;
+import java.util.UUID;
 
 public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
 
@@ -31,5 +35,40 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
     public boolean createPlayer(PlayerData data, Player player) {
         PlayerDBModel model = new PlayerDBModel(data, player);
         return savePlayer(model);
+    }
+
+    /**
+     * This function finds and returns a player with the given player UUID.
+     * @param playerID The UUID of the player to fetch.
+     * @return Return the found player.
+     */
+    public PlayerDBModel getSpecificPlayer(UUID playerID) {
+        return findOne("_id", playerID);
+    }
+
+    public List<PlayerDBModel> getAllPlayers() {
+        return find().asList();
+    }
+
+    /**
+     * This method returns all player data from players from the specified race.
+     * @param raceID The race ID of the players their race.
+     * @return Return the list of players in that race.
+     */
+    public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
+        Query query = createQuery().filter("raceID", raceID);
+        return find(query).asList();
+    }
+
+    /**
+     * This method updates the data in the database.
+     * @param data The data that needs to be copied to the DB.
+     * @param player The player who owns the Data.
+     * @return Return true if the save was successful.
+     */
+    public boolean updatePlayer(PlayerData data, Player player) {
+        PlayerDBModel playerDBModel = findOne("_id", player.getUniqueId());
+        playerDBModel.update(data, player);
+        return savePlayer(playerDBModel);
     }
 }

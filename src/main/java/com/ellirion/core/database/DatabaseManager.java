@@ -111,23 +111,6 @@ public class DatabaseManager {
         raceDAO = new BasicDAO(RaceDBModel.class, datastore);
     }
 
-    /**
-     * Get all players from the database.
-     * @return return all the users.
-     */
-    public List<PlayerDBModel> getAllPlayers() {
-        return playerDAO.find().asList();
-    }
-
-    /**
-     * Get a specific player from the database.
-     * @param uuid the id of the player
-     * @return the player model
-     */
-    public PlayerDBModel getOnePlayer(UUID uuid) {
-        return (PlayerDBModel) playerDAO.findOne("_id", uuid);
-    }
-
     public List<RaceDBModel> getAllRaces() {
         return raceDAO.find().asList();
     }
@@ -161,5 +144,32 @@ public class DatabaseManager {
      */
     public boolean createPlayer(PlayerData playerData, Player player) {
         return playerDAO.createPlayer(playerData, player);
+    }
+
+    /**
+     * Get all players from the database.
+     * @return return all the users.
+     */
+    public List<PlayerDBModel> getAllPlayers() {
+        return playerDAO.getAllPlayers();
+    }
+
+    /**
+     * Get a specific player from the database.
+     * @param uuid the id of the player
+     * @return the player model
+     */
+    public PlayerDBModel getOnePlayer(UUID uuid) {
+        return playerDAO.getSpecificPlayer(uuid);
+    }
+
+    /**
+     * This tells the playerDAO to update the given player with the given data.
+     * @param data The data to be transferred to the DB.
+     * @param player The player who owns the data.
+     * @return return the result of the operation.
+     */
+    public boolean updatePlayer(PlayerData data, Player player) {
+        return playerDAO.updatePlayer(data, player);
     }
 }
