@@ -1,6 +1,9 @@
 package com.ellirion.core.playerdata;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.entity.Player;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.races.RaceManager;
 import com.ellirion.core.races.model.Race;
@@ -11,23 +14,25 @@ import java.util.UUID;
 public class PlayerManager {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
+    private static PlayerDAO PLAYERDB = EllirionCore.getINSTANCE().getDbManager().getPlayerDAO();
 
     /**
-     * @param playerID The player UUID.
+     * @param player The player UUID.
      * @param raceID The UUID of the race.
      * @param rank The player rank.
      * @param cash The player cash.
      * @return return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(UUID playerID, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(playerID, RaceManager.getRaceByID(raceID), rank, cash);
+    public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
+        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID), rank, cash);
         if (raceID != null) {
-            RaceManager.addPlayerToRace(playerID, raceID);
+            RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
         }
-        UUID id = playerID;
+        UUID id = player.getUniqueId();
         PLAYERS.putIfAbsent(id, data);
         // commented for when the db get's implemented.
         //dbHandler.saveUser(d, p);
+        savePlayer(player, data);
         return true;
     }
 
@@ -58,13 +63,18 @@ public class PlayerManager {
         throw new NotImplementedException();
     }
 
+    private static boolean savePlayer(Player player, PlayerData data) {
+        return PLAYERDB.createPlayer(data, player);
+    }
+
     /**
-     * @param playerID The player UUID from the player that is changing race.
+     * @param player The player that is changing race.
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
-    public static boolean setPlayerRace(UUID playerID, UUID raceID) {
-        if (!(playerexists(playerID)) && !(newPlayer(playerID, raceID, "outsider", 0))) {
+    public static boolean setPlayerRace(Player player, UUID raceID) {
+        UUID playerID = player.getUniqueId();
+        if (!(playerexists(playerID)) && !(newPlayer(player, raceID, "outsider", 0))) {
             return false;
         }
 
@@ -90,7 +100,6 @@ public class PlayerManager {
     }
 
     /**
-     *
      * @param playerID The UUID of the player to get the race from.
      * @return Return the player race.
      */

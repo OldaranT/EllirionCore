@@ -5,6 +5,8 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Property;
+import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.races.model.Race;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,8 +26,8 @@ public class PlayerModel {
     @Property(value = "Money")
     private int cash;
 
-    @Property(value = "Race")
-    private String race;
+    @Property(value = "RaceID")
+    private UUID raceID;
 
     @Property(value = "Rank")
     private String rank;
@@ -39,17 +41,38 @@ public class PlayerModel {
     /**
      * @param player The player who owns this data.
      * @param cash the amount of cash the player has.
-     * @param race the player race.
+     * @param raceID the player race.
      * @param rank the player rank
      */
-    public PlayerModel(final Player player, final int cash, final String race,
+    public PlayerModel(final Player player, final int cash, final UUID raceID,
                        final String rank) {
         playerID = player.getUniqueId();
         username = player.getName();
         ip = player.getAddress().getHostName();
         this.cash = cash;
-        this.race = race;
+        this.raceID = raceID;
         this.rank = rank;
+        ipHistory.add(ip);
+        nameHistory.add(username);
+    }
+
+    /**
+     * This is an alternate constructor which uses the player data and the player.
+     * @param data The player data that the game uses.
+     * @param player The player that is going to be saved.
+     */
+    public PlayerModel(final PlayerData data, final Player player) {
+        playerID = player.getUniqueId();
+        username = player.getName();
+        ip = player.getAddress().getHostName();
+        cash = data.getCash();
+        Race race = data.getRace();
+        if (race == null) {
+            raceID = null;
+        } else {
+            raceID = race.getRaceUUID();
+        }
+        rank = data.getRank();
         ipHistory.add(ip);
         nameHistory.add(username);
     }
@@ -86,12 +109,12 @@ public class PlayerModel {
         this.cash = cash;
     }
 
-    public String getRace() {
-        return race;
+    public UUID getRaceID() {
+        return raceID;
     }
 
-    public void setRace(String race) {
-        this.race = race;
+    public void setRaceID(UUID raceID) {
+        this.raceID = raceID;
     }
 
     public String getRank() {
