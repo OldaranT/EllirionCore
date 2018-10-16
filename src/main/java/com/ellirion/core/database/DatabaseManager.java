@@ -52,6 +52,21 @@ public class DatabaseManager {
         connectionConfig = configuration;
         applyConfig();
         // try to reach the remote database.
+        connectToServer();
+        // create your mongo client.
+        mc = new MongoClient(localHost, localPort);
+
+        morphia = new Morphia();
+
+        mapDataClasses();
+
+        datastore = morphia.createDatastore(mc, "EllirionCore");
+        datastore.ensureIndexes();
+
+        createDatabaseAccessObjects();
+    }
+
+    private void connectToServer() {
         try {
             // tell JSch to use your private key with pass phrase as login method.
             jsch.addIdentity(privateKeyPath, passPhrase);
@@ -64,19 +79,8 @@ public class DatabaseManager {
             session.connect();
             // tell the session to forward any request to our local port to the remote db server.
             session.setPortForwardingL(localPort, remoteHost, remotePort);
-            // create your mongo client.
-            mc = new MongoClient(localHost, localPort);
-
-            morphia = new Morphia();
-
-            mapDataClasses();
-
-            datastore = morphia.createDatastore(mc, "EllirionCore");
-            datastore.ensureIndexes();
-
-            createDatabaseAccessObjects();
         } catch (JSchException e) {
-            printStackTrace(e);
+            e.printStackTrace();
         }
     }
 
@@ -151,7 +155,7 @@ public class DatabaseManager {
     /**
      * This function should be called in the onDisable function to close the connection.
      */
-    public void closeSession() {
+    public void disconnectFromServer() {
         try {
             session.delPortForwardingL(localPort);
             session.disconnect();

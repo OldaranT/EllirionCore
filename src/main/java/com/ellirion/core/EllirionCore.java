@@ -42,7 +42,7 @@ public class EllirionCore extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        dbManager.closeSession();
+        dbManager.disconnectFromServer();
         getLogger().info("Introduction is disabled.");
     }
 
