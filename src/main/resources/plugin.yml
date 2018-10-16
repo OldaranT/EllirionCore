@@ -20,10 +20,6 @@ commands:
       description: Get plot from location
       usage: /gp
       aliases: [gp]
-  SetOwner:
-      description: Set the owner of the plot
-      usage: /so
-      aliases: [so]
   TeleportToPlot:
       description: Teleport player to selected plot.
       usage: /ttp <X> <Y>
@@ -32,3 +28,7 @@ commands:
       description: Claim a plot for your race
       usage: /cp <X> <Y> or /cp (Takes plot of player location)
       aliases: [cp]
+  RemoveRace:
+      Description: Removes the specified race.
+      usage: /rr <raceName>
+      aliases: [rr]

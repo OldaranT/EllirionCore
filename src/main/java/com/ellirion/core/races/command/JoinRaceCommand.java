@@ -22,7 +22,7 @@ public class JoinRaceCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         Location loc = player.getLocation();
-        if (!PlayerManager.setPlayerRace(player,
+        if (!PlayerManager.setPlayerRace(player.getUniqueId(),
                                          PlotManager.getPlotFromLocation(loc).getOwner().getRaceUUID())) {
             sendmsg("something went wrong please try again with different arguments");
             return false;

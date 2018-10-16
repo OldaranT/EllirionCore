@@ -22,14 +22,15 @@ public class TeleportToPlotCommand implements CommandExecutor {
         Player player = (Player) commandSender;
 
         // Check if a name was entered
-        if (args.length < 2 || args.length > 2) {
+        int xCord, zCord;
+        try {
+            xCord = Integer.parseInt(args[0]);
+            zCord = Integer.parseInt(args[1]);
+        } catch (Exception e) {
             player.sendMessage(ChatColor.DARK_RED +
                                "Please give the coordinates of the plot: <X> <Z>");
             return true;
         }
-
-        int xCord = Integer.parseInt(args[0]);
-        int zCord = Integer.parseInt(args[1]);
 
         PlotCoord plotCoord = new PlotCoord(xCord, zCord);
 
