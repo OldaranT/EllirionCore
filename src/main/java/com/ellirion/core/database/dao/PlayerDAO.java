@@ -23,7 +23,7 @@ public class PlayerDAO extends BasicDAO<PlayerModel, Datastore> {
     }
 
     /**
-     * Creates a new player for the Database.
+     * Creates a new player and saves this to the database.
      * @param data The Player data
      * @param player The player
      * @return Return true if successfully saved the player.
