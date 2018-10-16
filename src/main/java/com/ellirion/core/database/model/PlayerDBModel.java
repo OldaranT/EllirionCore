@@ -1,5 +1,7 @@
 package com.ellirion.core.database.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -13,24 +15,24 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity(value = "Player", noClassnameStored = true)
-public class PlayerModel {
+public class PlayerDBModel {
 
     @Id
     @Indexed
-    private UUID playerID;
+    @Getter private UUID playerID;
 
-    private String username;
+    @Getter private String username;
 
-    private String ip;
+    @Getter private String ip;
 
     @Property(value = "money")
-    private int cash;
+    @Getter @Setter private int cash;
 
     @Property(value = "raceID")
-    private UUID raceID;
+    @Getter @Setter private UUID raceID;
 
     @Property(value = "rank")
-    private String rank;
+    @Getter @Setter private String rank;
 
     @Property("ip_history")
     private Set<String> ipHistory = new HashSet<>();
@@ -44,8 +46,8 @@ public class PlayerModel {
      * @param raceID the player race.
      * @param rank the player rank
      */
-    public PlayerModel(final Player player, final int cash, final UUID raceID,
-                       final String rank) {
+    public PlayerDBModel(final Player player, final int cash, final UUID raceID,
+                         final String rank) {
         playerID = player.getUniqueId();
         username = player.getName();
         ip = player.getAddress().getHostName();
@@ -61,7 +63,7 @@ public class PlayerModel {
      * @param data The player data that the game uses.
      * @param player The player that is going to be saved.
      */
-    public PlayerModel(final PlayerData data, final Player player) {
+    public PlayerDBModel(final PlayerData data, final Player player) {
         playerID = player.getUniqueId();
         username = player.getName();
         ip = player.getAddress().getHostName();
@@ -77,10 +79,6 @@ public class PlayerModel {
         nameHistory.add(username);
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     /**
      * @param username the current username
      */
@@ -89,44 +87,12 @@ public class PlayerModel {
         this.username = username;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
     /**
      * @param ip the current ip
      */
     public void setIp(String ip) {
         ipHistory.add(ip);
         this.ip = ip;
-    }
-
-    public int getCash() {
-        return cash;
-    }
-
-    public void setCash(int cash) {
-        this.cash = cash;
-    }
-
-    public UUID getRaceID() {
-        return raceID;
-    }
-
-    public void setRaceID(UUID raceID) {
-        this.raceID = raceID;
-    }
-
-    public String getRank() {
-        return rank;
-    }
-
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
-
-    public UUID getPlayerID() {
-        return playerID;
     }
 
     public Set<String> getIpHistory() {

@@ -3,7 +3,7 @@ package com.ellirion.core.playerdata;
 import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.database.dao.PlayerDAO;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.races.RaceManager;
 import com.ellirion.core.races.model.Race;
@@ -14,7 +14,7 @@ import java.util.UUID;
 public class PlayerManager {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
-    private static PlayerDAO PLAYERDB = EllirionCore.getINSTANCE().getDbManager().getPlayerDAO();
+    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
      * @param player The player UUID.
@@ -62,7 +62,7 @@ public class PlayerManager {
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
-        return PLAYERDB.createPlayer(data, player);
+        return DATABASE_MANAGER.createPlayer(data, player);
     }
 
     /**

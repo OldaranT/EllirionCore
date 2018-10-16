@@ -6,16 +6,16 @@ import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
-import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.dao.PlayerDAO;
-import com.ellirion.core.database.model.PlayerModel;
-import com.ellirion.core.database.model.RaceModel;
+import com.ellirion.core.database.model.PlayerDBModel;
+import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.utils.LoggingUtil;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,7 +81,7 @@ public class DatabaseManager {
             // tell the session to forward any request to our local port to the remote db server.
             session.setPortForwardingL(localPort, remoteHost, remotePort);
         } catch (JSchException e) {
-            printStackTrace(e);
+            LoggingUtil.printStackTrace(e);
         }
     }
 
@@ -102,20 +102,20 @@ public class DatabaseManager {
     }
 
     private void mapDataClasses() {
-        morphia.map(PlayerModel.class);
-        morphia.map(RaceModel.class);
+        morphia.map(PlayerDBModel.class);
+        morphia.map(RaceDBModel.class);
     }
 
     private void createDatabaseAccessObjects() {
-        playerDAO = new PlayerDAO(PlayerModel.class, datastore);
-        raceDAO = new BasicDAO(RaceModel.class, datastore);
+        playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
+        raceDAO = new BasicDAO(RaceDBModel.class, datastore);
     }
 
     /**
      * Get all players from the database.
      * @return return all the users.
      */
-    public List<PlayerModel> getAllPlayers() {
+    public List<PlayerDBModel> getAllPlayers() {
         return playerDAO.find().asList();
     }
 
@@ -124,11 +124,11 @@ public class DatabaseManager {
      * @param uuid the id of the player
      * @return the player model
      */
-    public PlayerModel getOnePlayer(UUID uuid) {
-        return (PlayerModel) playerDAO.findOne("_id", uuid);
+    public PlayerDBModel getOnePlayer(UUID uuid) {
+        return (PlayerDBModel) playerDAO.findOne("_id", uuid);
     }
 
-    public List<RaceModel> getAllRaces() {
+    public List<RaceDBModel> getAllRaces() {
         return raceDAO.find().asList();
     }
 
@@ -137,8 +137,8 @@ public class DatabaseManager {
      * @param raceName The name of the race to fetch.
      * @return return the found raceModel.
      */
-    public RaceModel getSpecificRace(String raceName) {
-        return (RaceModel) raceDAO.findOne("_id", raceName);
+    public RaceDBModel getSpecificRace(String raceName) {
+        return (RaceDBModel) raceDAO.findOne("_id", raceName);
     }
 
     /**
@@ -149,13 +149,17 @@ public class DatabaseManager {
             session.delPortForwardingL(localPort);
             session.disconnect();
         } catch (JSchException e) {
-            printStackTrace(e);
+            LoggingUtil.printStackTrace(e);
         }
     }
 
-    private void printStackTrace(Exception e) {
-        StringWriter errors = new StringWriter();
-        e.printStackTrace(new PrintWriter(errors));
-        EllirionCore.getINSTANCE().getLogger().severe(errors.toString());
+    /**
+     * This function directs the create request to the playerDAO.
+     * @param player The player that owns the Data.
+     * @param playerData The Data of the player.
+     * @return Return if the creation was successful.
+     */
+    public boolean createPlayer(PlayerData playerData, Player player) {
+        return playerDAO.createPlayer(playerData, player);
     }
 }
