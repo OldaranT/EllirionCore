@@ -33,14 +33,14 @@ public class CreateRaceCommand implements CommandExecutor {
             return false;
         }
         String raceName = StringUtil.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
-        if (RaceManager.raceNameExists(raceName)) {
+        if (RaceManager.raceExists(raceName)) {
             sendmsg("race already exists");
-            return false;
+            return true;
         }
         ChatColor color = ChatColor.valueOf(args[args.length - 1].toUpperCase());
         if (color == null || RaceManager.isColerInUse(color)) {
             sendmsg("you either miss spelled the color or the color is in use");
-            return false;
+            return true;
         }
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
@@ -50,8 +50,8 @@ public class CreateRaceCommand implements CommandExecutor {
         }
 
         if (!RaceManager.addRace(raceName, color, plot)) {
-            sendmsg("something went wrong please try with different values");
-            return false;
+            sendmsg("something went wrong!");
+            return true;
         }
         sendmsg(raceName + " created");
         return true;

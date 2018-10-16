@@ -18,10 +18,10 @@ public class DestroyRaceCommand implements CommandExecutor {
             return true;
         }
         String raceName = String.join(" ", args);
-        if (!RaceManager.raceNameExists(raceName)) {
+        if (!RaceManager.raceExists(raceName)) {
             sendmsg("Given race does not exist.");
         }
-        if (!RaceManager.deleteRaceByName(raceName)) {
+        if (!RaceManager.deleteRace(raceName)) {
             sendmsg("Could not delete the race.");
             return true;
         }
