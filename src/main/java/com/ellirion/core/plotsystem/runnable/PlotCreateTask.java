@@ -2,7 +2,7 @@ package com.ellirion.core.plotsystem.runnable;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import com.ellirion.core.plotsystem.util.PlotManager;
+import com.ellirion.core.plotsystem.PlotManager;
 
 public class PlotCreateTask extends BukkitRunnable {
 

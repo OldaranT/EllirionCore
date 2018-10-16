@@ -3,9 +3,9 @@ package com.ellirion.core.plotsystem.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.util.PlotManager;
 
 public class PlotListener implements Listener {
 
@@ -38,7 +38,8 @@ public class PlotListener implements Listener {
     public void onPlotChange(PlotChangeEvent event) {
         event.getPlayer().sendMessage(event.getPlayer().getDisplayName() + " moved from " +
                                       event.getPlotFrom().getName() + " to " +
-                                      event.getPlotTo().getName());
+                                      event.getPlotTo().getName() + "\nThis Plot is owned by " +
+                                      event.getPlotTo().getOwner().getName());
     }
 }
 

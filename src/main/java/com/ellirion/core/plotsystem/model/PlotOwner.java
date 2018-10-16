@@ -1,10 +1,14 @@
 package com.ellirion.core.plotsystem.model;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class PlotOwner {
 
+    @Getter private final UUID raceUUID = UUID.randomUUID();
     private List<Plot> plots = new ArrayList<>();
 
     /**

@@ -1,4 +1,6 @@
-package com.ellirion.core.plotsystem.model;
+package com.ellirion.core.plotsystem.model.plotowner;
+
+import com.ellirion.core.plotsystem.model.PlotOwner;
 
 public class Wilderness extends PlotOwner {
 
@@ -11,6 +13,7 @@ public class Wilderness extends PlotOwner {
         return INSTANCE;
     }
 
+    @Override
     public String getName() {
         return "Wilderness";
     }
