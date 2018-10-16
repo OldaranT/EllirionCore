@@ -26,7 +26,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
         try {
             xCord = Integer.parseInt(args[0]);
             zCord = Integer.parseInt(args[1]);
-        } catch(Exception e) {
+        } catch (Exception e) {
             player.sendMessage(ChatColor.DARK_RED +
                                "Please give the coordinates of the plot: <X> <Z>");
             return true;
