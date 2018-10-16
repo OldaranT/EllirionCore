@@ -80,7 +80,7 @@ public class DatabaseManager {
             // tell the session to forward any request to our local port to the remote db server.
             session.setPortForwardingL(localPort, remoteHost, remotePort);
         } catch (JSchException e) {
-            e.printStackTrace();
+            printStackTrace(e);
         }
     }
 
