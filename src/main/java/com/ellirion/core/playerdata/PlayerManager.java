@@ -30,8 +30,6 @@ public class PlayerManager {
         }
         UUID id = player.getUniqueId();
         PLAYERS.putIfAbsent(id, data);
-        // commented for when the db get's implemented.
-        //dbHandler.saveUser(d, p);
         savePlayer(player, data);
         return true;
     }

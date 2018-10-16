@@ -112,18 +112,6 @@ public class DatabaseManager {
     }
 
     /**
-     * save a player to the database.
-     * @param player the player.
-     * @param cash amount of cash.
-     * @param race the race.
-     * @param rank the rank.
-     */
-    //    public void savePlayer(Player player, int cash, String race, String rank) {
-    //        PlayerModel playerModel = new PlayerModel(player, cash, race, rank);
-    //        playerDAO.save(playerModel);
-    //    }
-
-    /**
      * Get all players from the database.
      * @return return all the users.
      */
