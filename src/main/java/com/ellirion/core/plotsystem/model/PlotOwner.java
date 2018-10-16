@@ -9,7 +9,7 @@ import java.util.UUID;
 public abstract class PlotOwner {
 
     @Getter private final UUID raceUUID = UUID.randomUUID();
-    private List<Plot> plots = new ArrayList<>();
+    @Getter private List<Plot> plots = new ArrayList<>();
 
     /**
      * Add a plot to a owner.

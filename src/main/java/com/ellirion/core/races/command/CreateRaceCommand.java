@@ -9,6 +9,9 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.races.RaceManager;
+import com.ellirion.core.utils.StringUtil;
+
+import java.util.Arrays;
 
 public class CreateRaceCommand implements CommandExecutor {
 
@@ -29,15 +32,15 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("you forgot either the color or the name");
             return false;
         }
-        if (RaceManager.raceNameExists(args[0])) {
+        String raceName = StringUtil.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
+        if (RaceManager.raceExists(raceName)) {
             sendmsg("race already exists");
-            return false;
+            return true;
         }
-        ChatColor color = ChatColor.valueOf(args[1].toUpperCase());
-
+        ChatColor color = ChatColor.valueOf(args[args.length - 1].toUpperCase());
         if (color == null || RaceManager.isColerInUse(color)) {
             sendmsg("you either miss spelled the color or the color is in use");
-            return false;
+            return true;
         }
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
@@ -46,11 +49,11 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (!RaceManager.addRace(args[0], color, plot)) {
-            sendmsg("something went wrong please try with different values");
-            return false;
+        if (!RaceManager.addRace(raceName, color, plot)) {
+            sendmsg("something went wrong!");
+            return true;
         }
-        sendmsg("race created");
+        sendmsg(raceName + " created");
         return true;
     }
 

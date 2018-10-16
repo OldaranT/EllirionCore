@@ -1,6 +1,5 @@
 package com.ellirion.core.playerdata;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.dao.PlayerDAO;
@@ -14,7 +13,8 @@ import java.util.UUID;
 public class PlayerManager {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
-    private static PlayerDAO PLAYERDB = EllirionCore.getINSTANCE().getDbManager().getPlayerDAO();
+    private static EllirionCore INSTANCE = EllirionCore.getINSTANCE();
+    private static PlayerDAO PLAYERDB = INSTANCE.getDbManager().getPlayerDAO();
 
     /**
      * @param player The player UUID.
@@ -51,14 +51,11 @@ public class PlayerManager {
 
     /**
      * @param playerID The player UUID.
-     * @return return true if the update was a success.
      */
-    public static boolean updatePlayer(UUID playerID) {
+    public static void updatePlayer(UUID playerID) {
         // commented until there is a database.
         // PlayerData d = PLAYERS.get(p.getUniqueId());
         // dbHandler.saveUser(d, p);
-        // return true;
-        throw new NotImplementedException();
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
@@ -66,12 +63,12 @@ public class PlayerManager {
     }
 
     /**
-     * @param player The player that is changing race.
+     * @param playerID The UUID from the player that is changing race.
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
-    public static boolean setPlayerRace(Player player, UUID raceID) {
-        UUID playerID = player.getUniqueId();
+    public static boolean setPlayerRace(UUID playerID, UUID raceID) {
+        Player player = getPlayerByUUIDFromServer(playerID);
         if (!(playerexists(playerID)) && !(newPlayer(player, raceID, "outsider", 0))) {
             return false;
         }
@@ -141,5 +138,14 @@ public class PlayerManager {
         UUID raceID2 = PLAYERS.get(player2).getRace().getRaceUUID();
 
         return raceID1.equals(raceID2);
+    }
+
+    /**
+     * This function gets the specified player from the server.
+     * @param playerID The UUID of the player.
+     * @return Return the found player.
+     */
+    private static Player getPlayerByUUIDFromServer(UUID playerID) {
+        return INSTANCE.getServer().getPlayer(playerID);
     }
 }
