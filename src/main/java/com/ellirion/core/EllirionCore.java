@@ -7,7 +7,6 @@ import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
-import com.ellirion.core.plotsystem.command.SetPlotOwnerCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.races.command.CreateRaceCommand;
@@ -48,7 +47,6 @@ public class EllirionCore extends JavaPlugin {
         getCommand("joinRace").setExecutor(new JoinRaceCommand());
         getCommand("CreatePlots").setExecutor(new CreatePlotCommand());
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
-        getCommand("SetOwner").setExecutor(new SetPlotOwnerCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
     }
