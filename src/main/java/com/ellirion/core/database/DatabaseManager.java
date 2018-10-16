@@ -26,17 +26,17 @@ public class DatabaseManager {
     private JSch jsch = new JSch();
 
     // ssh connection
-    private String username;// = "root";
-    private String host;// = "206.189.4.235";
-    private int port;// = 22;
-    private String privateKeyPath;// = getPathToKey();
+    private String username;
+    private String host;
+    private int port;
+    private String privateKeyPath;
     private String passPhrase;
 
     // forwarding ports
-    private int localPort;// = 27017;
-    private int remotePort;// = 27017;
-    private String localHost;// = "localhost";
-    private String remoteHost;// = "localhost";
+    private int localPort;
+    private int remotePort;
+    private String localHost;
+    private String remoteHost;
 
     private MongoClient mc;
     private Morphia morphia;
