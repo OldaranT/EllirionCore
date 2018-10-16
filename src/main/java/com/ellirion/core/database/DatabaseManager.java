@@ -4,12 +4,13 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
+import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.model.PlayerModel;
 import com.ellirion.core.database.model.RaceModel;
 
@@ -41,7 +42,7 @@ public class DatabaseManager {
     private MongoClient mc;
     private Morphia morphia;
     private Datastore datastore;
-    private BasicDAO playerDAO;
+    @Getter private PlayerDAO playerDAO;
     private BasicDAO raceDAO;
 
     /**
@@ -106,20 +107,8 @@ public class DatabaseManager {
     }
 
     private void createDatabaseAccessObjects() {
-        playerDAO = new BasicDAO(PlayerModel.class, datastore);
+        playerDAO = new PlayerDAO(PlayerModel.class, datastore);
         raceDAO = new BasicDAO(RaceModel.class, datastore);
-    }
-
-    /**
-     * save a player to the database.
-     * @param player the player.
-     * @param cash amount of cash.
-     * @param race the race.
-     * @param rank the rank.
-     */
-    public void savePlayer(Player player, int cash, String race, String rank) {
-        PlayerModel playerModel = new PlayerModel(player, cash, race, rank);
-        playerDAO.save(playerModel);
     }
 
     /**
