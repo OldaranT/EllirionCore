@@ -20,10 +20,6 @@ commands:
       description: Get plot from location
       usage: /gp
       aliases: [gp]
-  SetOwner:
-      description: Set the owner of the plot
-      usage: /so
-      aliases: [so]
   TeleportToPlot:
       description: Teleport player to selected plot.
       usage: /ttp <X> <Y>
