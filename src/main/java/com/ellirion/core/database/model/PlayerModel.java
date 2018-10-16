@@ -23,13 +23,13 @@ public class PlayerModel {
 
     private String ip;
 
-    @Property(value = "Money")
+    @Property(value = "money")
     private int cash;
 
-    @Property(value = "RaceID")
+    @Property(value = "raceID")
     private UUID raceID;
 
-    @Property(value = "Rank")
+    @Property(value = "rank")
     private String rank;
 
     @Property("ip_history")
