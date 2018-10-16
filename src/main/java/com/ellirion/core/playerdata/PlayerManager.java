@@ -1,5 +1,6 @@
 package com.ellirion.core.playerdata;
 
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
@@ -13,14 +14,16 @@ import java.util.UUID;
 public class PlayerManager {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
-    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
+    private static EllirionCore INSTANCE = EllirionCore.getINSTANCE();
+    private static Server SERVER = INSTANCE.getServer();
+    private static DatabaseManager DATABASE_MANAGER = INSTANCE.getDbManager();
 
     /**
      * @param player The player UUID.
      * @param raceID The UUID of the race.
      * @param rank The player rank.
      * @param cash The player cash.
-     * @return return a boolean that indicates if creating the new player was a success.
+     * @return Return a boolean that indicates if creating the new player was a success.
      */
     public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
         PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID), rank, cash);
@@ -50,11 +53,12 @@ public class PlayerManager {
 
     /**
      * @param playerID The player UUID.
+     * @return Return the result of the operation.
      */
-    public static void updatePlayer(UUID playerID) {
-        // commented until there is a database.
-        // PlayerData d = PLAYERS.get(p.getUniqueId());
-        // dbHandler.saveUser(d, p);
+    public static boolean updatePlayer(UUID playerID) {
+        PlayerData data = PLAYERS.get(playerID);
+        Player player = getPlayerByUUIDFromServer(playerID);
+        return DATABASE_MANAGER.updatePlayer(data, player);
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
@@ -145,6 +149,6 @@ public class PlayerManager {
      * @return Return the found player.
      */
     private static Player getPlayerByUUIDFromServer(UUID playerID) {
-        return INSTANCE.getServer().getPlayer(playerID);
+        return SERVER.getPlayer(playerID);
     }
 }
