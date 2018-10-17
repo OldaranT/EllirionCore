@@ -3,12 +3,15 @@ package com.ellirion.core.plotsystem.model;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Transient;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 
 import java.util.UUID;
 
+@Embedded
 public class Plot {
 
     //@Getter private UUID id;
@@ -17,8 +20,11 @@ public class Plot {
     @Getter private int plotSize;
     @Getter private Point lowestCorner;
     @Getter private Point highestCorner;
+    @Transient
     @Getter private World world;
+    @Transient
     @Getter private UUID worldUUID;
+    @Transient
     @Getter private PlotOwner owner;
 
     /**

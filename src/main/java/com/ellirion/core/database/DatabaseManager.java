@@ -13,6 +13,7 @@ import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.races.model.Race;
 import com.ellirion.core.utils.LoggingUtil;
 
 import java.util.List;
@@ -113,6 +114,27 @@ public class DatabaseManager {
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
     }
 
+    /**
+     * This function should be called in the onDisable function to close the connection.
+     */
+    public void disconnectFromServer() {
+        try {
+            session.delPortForwardingL(localPort);
+            session.disconnect();
+        } catch (JSchException e) {
+            LoggingUtil.printStackTrace(e);
+        }
+    }
+
+    /**
+     * This saves a new race to the Database.
+     * @param race The race to be stored in the database.
+     * @return Return the outcome of the operation.
+     */
+    public boolean createRace(Race race) {
+        return raceDAO.createRace(race);
+    }
+
     public List<RaceDBModel> getAllRaces() {
         return raceDAO.getAllRaces();
     }
@@ -124,18 +146,6 @@ public class DatabaseManager {
      */
     public RaceDBModel getSpecificRace(UUID raceID) {
         return raceDAO.getSpecificRace(raceID);
-    }
-
-    /**
-     * This function should be called in the onDisable function to close the connection.
-     */
-    public void disconnectFromServer() {
-        try {
-            session.delPortForwardingL(localPort);
-            session.disconnect();
-        } catch (JSchException e) {
-            LoggingUtil.printStackTrace(e);
-        }
     }
 
     /**

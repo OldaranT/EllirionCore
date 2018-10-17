@@ -11,7 +11,7 @@ import java.util.UUID;
 public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
     /**
-     * Create a new BasicDAO
+     * Create a new BasicDAO.
      * @param entityClass the class of the POJO you want to persist using this DAO
      * @param ds the Datastore which gives access to the MongoDB instance for this DAO
      */

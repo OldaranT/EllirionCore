@@ -2,10 +2,12 @@ package com.ellirion.core.database.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Property;
+import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.races.model.Race;
 
 import java.util.HashSet;
@@ -27,17 +29,23 @@ public class RaceDBModel {
     @Property(value = "color")
     @Getter @Setter private String color;
 
+    @Embedded
+    @Getter @Setter private Plot homePlot;
+
     /**
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
      * @param players The players in the team.
      * @param color The color of the team.
+     * @param homePlot The homeplot of the race.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color) {
+    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color,
+                       final Plot homePlot) {
         this.raceID = raceID;
         this.raceName = raceName;
         this.players = players;
         this.color = color;
+        this.homePlot = homePlot;
     }
 
     /**
@@ -49,15 +57,17 @@ public class RaceDBModel {
         raceName = race.getName();
         players = race.getPlayers();
         color = race.getTeamColor().toString();
+        homePlot = race.getHomePlot();
     }
 
     /**
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
      * @param color The color of the team.
+     * @param homePlot The homeplot of the race.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final String color) {
-        this(raceID, raceName, new HashSet<>(), color);
+    public RaceDBModel(final UUID raceID, final String raceName, final String color, final Plot homePlot) {
+        this(raceID, raceName, new HashSet<>(), color, homePlot);
     }
 
     /**

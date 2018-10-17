@@ -2,6 +2,8 @@ package com.ellirion.core.races;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
@@ -21,6 +23,7 @@ public class RaceManager {
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
     private static Race DEFAULT_RACE;
     private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
+    private static DatabaseManager DATABASE_MANAGAER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
      * @param defaultRaceName The name of the default race.
@@ -64,7 +67,11 @@ public class RaceManager {
         USED_COLORS.add(color);
         homePlot.setOwner(race);
         RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
-        return true;
+        return createRaceInDB(race);
+    }
+
+    private static boolean createRaceInDB(Race race) {
+        return DATABASE_MANAGAER.createRace(race);
     }
 
     /**
