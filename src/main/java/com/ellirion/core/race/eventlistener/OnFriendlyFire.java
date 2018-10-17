@@ -1,4 +1,4 @@
-package com.ellirion.core.races.eventlistener;
+package com.ellirion.core.race.eventlistener;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package com.ellirion.core.races.command;
+package com.ellirion.core.race.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
-import com.ellirion.core.races.RaceManager;
-import com.ellirion.core.utils.StringUtil;
+import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.util.StringHelper;
 
 import java.util.Arrays;
 
@@ -32,7 +32,7 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("you forgot either the color or the name");
             return false;
         }
-        String raceName = StringUtil.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
+        String raceName = StringHelper.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
         if (RaceManager.raceExists(raceName)) {
             sendmsg("race already exists");
             return true;
@@ -45,7 +45,7 @@ public class CreateRaceCommand implements CommandExecutor {
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
         if (!(plot.getOwner() instanceof Wilderness)) {
-            sendmsg(ChatColor.RED + "you can only create races on unowned plots!");
+            sendmsg(ChatColor.RED + "you can only create race on unowned plots!");
             return true;
         }
 
