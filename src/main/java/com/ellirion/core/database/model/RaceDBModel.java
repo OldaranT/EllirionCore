@@ -67,4 +67,16 @@ public class RaceDBModel {
     public boolean removePlayer(UUID playerID) {
         return players.remove(playerID);
     }
+
+    /**
+     * This updates the database race with the data from the game race.
+     * @param race The race that should be copied to the DB.
+     * @return Return true to signal that the operation succeeded.
+     */
+    public boolean update(Race race) {
+        raceName = race.getName();
+        players = race.getPlayers();
+        color = race.getTeamColor().toString();
+        return true;
+    }
 }

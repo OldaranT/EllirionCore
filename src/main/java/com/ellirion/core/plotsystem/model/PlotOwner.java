@@ -8,8 +8,20 @@ import java.util.UUID;
 
 public abstract class PlotOwner {
 
-    @Getter private final UUID raceUUID = UUID.randomUUID();
+    @Getter private final UUID raceUUID;
     @Getter private List<Plot> plots = new ArrayList<>();
+
+    /**
+     * This constructor exists to facilitate getting races from the database and using the saved UUID's.
+     * @param raceUUID The UUID of a race saved in the DB.
+     */
+    public PlotOwner(final UUID raceUUID) {
+        if (raceUUID == null) {
+            this.raceUUID = UUID.randomUUID();
+        } else {
+            this.raceUUID = raceUUID;
+        }
+    }
 
     /**
      * Add a plot to a owner.

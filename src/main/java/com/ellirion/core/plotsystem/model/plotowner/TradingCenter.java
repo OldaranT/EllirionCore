@@ -7,6 +7,7 @@ public class TradingCenter extends PlotOwner {
     private static TradingCenter INSTANCE = new TradingCenter();
 
     private TradingCenter() {
+        super(null);
     }
 
     public static TradingCenter getInstance() {

@@ -4,13 +4,12 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
-import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.dao.BasicDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
+import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
@@ -26,24 +25,27 @@ public class DatabaseManager {
     private Session session = null;
     private JSch jsch = new JSch();
 
-    // ssh connection
+    // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
 
-    // forwarding ports
+    // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
 
+    // MongoDB interfacing.
     private MongoClient mc;
     private Morphia morphia;
     private Datastore datastore;
-    @Getter private PlayerDAO playerDAO;
-    private BasicDAO raceDAO;
+
+    // The DAO's
+    private PlayerDAO playerDAO;
+    private RaceDAO raceDAO;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -108,20 +110,20 @@ public class DatabaseManager {
 
     private void createDatabaseAccessObjects() {
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
-        raceDAO = new BasicDAO(RaceDBModel.class, datastore);
+        raceDAO = new RaceDAO(RaceDBModel.class, datastore);
     }
 
     public List<RaceDBModel> getAllRaces() {
-        return raceDAO.find().asList();
+        return raceDAO.getAllRaces();
     }
 
     /**
      * Get a specific race from the database.
-     * @param raceName The name of the race to fetch.
+     * @param raceID The UUID of the race to fetch.
      * @return return the found raceModel.
      */
-    public RaceDBModel getSpecificRace(String raceName) {
-        return (RaceDBModel) raceDAO.findOne("_id", raceName);
+    public RaceDBModel getSpecificRace(UUID raceID) {
+        return raceDAO.getSpecificRace(raceID);
     }
 
     /**

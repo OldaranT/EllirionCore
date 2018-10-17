@@ -7,6 +7,7 @@ public class Wilderness extends PlotOwner {
     private static Wilderness INSTANCE = new Wilderness();
 
     private Wilderness() {
+        super(null);
     }
 
     public static Wilderness getInstance() {
