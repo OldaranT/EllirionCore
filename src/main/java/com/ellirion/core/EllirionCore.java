@@ -13,10 +13,10 @@ import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
-import com.ellirion.core.races.command.CreateRaceCommand;
-import com.ellirion.core.races.command.DestroyRaceCommand;
-import com.ellirion.core.races.command.JoinRaceCommand;
-import com.ellirion.core.races.eventlistener.OnFriendlyFire;
+import com.ellirion.core.race.command.CreateRaceCommand;
+import com.ellirion.core.race.command.DestroyRaceCommand;
+import com.ellirion.core.race.command.JoinRaceCommand;
+import com.ellirion.core.race.eventlistener.OnFriendlyFire;
 
 import java.io.File;
 import java.io.IOException;

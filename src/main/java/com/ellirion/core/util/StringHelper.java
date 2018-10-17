@@ -1,6 +1,6 @@
-package com.ellirion.core.utils;
+package com.ellirion.core.util;
 
-public class StringUtil {
+public class StringHelper {
 
     /**
      * @param string The string to clean.

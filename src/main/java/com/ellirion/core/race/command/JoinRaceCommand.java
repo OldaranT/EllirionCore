@@ -1,4 +1,4 @@
-package com.ellirion.core.races.command;
+package com.ellirion.core.race.command;
 
 import org.bukkit.Location;
 import org.bukkit.command.Command;

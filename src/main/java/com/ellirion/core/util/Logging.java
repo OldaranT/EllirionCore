@@ -1,4 +1,4 @@
-package com.ellirion.core.utils;
+package com.ellirion.core.util;
 
 import com.ellirion.core.EllirionCore;
 
@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Logger;
 
-public class LoggingUtil {
+public class Logging {
 
     private static Logger LOGGER = EllirionCore.getINSTANCE().getLogger();
 
