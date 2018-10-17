@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.playerdata.model.PlayerData;
-import com.ellirion.core.races.RaceManager;
-import com.ellirion.core.races.model.Race;
+import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.model.Race;
 
 import java.util.HashMap;
 import java.util.UUID;

@@ -2,7 +2,7 @@ package com.ellirion.core.playerdata.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import com.ellirion.core.races.model.Race;
+import com.ellirion.core.race.model.Race;
 
 import java.util.UUID;
 
