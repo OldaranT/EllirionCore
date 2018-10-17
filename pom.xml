@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,12 +41,13 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <minimizeJar>false</minimizeJar>
+                            <finalName>${project.build.finalName}</finalName>
                             <artifactSet>
                                 <includes>
                                     <include>org.mongodb</include>
                                     <include>org.mongodb.morphia</include>
+                                    <include>com.jcraft</include>
                                 </includes>
                             </artifactSet>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
@@ -137,6 +138,24 @@
                         <version>${junit.platform.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                      todir="${env.SPIGOT_PATH}/plugins"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -229,6 +248,12 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-commons</artifactId>
             <version>RELEASE</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
         </dependency>
     </dependencies>
 </project>
