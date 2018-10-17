@@ -1,6 +1,8 @@
 package com.ellirion.core.playerdata;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.entity.Player;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.races.RaceManager;
 import com.ellirion.core.races.model.Race;
@@ -11,23 +13,24 @@ import java.util.UUID;
 public class PlayerManager {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
+    private static EllirionCore INSTANCE = EllirionCore.getINSTANCE();
+    private static PlayerDAO PLAYERDB = INSTANCE.getDbManager().getPlayerDAO();
 
     /**
-     * @param playerID The player UUID.
+     * @param player The player UUID.
      * @param raceID The UUID of the race.
      * @param rank The player rank.
      * @param cash The player cash.
      * @return return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(UUID playerID, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(playerID, RaceManager.getRaceByID(raceID), rank, cash);
+    public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
+        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID), rank, cash);
         if (raceID != null) {
-            RaceManager.addPlayerToRace(playerID, raceID);
+            RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
         }
-        UUID id = playerID;
+        UUID id = player.getUniqueId();
         PLAYERS.putIfAbsent(id, data);
-        // commented for when the db get's implemented.
-        //dbHandler.saveUser(d, p);
+        savePlayer(player, data);
         return true;
     }
 
@@ -48,23 +51,25 @@ public class PlayerManager {
 
     /**
      * @param playerID The player UUID.
-     * @return return true if the update was a success.
      */
-    public static boolean updatePlayer(UUID playerID) {
+    public static void updatePlayer(UUID playerID) {
         // commented until there is a database.
         // PlayerData d = PLAYERS.get(p.getUniqueId());
         // dbHandler.saveUser(d, p);
-        // return true;
-        throw new NotImplementedException();
+    }
+
+    private static boolean savePlayer(Player player, PlayerData data) {
+        return PLAYERDB.createPlayer(data, player);
     }
 
     /**
-     * @param playerID The player UUID from the player that is changing race.
+     * @param playerID The UUID from the player that is changing race.
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
     public static boolean setPlayerRace(UUID playerID, UUID raceID) {
-        if (!(playerexists(playerID)) && !(newPlayer(playerID, raceID, "outsider", 0))) {
+        Player player = getPlayerByUUIDFromServer(playerID);
+        if (!(playerexists(playerID)) && !(newPlayer(player, raceID, "outsider", 0))) {
             return false;
         }
 
@@ -90,7 +95,6 @@ public class PlayerManager {
     }
 
     /**
-     *
      * @param playerID The UUID of the player to get the race from.
      * @return Return the player race.
      */
@@ -134,5 +138,14 @@ public class PlayerManager {
         UUID raceID2 = PLAYERS.get(player2).getRace().getRaceUUID();
 
         return raceID1.equals(raceID2);
+    }
+
+    /**
+     * This function gets the specified player from the server.
+     * @param playerID The UUID of the player.
+     * @return Return the found player.
+     */
+    private static Player getPlayerByUUIDFromServer(UUID playerID) {
+        return INSTANCE.getServer().getPlayer(playerID);
     }
 }

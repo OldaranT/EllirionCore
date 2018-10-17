@@ -1,10 +1,12 @@
 package com.ellirion.core.races;
 
-import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.races.model.Race;
+import com.ellirion.core.utils.StringUtil;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +20,6 @@ public class RaceManager {
     private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
     private static Race DEFAULT_RACE;
-    @Getter private static HashSet<String> RACENAMES = new HashSet<>();
     private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
 
     /**
@@ -29,11 +30,12 @@ public class RaceManager {
         if (defaultRaceExists()) {
             return false;
         }
+        defaultRaceName = normalCasing(defaultRaceName);
         Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY, null);
         RACES.put(race.getRaceUUID(), race);
         DEFAULT_RACE = race;
         USED_COLORS.add(ChatColor.DARK_GRAY);
-        RACENAMES.add(defaultRaceName);
+        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return true;
     }
 
@@ -51,14 +53,17 @@ public class RaceManager {
      * @return Return true if successfully added the race.
      */
     public static boolean addRace(String name, ChatColor color, Plot homePlot) {
-        if (USED_COLORS.contains(color) || raceNameExists(name)) {
+        if (USED_COLORS.contains(color) || raceExists(name)) {
             return false;
         }
+
+        name = normalCasing(name);
+
         Race race = new Race(name, color, homePlot);
-        RACENAMES.add(name);
         RACES.putIfAbsent(race.getRaceUUID(), race);
         USED_COLORS.add(color);
         homePlot.setOwner(race);
+        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return true;
     }
 
@@ -66,15 +71,16 @@ public class RaceManager {
      * @param raceName The name of the race.
      * @return Return true if the race exists else false.
      */
-    public static boolean raceNameExists(String raceName) {
-        return RACENAMES.contains(raceName);
+    public static boolean raceExists(String raceName) {
+        raceName = normalCasing(raceName);
+        return RACE_ID_NAME.containsValue(raceName);
     }
 
     /**
      * @param raceID The ID of the race.
      * @return Return true if the race exists.
      */
-    public static boolean raceNameExists(UUID raceID) {
+    public static boolean raceExists(UUID raceID) {
         return RACES.containsKey(raceID);
     }
 
@@ -84,12 +90,13 @@ public class RaceManager {
      * @return Return true if successfully changed the name.
      */
     public static boolean changeRaceName(Race race, String newName) {
-        if (raceNameExists(newName)) {
+        newName = normalCasing(newName);
+        if (raceExists(newName)) {
             return false;
         }
-        RACENAMES.remove(race.getName());
+        UUID raceID = race.getRaceUUID();
+        RACE_ID_NAME.put(raceID, newName);
         race.setName(newName);
-        RACENAMES.add(newName);
         return true;
     }
 
@@ -99,7 +106,7 @@ public class RaceManager {
      * @return return true of successfully added player to race.
      */
     public static boolean addPlayerToRace(UUID player, UUID raceID) {
-        if (!raceNameExists(raceID)) {
+        if (!raceExists(raceID)) {
             return false;
         }
 
@@ -115,7 +122,7 @@ public class RaceManager {
      * @return Return true if successful.
      */
     public static boolean changePlayerRace(UUID playerID, UUID oldRace, UUID newRace) {
-        if (!raceNameExists(oldRace) || !raceNameExists(newRace) || !RACES.get(oldRace).hasPlayer(playerID)) {
+        if (!raceExists(oldRace) || !raceExists(newRace) || !RACES.get(oldRace).hasPlayer(playerID)) {
             return false;
         }
         RACES.get(oldRace).removePlayer(playerID);
@@ -184,5 +191,44 @@ public class RaceManager {
      */
     public static Race getRaceByID(UUID raceID) {
         return RACES.get(raceID);
+    }
+
+    private static String normalCasing(String string) {
+        return StringUtil.normalNameCasing(string);
+    }
+
+    /**
+     * This function deletes the specified race.
+     * @param raceName The name of the race to remove.
+     * @return Return true if successfully removed.
+     */
+    public static boolean deleteRace(String raceName) {
+        raceName = normalCasing(raceName);
+        UUID raceID = getUUIDbyName(raceName);
+        return deleteRace(raceID);
+    }
+
+    /**
+     * This function deletes the specified race.
+     * @param raceID The UUID of the race to delete.
+     * @return Return if the deletion was successful or not.
+     */
+    public static boolean deleteRace(UUID raceID) {
+        Race race = getRaceByID(raceID);
+        Set<UUID> players = race.getPlayers();
+
+        for (UUID id : players) {
+            PlayerManager.setPlayerRace(id, null);
+        }
+
+        USED_COLORS.remove(race.getTeamColor());
+        RACES.remove(raceID);
+
+        for (Plot plot : race.getPlots()) {
+            plot.setOwner(Wilderness.getInstance());
+        }
+
+        RACE_ID_NAME.remove(raceID);
+        return true;
     }
 }
