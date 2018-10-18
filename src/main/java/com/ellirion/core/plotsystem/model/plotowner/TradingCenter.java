@@ -7,6 +7,7 @@ public class TradingCenter extends PlotOwner {
     private static TradingCenter INSTANCE = new TradingCenter();
 
     private TradingCenter() {
+        // This calls the super with null to get a random UUID assigned.
         super(null);
     }
 

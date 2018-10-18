@@ -19,6 +19,7 @@ public class PlayerManager {
     private static DatabaseManager DATABASE_MANAGER = INSTANCE.getDbManager();
 
     /**
+     * This class manages the players and creates new players when needed.
      * @param player The player UUID.
      * @param raceID The UUID of the race.
      * @param rank The player rank.
@@ -37,6 +38,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method checks if the player exists or not.
      * @param playerID The player UUID.
      * @return Return a boolean whether the player exists.
      */
@@ -52,6 +54,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method updates the player in the database.
      * @param playerID The player UUID.
      * @return Return the result of the operation.
      */
@@ -66,6 +69,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method sets the player race.
      * @param playerID The UUID from the player that is changing race.
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
@@ -98,6 +102,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method gets the race of the specified player.
      * @param playerID The UUID of the player to get the race from.
      * @return Return the player race.
      */
@@ -110,6 +115,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method get's the rank of the player.
      * @param playerID The player UUID.
      * @return return the player rank.
      */
@@ -121,6 +127,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method get's the cash amount of the player.
      * @param playerID The player UUID.
      * @return return the player cash amount.
      */
@@ -132,6 +139,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method compares 2 player teams and returns true if they are the same.
      * @param player1 The first player to get the race from.
      * @param player2 The second player to get the race from.
      * @return Return true if the teams are the same.

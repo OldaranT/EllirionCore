@@ -28,6 +28,7 @@ public class PlayerDBModel {
     private Set<String> ipHistory = new HashSet<>();
 
     /**
+     * This class is the database object for the player data.
      * @param player The player who owns this data.
      * @param cash the amount of cash the player has.
      * @param raceID the player race.

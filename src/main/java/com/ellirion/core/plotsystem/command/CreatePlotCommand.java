@@ -36,8 +36,6 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
-        //        PlotManager plotManager = new PlotManager();
-
         if (!PlotManager.createPlots(player.getWorld(), plotSize, mapRadius, centerX, centerZ)) {
             player.sendMessage(ChatColor.DARK_RED + "Something went wrong with saving the plots.");
         }

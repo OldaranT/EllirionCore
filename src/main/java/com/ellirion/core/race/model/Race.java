@@ -13,18 +13,19 @@ import java.util.UUID;
 
 public class Race extends PlotOwner {
 
-    //    @Getter private final UUID raceUUID;
     @Getter @Setter private String name;
     @Getter private Set<UUID> players;
     @Getter @Setter private ChatColor teamColor;
     @Getter private Plot homePlot;
 
     /**
+     * This is the race that players can join.
      * @param name The name of the race.
      * @param teamColor The team color.
      * @param homePlot The homeplot of the race.
      */
     public Race(final String name, final ChatColor teamColor, final Plot homePlot) {
+        // This calls the super with null to get a random UUID assigned.
         super(null);
         this.name = name;
         this.homePlot = homePlot;
@@ -33,7 +34,7 @@ public class Race extends PlotOwner {
     }
 
     /**
-     * This is an unfinished constructor because i haven't saved the plots in the db yet.
+     * This is an unfinished constructor because i haven't saved the plots in the database yet.
      * @param raceDBModel The database stored race.
      */
     public Race(final RaceDBModel raceDBModel) {
@@ -41,7 +42,6 @@ public class Race extends PlotOwner {
         name = raceDBModel.getRaceName();
         players = raceDBModel.getPlayers();
         teamColor = ChatColor.valueOf(raceDBModel.getColor());
-        //        homePlot = raceDBModel.getHomePlot();
     }
 
     public String getNameWithColor() {

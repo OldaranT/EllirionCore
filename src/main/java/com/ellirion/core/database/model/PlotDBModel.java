@@ -23,7 +23,7 @@ public class PlotDBModel {
     @Getter private UUID plotOwnerID;
 
     /**
-     * The constructor.
+     * This class is the database object for the plots.
      * @param plotCoord The plotCoordinates according to the custom grid.
      * @param plotOwnerID The UUID of the plot owner.
      */
@@ -42,10 +42,10 @@ public class PlotDBModel {
     }
 
     /**
-     * Default constructor for morphia.
+     * Default constructor used by morphia.
      */
     public PlotDBModel() {
-        // default constructor for morphia.
+        // this is intentionally empty.
     }
 
     /**

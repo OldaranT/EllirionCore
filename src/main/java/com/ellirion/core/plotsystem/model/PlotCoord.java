@@ -22,10 +22,10 @@ public class PlotCoord {
     }
 
     /**
-     * Default constructor for morphia.
+     * Default constructor used by morphia.
      */
     public PlotCoord() {
-        // default constructor for morphia.
+        // empty on purpose.
     }
 
     /**

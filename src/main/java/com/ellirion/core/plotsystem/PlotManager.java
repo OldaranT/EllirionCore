@@ -98,8 +98,8 @@ public class PlotManager {
     }
 
     /**
-     * This updates the plot in the DB.
-     * @param plot The plot to update in the DB.
+     * This updates the plot in the database.
+     * @param plot The plot to update in the database.
      * @return Return the result of the operation.
      */
     public static boolean updatePlotInDB(Plot plot) {

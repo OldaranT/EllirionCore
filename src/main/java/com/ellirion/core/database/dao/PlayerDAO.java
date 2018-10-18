@@ -12,13 +12,16 @@ import java.util.UUID;
 
 public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
 
+    private String id = "_id";
+    private String raceIDColumn = "raceID";
+
     /**
-     * Create a new BasicDAO.
+     * Create a new PlayerDAO.
      * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param ds the Datastore which gives access to the MongoDB instance for this DAO
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
      */
-    public PlayerDAO(final Class<PlayerDBModel> entityClass, final Datastore ds) {
-        super(entityClass, ds);
+    public PlayerDAO(final Class<PlayerDBModel> entityClass, final Datastore datastore) {
+        super(entityClass, datastore);
     }
 
     private boolean savePlayer(PlayerDBModel player) {
@@ -43,7 +46,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @return Return the found player.
      */
     public PlayerDBModel getSpecificPlayer(UUID playerID) {
-        return findOne("_id", playerID);
+        return findOne(id, playerID);
     }
 
     public List<PlayerDBModel> getAllPlayers() {
@@ -56,7 +59,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @return Return the list of players in that race.
      */
     public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
-        Query query = createQuery().filter("raceID", raceID);
+        Query query = createQuery().filter(raceIDColumn, raceID);
         return find(query).asList();
     }
 
@@ -67,7 +70,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @return Return true if the save was successful.
      */
     public boolean updatePlayer(PlayerData data, Player player) {
-        PlayerDBModel playerDBModel = findOne("_id", player.getUniqueId());
+        PlayerDBModel playerDBModel = findOne(id, player.getUniqueId());
         playerDBModel.update(data, player);
         return savePlayer(playerDBModel);
     }

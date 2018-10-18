@@ -12,13 +12,16 @@ import java.util.UUID;
 
 public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
+    private String id = "_id";
+    private String plotOwnerIDColumn = "plotOwnerID";
+
     /**
-     * Create a new BasicDAO.
+     * Create a new PlotDAO.
      * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param ds the Datastore which gives access to the MongoDB instance for this DAO
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
      */
-    public PlotDAO(final Class<PlotDBModel> entityClass, final Datastore ds) {
-        super(entityClass, ds);
+    public PlotDAO(final Class<PlotDBModel> entityClass, final Datastore datastore) {
+        super(entityClass, datastore);
     }
 
     private boolean savePlot(PlotDBModel plot) {
@@ -51,7 +54,7 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
      * @return return the found plot.
      */
     public PlotDBModel getSpecificPlot(PlotCoord coord) {
-        return findOne("_id", coord);
+        return findOne(id, coord);
     }
 
     public List<PlotDBModel> getAllPlots() {
@@ -64,7 +67,7 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
      * @return Return the found plots as a list.
      */
     public List<PlotDBModel> getAllPlotsFromPlotOwner(UUID plotOwnerID) {
-        Query query = createQuery().filter("plotOwnerID", plotOwnerID);
+        Query query = createQuery().filter(plotOwnerIDColumn, plotOwnerID);
         return find(query).asList();
     }
 
@@ -74,7 +77,7 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean update(Plot plot) {
-        PlotDBModel dbModel = findOne("_id", plot.getPlotCoord());
+        PlotDBModel dbModel = findOne(id, plot.getPlotCoord());
         dbModel.update(plot);
         return savePlot(dbModel);
     }

@@ -6,7 +6,6 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Property;
-import org.mongodb.morphia.annotations.Reference;
 import com.ellirion.core.race.model.Race;
 
 import java.util.HashSet;
@@ -28,43 +27,39 @@ public class RaceDBModel {
     @Property(value = "color")
     @Getter @Setter private String color;
 
-    @Reference(lazy = true)
-    @Getter @Setter private PlotDBModel homePlot;
-
     /**
+     * This class is the database object for the race data.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
      * @param players The players in the team.
      * @param color The color of the team.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color/*,
-                       final PlotDBModel homePlot*/) {
+    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color) {
         this.raceID = raceID;
         this.raceName = raceName;
         this.players = players;
         this.color = color;
-        //        homePlot = homePlot;
     }
 
     /**
      * An overloaded version of the constructor that can use a race instead of multiple variables.
      * @param race The race that needs to be saved.
      */
-    public RaceDBModel(final Race race/*, final PlotDBModel homePlot*/) {
+    public RaceDBModel(final Race race) {
         raceID = race.getRaceUUID();
         raceName = race.getName();
         players = race.getPlayers();
         color = race.getTeamColor().toString();
-        //        this.homePlot = homePlot;
     }
 
     /**
+     * An overloaded constructor for when you don't have players.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
      * @param color The color of the team.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final String color/*, final PlotDBModel homePlot*/) {
-        this(raceID, raceName, new HashSet<>(), color/*, homePlot*/);
+    public RaceDBModel(final UUID raceID, final String raceName, final String color) {
+        this(raceID, raceName, new HashSet<>(), color);
     }
 
     /**
