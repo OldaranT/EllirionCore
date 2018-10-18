@@ -51,6 +51,7 @@ public class Plot {
     public void setOwner(PlotOwner owner) {
         this.owner = owner;
         owner.addPlot(this);
+        PlotManager.updatePlotInDB(this);
     }
 
     /**

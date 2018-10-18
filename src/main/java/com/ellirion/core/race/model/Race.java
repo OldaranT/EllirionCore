@@ -3,6 +3,7 @@ package com.ellirion.core.race.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
+import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
@@ -12,22 +13,35 @@ import java.util.UUID;
 
 public class Race extends PlotOwner {
 
-    //    @Getter private final UUID raceUUID;
     @Getter @Setter private String name;
     @Getter private Set<UUID> players;
     @Getter @Setter private ChatColor teamColor;
     @Getter private Plot homePlot;
 
     /**
+     * This is the race that players can join.
      * @param name The name of the race.
      * @param teamColor The team color.
      * @param homePlot The homeplot of the race.
      */
     public Race(final String name, final ChatColor teamColor, final Plot homePlot) {
+        // This calls the super with null to get a random UUID assigned.
+        super(null);
         this.name = name;
         this.homePlot = homePlot;
         this.teamColor = teamColor;
         players = new HashSet<>();
+    }
+
+    /**
+     * This is an unfinished constructor because i haven't saved the plots in the database yet.
+     * @param raceDBModel The database stored race.
+     */
+    public Race(final RaceDBModel raceDBModel) {
+        super(raceDBModel.getRaceID());
+        name = raceDBModel.getRaceName();
+        players = raceDBModel.getPlayers();
+        teamColor = ChatColor.valueOf(raceDBModel.getColor());
     }
 
     public String getNameWithColor() {
@@ -57,5 +71,4 @@ public class Race extends PlotOwner {
     public boolean removePlayer(UUID playerID) {
         return players.remove(playerID);
     }
-
 }

@@ -3,9 +3,13 @@ package com.ellirion.core.plotsystem;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
+import com.ellirion.core.util.Logging;
 
 import java.util.HashMap;
 
@@ -13,6 +17,8 @@ public class PlotManager {
 
     private static final HashMap<PlotCoord, Plot> SAVED_PLOTS = new HashMap<>();
     @Getter private static int PLOT_SIZE;
+
+    private static DatabaseManager DATABASE_MANAEGR = EllirionCore.getINSTANCE().getDbManager();
 
     public static HashMap<PlotCoord, Plot> getSavedPlots() {
         return SAVED_PLOTS;
@@ -53,7 +59,7 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public boolean createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
+    public static boolean createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
         int lowestBlock = 0;
         int highestBlock = 256;
 
@@ -79,14 +85,25 @@ public class PlotManager {
 
                         SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
                                                             world.getUID()));
+                        DATABASE_MANAEGR.createPlot(plotCoord, Wilderness.getInstance().getRaceUUID());
                     }
                 } catch (Exception e) {
+                    Logging.printStackTrace(e);
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    /**
+     * This updates the plot in the database.
+     * @param plot The plot to update in the database.
+     * @return Return the result of the operation.
+     */
+    public static boolean updatePlotInDB(Plot plot) {
+        return DATABASE_MANAEGR.updatePlot(plot);
     }
 }
 

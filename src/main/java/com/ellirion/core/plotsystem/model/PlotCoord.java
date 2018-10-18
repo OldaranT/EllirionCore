@@ -1,9 +1,11 @@
 package com.ellirion.core.plotsystem.model;
 
 import lombok.Getter;
+import org.mongodb.morphia.annotations.Embedded;
 
 import java.util.Objects;
 
+@Embedded
 public class PlotCoord {
 
     @Getter private int x;
@@ -17,6 +19,13 @@ public class PlotCoord {
     public PlotCoord(final int x, final int z) {
         this.x = x;
         this.z = z;
+    }
+
+    /**
+     * Default constructor used by morphia.
+     */
+    public PlotCoord() {
+        // empty on purpose.
     }
 
     /**

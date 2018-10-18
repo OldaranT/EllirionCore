@@ -97,6 +97,7 @@ public class EllirionCore extends JavaPlugin {
         dbConnectionConfig.addDefault(forwardingHeader + "remotePort", 27017);
         dbConnectionConfig.addDefault(forwardingHeader + "localHost", "localhost");
         dbConnectionConfig.addDefault(forwardingHeader + "remoteHost", "localhost");
+        dbConnectionConfig.addDefault(forwardingHeader + "DBName", "EllirionCore");
 
         dbConnectionConfig.options().copyDefaults(true);
         try {
