@@ -42,6 +42,7 @@ public class DatabaseManager {
     private int remotePort;
     private String localHost;
     private String remoteHost;
+    private String dbName;
 
     // MongoDB interfacing.
     private MongoClient mc;
@@ -69,7 +70,7 @@ public class DatabaseManager {
 
         mapDataClasses();
 
-        datastore = morphia.createDatastore(mc, "EllirionCore");
+        datastore = morphia.createDatastore(mc, dbName);
         datastore.ensureIndexes();
 
         createDatabaseAccessObjects();
@@ -107,6 +108,7 @@ public class DatabaseManager {
         remotePort = connectionConfig.getInt(forwardingHeader + "remotePort", 27017);
         localHost = connectionConfig.getString(forwardingHeader + "localHost", "localhost");
         remoteHost = connectionConfig.getString(forwardingHeader + "remoteHost", "localhost");
+        dbName = connectionConfig.getString(forwardingHeader + "DBName", "EllirionCore");
     }
 
     private void mapDataClasses() {
