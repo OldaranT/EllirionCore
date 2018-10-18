@@ -1,10 +1,10 @@
-package com.ellirion.core.races.command;
+package com.ellirion.core.race.command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import com.ellirion.core.races.RaceManager;
-import com.ellirion.core.utils.StringUtil;
+import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.util.StringHelper;
 
 public class DestroyRaceCommand implements CommandExecutor {
 
@@ -25,7 +25,7 @@ public class DestroyRaceCommand implements CommandExecutor {
             sendmsg("Could not delete the race.");
             return true;
         }
-        sendmsg(StringUtil.normalNameCasing(raceName) + " is no more!");
+        sendmsg(StringHelper.normalNameCasing(raceName) + " is no more!");
         return true;
     }
 

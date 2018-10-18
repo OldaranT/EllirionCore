@@ -11,7 +11,7 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
-import com.ellirion.core.races.model.Race;
+import com.ellirion.core.race.model.Race;
 
 public class ClaimPlotCommand implements CommandExecutor {
 

@@ -1,4 +1,4 @@
-package com.ellirion.core.races.model;
+package com.ellirion.core.race.model;
 
 import lombok.Getter;
 import lombok.Setter;
