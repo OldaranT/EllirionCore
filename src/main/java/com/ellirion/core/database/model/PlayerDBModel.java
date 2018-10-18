@@ -56,6 +56,13 @@ public class PlayerDBModel {
     }
 
     /**
+     * This constructor is used by morphia.
+     */
+    public PlayerDBModel() {
+        // empty on purpose.
+    }
+
+    /**
      * @param ip the current ip
      */
     public void setIp(String ip) {
