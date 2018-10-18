@@ -9,10 +9,14 @@ import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import com.ellirion.core.database.dao.PlayerDAO;
+import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
+import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.races.model.Race;
 import com.ellirion.core.utils.LoggingUtil;
 
@@ -47,6 +51,7 @@ public class DatabaseManager {
     // The DAO's
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
+    private PlotDAO plotDAO;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -107,11 +112,13 @@ public class DatabaseManager {
     private void mapDataClasses() {
         morphia.map(PlayerDBModel.class);
         morphia.map(RaceDBModel.class);
+        morphia.map(PlotDBModel.class);
     }
 
     private void createDatabaseAccessObjects() {
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
+        plotDAO = new PlotDAO(PlotDBModel.class, datastore);
     }
 
     /**
@@ -149,6 +156,15 @@ public class DatabaseManager {
     }
 
     /**
+     * This updates the race in the DB.
+     * @param race The race to be updated.
+     * @return Return the result of the operation.
+     */
+    public boolean updateRace(Race race) {
+        return raceDAO.updateRace(race);
+    }
+
+    /**
      * This function directs the create request to the playerDAO.
      * @param player The player that owns the Data.
      * @param playerData The Data of the player.
@@ -183,5 +199,55 @@ public class DatabaseManager {
      */
     public boolean updatePlayer(PlayerData data, Player player) {
         return playerDAO.updatePlayer(data, player);
+    }
+
+    /**
+     * This creates a plot in the DB.
+     * @param plot The plot to be saved in the database.
+     * @return Return the result of the operation.
+     */
+    public boolean createPlot(Plot plot) {
+        return plotDAO.createPlot(plot);
+    }
+
+    /**
+     * This creates a plot in the DB from raw data.
+     * @param plotCoord The plotCoord class corrisponding with the plot.
+     * @param plotOwnerID The UUID of the plotOwner.
+     * @return Return the result of the operation.
+     */
+    public boolean createPlot(PlotCoord plotCoord, UUID plotOwnerID) {
+        return plotDAO.createPlot(plotCoord, plotOwnerID);
+    }
+
+    public List<PlotDBModel> getAllPlots() {
+        return plotDAO.getAllPlots();
+    }
+
+    /**
+     * Get all the plots owned by the specified plot owner.
+     * @param plotOwnerID The UUID of the plot owner.
+     * @return Return the found plots.
+     */
+    public List<PlotDBModel> getPlotOwnerPlots(UUID plotOwnerID) {
+        return plotDAO.getAllPlotsFromPlotOwner(plotOwnerID);
+    }
+
+    /**
+     * Get the specified plot from the DB.
+     * @param plotCoord The plot coord corrisponding with the plot
+     * @return Return the found plot.
+     */
+    public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
+        return plotDAO.getSpecificPlot(plotCoord);
+    }
+
+    /**
+     * This updates the plot in the DB.
+     * @param plot The plot to update.
+     * @return Return the result of the operation.
+     */
+    public boolean updatePlot(Plot plot) {
+        return plotDAO.update(plot);
     }
 }

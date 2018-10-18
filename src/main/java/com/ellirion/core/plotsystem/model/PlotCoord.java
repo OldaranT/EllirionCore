@@ -22,6 +22,13 @@ public class PlotCoord {
     }
 
     /**
+     * Default constructor for morphia.
+     */
+    public PlotCoord() {
+        // default constructor for morphia.
+    }
+
+    /**
      * Translates a x and a z to the current coordinate.
      * @param x x to add to current coordinate.
      * @param z z to add to current coordinate.

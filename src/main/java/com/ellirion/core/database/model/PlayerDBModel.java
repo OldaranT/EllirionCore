@@ -1,7 +1,6 @@
 package com.ellirion.core.database.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -21,23 +20,12 @@ public class PlayerDBModel {
     @Indexed
     @Getter private UUID playerID;
 
-    @Getter private String username;
-
     @Getter private String ip;
-
-    @Property(value = "money")
-    @Getter @Setter private int cash;
 
     @Getter private UUID raceID;
 
-    @Property(value = "rank")
-    @Getter @Setter private String rank;
-
     @Property("ip_history")
     private Set<String> ipHistory = new HashSet<>();
-
-    @Property("name_history")
-    private Set<String> nameHistory = new HashSet<>();
 
     /**
      * @param player The player who owns this data.
@@ -48,13 +36,9 @@ public class PlayerDBModel {
     public PlayerDBModel(final Player player, final int cash, final UUID raceID,
                          final String rank) {
         playerID = player.getUniqueId();
-        username = player.getName();
         ip = player.getAddress().getHostName();
-        this.cash = cash;
         this.raceID = raceID;
-        this.rank = rank;
         ipHistory.add(ip);
-        nameHistory.add(username);
     }
 
     /**
@@ -64,22 +48,10 @@ public class PlayerDBModel {
      */
     public PlayerDBModel(final PlayerData data, final Player player) {
         playerID = player.getUniqueId();
-        username = player.getName();
         ip = player.getAddress().getHostName();
-        cash = data.getCash();
         Race race = data.getRace();
         setRaceID(race);
-        rank = data.getRank();
         ipHistory.add(ip);
-        nameHistory.add(username);
-    }
-
-    /**
-     * @param username the current username
-     */
-    public void setUsername(String username) {
-        nameHistory.add(username);
-        this.username = username;
     }
 
     /**
@@ -94,21 +66,14 @@ public class PlayerDBModel {
         return ipHistory;
     }
 
-    public Set<String> getNameHistory() {
-        return nameHistory;
-    }
-
     /**
      * This method updates the data in this database model.
      * @param data The playerData that is to be copied to this DB model.
      * @param player The player that this DB model belongs to.
      */
     public void update(PlayerData data, Player player) {
-        cash = data.getCash();
         setRaceID(data.getRace());
-        rank = data.getRank();
         setIp(player.getAddress().getHostName());
-        setUsername(player.getName());
     }
 
     private void setRaceID(Race race) {

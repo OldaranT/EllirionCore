@@ -41,7 +41,7 @@ public class Race extends PlotOwner {
         name = raceDBModel.getRaceName();
         players = raceDBModel.getPlayers();
         teamColor = ChatColor.valueOf(raceDBModel.getColor());
-        homePlot = raceDBModel.getHomePlot();
+        //        homePlot = raceDBModel.getHomePlot();
     }
 
     public String getNameWithColor() {
