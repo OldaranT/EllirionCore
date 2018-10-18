@@ -3,7 +3,7 @@ package com.ellirion.core.database.dao;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.RaceDBModel;
-import com.ellirion.core.races.model.Race;
+import com.ellirion.core.race.model.Race;
 
 import java.util.List;
 import java.util.UUID;

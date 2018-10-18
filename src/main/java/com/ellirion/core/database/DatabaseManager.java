@@ -17,8 +17,8 @@ import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
-import com.ellirion.core.races.model.Race;
-import com.ellirion.core.utils.LoggingUtil;
+import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.Logging;
 
 import java.util.List;
 import java.util.UUID;
@@ -90,7 +90,7 @@ public class DatabaseManager {
             // tell the session to forward any request to our local port to the remote db server.
             session.setPortForwardingL(localPort, remoteHost, remotePort);
         } catch (JSchException e) {
-            LoggingUtil.printStackTrace(e);
+            Logging.printStackTrace(e);
         }
     }
 
@@ -131,7 +131,7 @@ public class DatabaseManager {
             session.delPortForwardingL(localPort);
             session.disconnect();
         } catch (JSchException e) {
-            LoggingUtil.printStackTrace(e);
+            Logging.printStackTrace(e);
         }
     }
 

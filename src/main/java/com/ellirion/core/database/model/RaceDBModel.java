@@ -7,7 +7,7 @@ import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.annotations.Property;
 import org.mongodb.morphia.annotations.Reference;
-import com.ellirion.core.races.model.Race;
+import com.ellirion.core.race.model.Race;
 
 import java.util.HashSet;
 import java.util.Set;

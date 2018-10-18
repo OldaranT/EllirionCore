@@ -9,7 +9,7 @@ import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
-import com.ellirion.core.utils.LoggingUtil;
+import com.ellirion.core.util.Logging;
 
 import java.util.HashMap;
 
@@ -88,7 +88,7 @@ public class PlotManager {
                         DATABASE_MANAEGR.createPlot(plotCoord, Wilderness.getInstance().getRaceUUID());
                     }
                 } catch (Exception e) {
-                    LoggingUtil.printStackTrace(e);
+                    Logging.printStackTrace(e);
                     return false;
                 }
             }
