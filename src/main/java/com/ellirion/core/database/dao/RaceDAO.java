@@ -58,4 +58,15 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         model.update(race);
         return saveRace(model);
     }
+
+    /**
+     * Deletes the race from the database.
+     * @param raceID The UUID of the race to delete.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteRace(UUID raceID) {
+        RaceDBModel race = findOne(id, raceID);
+        delete(race);
+        return true;
+    }
 }

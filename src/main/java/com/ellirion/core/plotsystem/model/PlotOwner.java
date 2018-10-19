@@ -1,15 +1,18 @@
 package com.ellirion.core.plotsystem.model;
 
 import lombok.Getter;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.DatabaseManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public abstract class PlotOwner {
 
+    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
     @Getter private final UUID raceUUID;
-    @Getter private List<Plot> plots = new ArrayList<>();
+    @Getter private Set<PlotCoord> plotCoords = new HashSet<>();
 
     /**
      * This constructor exists to facilitate getting races from the database and using the saved UUID's.
@@ -21,22 +24,25 @@ public abstract class PlotOwner {
         } else {
             this.raceUUID = raceUUID;
         }
+        DATABASE_MANAGER.createPlotOwner(this);
     }
 
     /**
      * Add a plot to a owner.
      * @param plot The plot to add.
      */
-    public void addPlot(Plot plot) {
-        plots.add(plot);
+    public void addPlot(PlotCoord plot) {
+        plotCoords.add(plot);
+        DATABASE_MANAGER.addPlotCoord(plot, raceUUID);
     }
 
     /**
      * Remove a plot from a owner.
      * @param plot The plot to remove.
      */
-    public void removePlot(Plot plot) {
-        plots.remove(plot);
+    public void removePlot(PlotCoord plot) {
+        plotCoords.remove(plot);
+        DATABASE_MANAGER.removePlotCoord(plot, raceUUID);
     }
 
     /**

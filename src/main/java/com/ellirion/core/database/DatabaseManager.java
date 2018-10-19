@@ -10,17 +10,21 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
+import com.ellirion.core.database.dao.PlotOwnerDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class DatabaseManager {
@@ -53,6 +57,7 @@ public class DatabaseManager {
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
     private PlotDAO plotDAO;
+    private PlotOwnerDAO plotOwnerDAO;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -115,12 +120,14 @@ public class DatabaseManager {
         morphia.map(PlayerDBModel.class);
         morphia.map(RaceDBModel.class);
         morphia.map(PlotDBModel.class);
+        morphia.map(PlotOwnerDBModel.class);
     }
 
     private void createDatabaseAccessObjects() {
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
         plotDAO = new PlotDAO(PlotDBModel.class, datastore);
+        plotOwnerDAO = new PlotOwnerDAO(PlotOwnerDBModel.class, datastore);
     }
 
     /**
@@ -164,6 +171,15 @@ public class DatabaseManager {
      */
     public boolean updateRace(Race race) {
         return raceDAO.updateRace(race);
+    }
+
+    /**
+     * Delete the race from the database.
+     * @param raceID The UUID of the race to delete.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteRace(UUID raceID) {
+        return raceDAO.deleteRace(raceID);
     }
 
     /**
@@ -251,5 +267,70 @@ public class DatabaseManager {
      */
     public boolean updatePlot(Plot plot) {
         return plotDAO.update(plot);
+    }
+
+    /**
+     * Create a plot owner in the database.
+     * @param plotOwner The plot owner to save to the database.
+     * @return Return the outcome of the operation.
+     */
+    public boolean createPlotOwner(PlotOwner plotOwner) {
+        return plotOwnerDAO.createPlotOwner(plotOwner);
+    }
+
+    /**
+     * Update a plot owner in the database.
+     * @param plotOwner The plot owner to update in the database.
+     * @return Return the outcome of the operation.
+     */
+    public boolean updatePlotOwner(PlotOwner plotOwner) {
+        return plotOwnerDAO.update(plotOwner);
+    }
+
+    /**
+     * Get the plot owner from the database.
+     * @param plotOwnerID The UUID of the plot owner.
+     * @return Return the found plot owner.
+     */
+    public PlotOwnerDBModel getPlotOwner(UUID plotOwnerID) {
+        return plotOwnerDAO.getSpecificPlotOwner(plotOwnerID);
+    }
+
+    /**
+     * Get all the plot owners from the database.
+     * @return Return the found plot owners.
+     */
+    public List<PlotOwnerDBModel> getAllPlotOwners() {
+        return plotOwnerDAO.getAllPlotOwners();
+    }
+
+    /**
+     * Add a plot coord to the given plot owner in the database.
+     * @param plotCoord The plot coord to add.
+     * @param plotOwnerID The UUID of the plot owner to add the coord to.
+     * @return Return the outcome of the operation.
+     */
+    public boolean addPlotCoord(PlotCoord plotCoord, UUID plotOwnerID) {
+        return plotOwnerDAO.addPlotCoord(plotOwnerID, plotCoord);
+    }
+
+    /**
+     * Remove the plot coord from the given plot owner.
+     * @param plotCoord The plot coord to remove from the plot owner.
+     * @param plotOwnerID The UUID of the plot owner to remove the plot coord from.
+     * @return Return the outcome of the operation.
+     */
+    public boolean removePlotCoord(PlotCoord plotCoord, UUID plotOwnerID) {
+        return plotOwnerDAO.removePlotCoord(plotOwnerID, plotCoord);
+    }
+
+    /**
+     * Set the list of owned plots for the plot owner.
+     * @param plotCoords The plot coords to set.
+     * @param plotOwnerID The UUID of the plow owner who owns the plots.
+     * @return Return the result of the operation.
+     */
+    public boolean setPlotCoords(Set<PlotCoord> plotCoords, UUID plotOwnerID) {
+        return plotOwnerDAO.setPlotCoords(plotCoords, plotOwnerID);
     }
 }

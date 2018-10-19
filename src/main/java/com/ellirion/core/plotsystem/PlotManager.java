@@ -64,6 +64,7 @@ public class PlotManager {
         int highestBlock = 256;
 
         PLOT_SIZE = plotSize;
+        Wilderness wilderness = Wilderness.getInstance();
 
         for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
             for (int startCountZ = mapRadius * -1 + centerZ; startCountZ < mapRadius + centerZ; startCountZ++) {
@@ -85,7 +86,7 @@ public class PlotManager {
 
                         SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
                                                             world.getUID()));
-                        DATABASE_MANAEGR.createPlot(plotCoord, Wilderness.getInstance().getRaceUUID());
+                        DATABASE_MANAEGR.createPlot(plotCoord, wilderness.getRaceUUID());
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
@@ -93,7 +94,6 @@ public class PlotManager {
                 }
             }
         }
-
         return true;
     }
 

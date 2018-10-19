@@ -41,7 +41,6 @@ public class CreatePlotCommand implements CommandExecutor {
         }
 
         player.sendMessage("Plots are created");
-
         return true;
     }
 }
