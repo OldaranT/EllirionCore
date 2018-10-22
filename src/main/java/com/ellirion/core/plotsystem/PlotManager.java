@@ -1,10 +1,12 @@
 package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -12,11 +14,12 @@ import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.util.Logging;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class PlotManager {
 
     private static final HashMap<PlotCoord, Plot> SAVED_PLOTS = new HashMap<>();
-    @Getter private static int PLOT_SIZE;
+    @Setter @Getter private static int PLOT_SIZE;
 
     private static DatabaseManager DATABASE_MANAEGR = EllirionCore.getINSTANCE().getDbManager();
 
@@ -51,6 +54,23 @@ public class PlotManager {
     }
 
     /**
+     * Get all the plots that are saved in the database and create them.
+     * @param plots plots to create.
+     * @return returns true if the plots are created.
+     */
+    public static boolean createPlotsFromDatabase(List<PlotDBModel> plots) {
+        for (PlotDBModel plotDBModel : plots) {
+            Plot plot = plotDBModel.convertPlotFromDatabase();
+
+            if (SAVED_PLOTS.get(plotDBModel.getPlotCoord()) == null) {
+                SAVED_PLOTS.put(plot.getPlotCoord(), plot);
+                EllirionCore.getINSTANCE().getLogger().info(plot.getName());
+            }
+        }
+        return true;
+    }
+
+    /**
      * Create a hashmap with plots.
      * @param world The world plots being created in.
      * @param plotSize The size of the plots.
@@ -62,8 +82,6 @@ public class PlotManager {
     public static boolean createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
         int lowestBlock = 0;
         int highestBlock = 256;
-
-        PLOT_SIZE = plotSize;
 
         for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
             for (int startCountZ = mapRadius * -1 + centerZ; startCountZ < mapRadius + centerZ; startCountZ++) {
@@ -85,7 +103,8 @@ public class PlotManager {
 
                         SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
                                                             world.getUID()));
-                        DATABASE_MANAEGR.createPlot(plotCoord, Wilderness.getInstance().getRaceUUID());
+                        DATABASE_MANAEGR.createPlot(name, plotCoord, plotSize, lowerPoint, highestPoint, world.getUID(),
+                                                    world.getName(), Wilderness.getInstance().getRaceUUID());
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
