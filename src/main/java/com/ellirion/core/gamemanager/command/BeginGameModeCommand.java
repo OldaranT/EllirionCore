@@ -13,6 +13,7 @@ public class BeginGameModeCommand implements CommandExecutor {
         GameManager manager = GameManager.getInstance();
         if (manager.getState().ordinal() < GameManager.GameState.SETUP.ordinal()) {
             manager.changeState(GameManager.GameState.SETUP);
+            commandSender.sendMessage("The GameMode is now in the SETUP stage.");
         } else {
             commandSender.sendMessage(ChatColor.DARK_RED + "A game mode can only be created during the NOT_STARTED state.");
         }

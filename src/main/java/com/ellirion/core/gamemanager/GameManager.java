@@ -64,6 +64,13 @@ public class GameManager {
     }
 
     /**
+     * Advance to the next step of the setup.
+     */
+    public void nextStep() {
+        currentStep++;
+    }
+
+    /**
      * Create a string of the current game state.
      * @return the current game state
      */
