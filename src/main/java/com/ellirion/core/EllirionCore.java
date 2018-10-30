@@ -6,6 +6,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
+import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
@@ -63,6 +65,9 @@ public class EllirionCore extends JavaPlugin {
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
         getCommand("RemoveRace").setExecutor(new DestroyRaceCommand());
+
+        getCommand("GetGameState").setExecutor(new GetGameStateCommand());
+        getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
     }
 
     private void registerEvents() {

@@ -32,4 +32,10 @@ commands:
       Description: Removes the specified race.
       usage: /rr <raceName>
       aliases: [rr]
+  GetGameState:
+      Description: Get information on the current game state.
+      usage: /getgamestate
+  BeginGamemode:
+      Description: Begin the gamemode setup.
+      usage: /begingamemode
 depend: [EllirionUtil]
