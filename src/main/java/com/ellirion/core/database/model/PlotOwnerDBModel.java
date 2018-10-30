@@ -66,6 +66,9 @@ public class PlotOwnerDBModel {
      * @return Return the outcome of the operation.
      */
     public boolean removePlotCoord(PlotCoord plotCoord) {
+        if (plotCoords == null) {
+            return false;
+        }
         return plotCoords.remove(plotCoord);
     }
 

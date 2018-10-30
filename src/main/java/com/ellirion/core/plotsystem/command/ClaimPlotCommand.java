@@ -33,7 +33,7 @@ public class ClaimPlotCommand implements CommandExecutor {
             int xCoord = Integer.parseInt(args[0]);
             int zCoord = Integer.parseInt(args[1]);
 
-            PlotCoord plotCoord = new PlotCoord(xCoord, zCoord);
+            PlotCoord plotCoord = new PlotCoord(xCoord, zCoord, player.getWorld().getName());
 
             plotToCheck = PlotManager.getPlotByCoordinate(plotCoord);
         } else if (args.length == 0) {
