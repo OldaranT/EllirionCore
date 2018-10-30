@@ -10,6 +10,7 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.util.Logging;
+import com.ellirion.util.async.Promise;
 
 import java.util.HashMap;
 
@@ -59,42 +60,43 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static boolean createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
-        int lowestBlock = 0;
-        int highestBlock = 256;
+    public static Promise createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
+        return new Promise<Boolean>(f -> {
+            int lowestBlock = 0;
+            int highestBlock = 256;
 
-        PLOT_SIZE = plotSize;
+            PLOT_SIZE = plotSize;
 
-        for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
-            for (int startCountZ = mapRadius * -1 + centerZ; startCountZ < mapRadius + centerZ; startCountZ++) {
+            for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
+                for (int startCountZ = mapRadius * -1 + centerZ; startCountZ < mapRadius + centerZ; startCountZ++) {
 
-                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
+                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
 
-                try {
-                    //If plot already exist skip it.
-                    if (SAVED_PLOTS.get(plotCoord) == null) {
+                    try {
+                        //If plot already exist skip it.
+                        if (SAVED_PLOTS.get(plotCoord) == null) {
 
-                        String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
+                            String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
 
-                        int currentX = startCountX * PLOT_SIZE;
-                        int currentZ = startCountZ * PLOT_SIZE;
+                            int currentX = startCountX * PLOT_SIZE;
+                            int currentZ = startCountZ * PLOT_SIZE;
 
-                        Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
-                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
-                                                       currentZ + PLOT_SIZE - 1);
+                            Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
+                            Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
+                                                           currentZ + PLOT_SIZE - 1);
 
-                        SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
-                                                            world.getUID()));
-                        DATABASE_MANAEGR.createPlot(plotCoord, Wilderness.getInstance().getRaceUUID());
+                            SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
+                                                                world.getUID()));
+                            DATABASE_MANAEGR.createPlot(plotCoord, Wilderness.getInstance().getRaceUUID());
+                        }
+                    } catch (Exception e) {
+                        Logging.printStackTrace(e);
+                        f.resolve(false);
                     }
-                } catch (Exception e) {
-                    Logging.printStackTrace(e);
-                    return false;
                 }
             }
-        }
-
-        return true;
+            f.resolve(true);
+        }, true);
     }
 
     /**
