@@ -21,7 +21,7 @@ public class PlotManager {
     private static DatabaseManager DATABASE_MANAEGR = EllirionCore.getINSTANCE().getDbManager();
 
     public static HashMap<PlotCoord, Plot> getSavedPlots() {
-        return PlotManager.SAVED_PLOTS;
+        return SAVED_PLOTS;
     }
 
     /**
@@ -33,12 +33,12 @@ public class PlotManager {
         int x = location.getBlockX();
         int z = location.getBlockZ();
 
-        int plotCordX = Math.floorDiv(x, PlotManager.PLOT_SIZE);
-        int plotCordZ = Math.floorDiv(z, PlotManager.PLOT_SIZE);
+        int plotCordX = Math.floorDiv(x, PLOT_SIZE);
+        int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
         PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
 
-        return PlotManager.SAVED_PLOTS.get(plotCoord);
+        return SAVED_PLOTS.get(plotCoord);
     }
 
     /**
@@ -47,7 +47,7 @@ public class PlotManager {
      * @return the plot that is requested.
      */
     public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
-        return PlotManager.SAVED_PLOTS.get(plotCoord);
+        return SAVED_PLOTS.get(plotCoord);
     }
 
     /**
@@ -63,7 +63,7 @@ public class PlotManager {
         int lowestBlock = 0;
         int highestBlock = 256;
 
-        PlotManager.PLOT_SIZE = plotSize;
+        PLOT_SIZE = plotSize;
         Wilderness wilderness = Wilderness.getInstance();
 
         for (int startCountX = mapRadius * -1 + centerX; startCountX < mapRadius + centerX; startCountX++) {
@@ -73,21 +73,21 @@ public class PlotManager {
 
                 try {
                     //If plot already exist skip it.
-                    if (PlotManager.SAVED_PLOTS.get(plotCoord) == null) {
+                    if (SAVED_PLOTS.get(plotCoord) == null) {
 
                         String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
 
-                        int currentX = startCountX * PlotManager.PLOT_SIZE;
-                        int currentZ = startCountZ * PlotManager.PLOT_SIZE;
+                        int currentX = startCountX * PLOT_SIZE;
+                        int currentZ = startCountZ * PLOT_SIZE;
 
                         Point lowerPoint = new Point(currentX, lowestBlock, currentZ);
-                        Point highestPoint = new Point(currentX + PlotManager.PLOT_SIZE - 1, highestBlock,
-                                                       currentZ + PlotManager.PLOT_SIZE - 1);
+                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, highestBlock,
+                                                       currentZ + PLOT_SIZE - 1);
 
-                        PlotManager.SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint,
-                                                                        PlotManager.PLOT_SIZE, world,
-                                                                        world.getUID()));
-                        PlotManager.DATABASE_MANAEGR.createPlot(plotCoord, wilderness.getRaceUUID());
+                        SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint,
+                                                            PLOT_SIZE, world,
+                                                            world.getUID()));
+                        DATABASE_MANAEGR.createPlot(plotCoord, wilderness.getRaceUUID());
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
@@ -104,7 +104,7 @@ public class PlotManager {
      * @return Return the result of the operation.
      */
     public static boolean updatePlotInDB(Plot plot) {
-        return PlotManager.DATABASE_MANAEGR.updatePlot(plot);
+        return DATABASE_MANAEGR.updatePlot(plot);
     }
 }
 
