@@ -17,8 +17,8 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
 
     /**
      * Create a new PlayerDAO.
-     * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
+     * @param entityClass the java class you want to persist using this DAO.
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO.
      */
     public PlayerDAO(final Class<PlayerDBModel> entityClass, final Datastore datastore) {
         super(entityClass, datastore);

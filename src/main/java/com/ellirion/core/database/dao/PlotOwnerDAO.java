@@ -17,8 +17,8 @@ public class PlotOwnerDAO extends BasicDAO<PlotOwnerDBModel, Datastore> {
 
     /**
      * Create a new BasicDAO.
-     * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
+     * @param entityClass the java class you want to persist using this DAO.
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO.
      */
     public PlotOwnerDAO(final Class<PlotOwnerDBModel> entityClass, final Datastore datastore) {
         super(entityClass, datastore);

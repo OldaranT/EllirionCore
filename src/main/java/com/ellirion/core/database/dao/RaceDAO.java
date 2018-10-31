@@ -14,8 +14,8 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
     /**
      * Create a new RaceDAO.
-     * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
+     * @param entityClass the java class you want to persist using this DAO.
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO.
      */
     public RaceDAO(final Class<RaceDBModel> entityClass, final Datastore datastore) {
         super(entityClass, datastore);
