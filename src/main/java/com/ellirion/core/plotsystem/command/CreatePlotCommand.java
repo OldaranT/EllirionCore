@@ -63,7 +63,6 @@ public class CreatePlotCommand implements CommandExecutor {
                 player.sendMessage(ChatColor.DARK_RED + "Something went wrong with saving the plots.");
             } else {
                 player.sendMessage(ChatColor.GREEN + "Plots have been created.");
-                GameManager.getInstance().nextStep();
             }
         });
 

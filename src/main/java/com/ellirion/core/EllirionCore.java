@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
+import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
@@ -68,6 +69,7 @@ public class EllirionCore extends JavaPlugin {
 
         getCommand("GetGameState").setExecutor(new GetGameStateCommand());
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
+        getCommand("GamemodeNextStep").setExecutor(new NextSetupStepCommand());
     }
 
     private void registerEvents() {

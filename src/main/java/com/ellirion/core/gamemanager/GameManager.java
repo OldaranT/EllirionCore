@@ -2,6 +2,8 @@ package com.ellirion.core.gamemanager;
 
 import lombok.Getter;
 import com.ellirion.core.gamemanager.setup.Step;
+import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.core.race.RaceManager;
 
 public class GameManager {
     public enum GameState {
@@ -40,9 +42,9 @@ public class GameManager {
 
     private void createSteps() {
         setupSteps = new Step[4];
-        setupSteps[0] = new Step("Create plots");
+        setupSteps[0] = new Step("Create plots", f -> PlotManager.getSavedPlots().size() > 0);
         setupSteps[1] = new Step("Assign trading center plots");
-        setupSteps[2] = new Step("Create races");
+        setupSteps[2] = new Step("Create races", f -> RaceManager.getRaceCount() >= 2);
         setupSteps[3] = new Step("Confirm setup");
         currentStep = 0;
     }
@@ -53,6 +55,14 @@ public class GameManager {
      */
     public String currentStep() {
         return setupSteps[currentStep].getMessage();
+    }
+
+    /**
+     * Get the current setup step of the gamemode.
+     * @return the current setup step of the gamemode
+     */
+    public Step getCurrentStep() {
+        return setupSteps[currentStep];
     }
 
     /**
@@ -67,7 +77,13 @@ public class GameManager {
      * Advance to the next step of the setup.
      */
     public void nextStep() {
+        if (currentStep >= setupSteps.length) {
+            return;
+        }
         currentStep++;
+        if (currentStep >= setupSteps.length) {
+            state = GameState.SAVING;
+        }
     }
 
     /**

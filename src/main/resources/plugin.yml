@@ -38,4 +38,7 @@ commands:
   BeginGamemode:
       Description: Begin the gamemode setup.
       usage: /begingamemode
+  GamemodeNextStep:
+      Description: Moves the gamemode to the next step of the setup phase.
+      usage: /gamemodenextstep
 depend: [EllirionUtil]

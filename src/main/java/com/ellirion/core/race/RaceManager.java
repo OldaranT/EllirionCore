@@ -238,4 +238,12 @@ public class RaceManager {
         RACE_ID_NAME.remove(raceID);
         return true;
     }
+
+    /**
+     * Get the amount of races.
+     * @return the amount of races.
+     */
+    public static int getRaceCount() {
+        return RACES.size();
+    }
 }
