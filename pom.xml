@@ -161,15 +161,19 @@
     </build>
     <repositories>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>com.ellirion.util</groupId>
+            <groupId>com.github.OldaranT.EllirionUtil</groupId>
             <artifactId>EllirionUtil</artifactId>
-            <version>1.0</version>
+            <version>Test5</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
