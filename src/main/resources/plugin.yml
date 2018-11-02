@@ -32,3 +32,4 @@ commands:
       Description: Removes the specified race.
       usage: /rr <raceName>
       aliases: [rr]
+depend: [EllirionUtil]
