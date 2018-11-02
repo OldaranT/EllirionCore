@@ -75,14 +75,21 @@ public class GameManager {
 
     /**
      * Advance to the next step of the setup.
+     * @return whether the currentStep was advanced.
      */
-    public void nextStep() {
+    public Boolean nextStep() {
         if (currentStep >= setupSteps.length) {
-            return;
+            return false;
         }
-        currentStep++;
-        if (currentStep >= setupSteps.length) {
-            state = GameState.SAVING;
+        Step step = setupSteps[currentStep];
+        if (step.requirementComplete(new Object())) {
+            currentStep++;
+            if (currentStep >= setupSteps.length) {
+                state = GameState.SAVING;
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 

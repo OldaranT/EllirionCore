@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import com.ellirion.core.gamemanager.GameManager;
-import com.ellirion.core.gamemanager.setup.Step;
 
 public class NextSetupStepCommand implements CommandExecutor {
 
@@ -16,13 +15,10 @@ public class NextSetupStepCommand implements CommandExecutor {
             commandSender.sendMessage(ChatColor.DARK_RED + "The game mode is currently not in the SETUP phase, therefore there is no next step");
             return true;
         }
-        Step step = manager.getCurrentStep();
-        if (step.getRequirement() && !step.requirementComplete(new Object())) {
-            commandSender.sendMessage(ChatColor.DARK_RED + "This step has requirements that have not been met yet");
-            return true;
-        }
 
-        manager.nextStep();
+        if (!manager.nextStep()) {
+            commandSender.sendMessage(ChatColor.DARK_RED + "This step has requirements that have not been met yet");
+        }
 
         return true;
 
