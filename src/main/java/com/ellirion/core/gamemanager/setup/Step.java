@@ -36,6 +36,6 @@ public class Step {
      * @return whether the requirement has been completed
      */
     public Boolean requirementComplete(Object t) {
-        return req.apply(t);
+        return !requirement || req.apply(t);
     }
 }
