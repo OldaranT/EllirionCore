@@ -112,8 +112,8 @@ public class EllirionCore extends JavaPlugin {
 
     private void setup() {
         try {
-            PlotManager.setPLOT_SIZE(128);
-            PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
+            //PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
+            getLogger().info(PlotManager.getCHUNK_SIZE() + "");
         } catch (Exception exception) {
             Logging.printStackTrace(exception);
         }
