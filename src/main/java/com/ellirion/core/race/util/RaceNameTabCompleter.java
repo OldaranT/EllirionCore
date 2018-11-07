@@ -3,7 +3,6 @@ package com.ellirion.core.race.util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-
 import com.ellirion.core.race.RaceManager;
 
 import java.util.ArrayList;

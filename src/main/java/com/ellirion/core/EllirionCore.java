@@ -19,9 +19,9 @@ import com.ellirion.core.race.command.CreateRaceCommand;
 import com.ellirion.core.race.command.DestroyRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
+import com.ellirion.core.race.util.CreateRaceTabCompleter;
 import com.ellirion.core.race.util.RaceNameTabCompleter;
 import com.ellirion.core.util.Logging;
-import com.ellirion.core.race.util.CreateRaceTabCompleter;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +57,6 @@ public class EllirionCore extends JavaPlugin {
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
-        getLogger().info(RaceManager.getAVAILABLE_COLORS().toString());
         getLogger().info("Introduction is enabled.");
         dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
@@ -128,7 +127,6 @@ public class EllirionCore extends JavaPlugin {
         getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
         getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("joinRace").setTabCompleter(new RaceNameTabCompleter());
-        
     }
 }
 
