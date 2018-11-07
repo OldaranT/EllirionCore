@@ -15,7 +15,6 @@ import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
-import com.ellirion.core.model.Point;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -236,33 +235,15 @@ public class DatabaseManager {
 
     /**
      * This creates a plot in the DB from raw data.
-     * @param name name of the plot.
      * @param plotCoord The plot coords class.
-     * @param plotSize Size of the plot when it was created.
-     * @param lowestCorner lowest point of the plot.
-     * @param highestCorner Highest point of the plot.
-     * @param worldUUID The id of the world the plot is placed in.
-     * @param worldName The name of the world the plot is saved in.
-     * @param plotOwnerID The plot owner UUID.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
-                              UUID worldUUID, String worldName, UUID plotOwnerID) {
-        return plotDAO.createPlot(name, plotCoord, plotSize, lowestCorner, highestCorner, worldUUID, worldName,
-                                  plotOwnerID);
+    public boolean createPlot(PlotCoord plotCoord) {
+        return plotDAO.createPlot(plotCoord);
     }
 
     public List<PlotDBModel> getAllPlots() {
         return plotDAO.getAllPlots();
-    }
-
-    /**
-     * Get all the plots owned by the specified plot owner.
-     * @param plotOwnerID The UUID of the plot owner.
-     * @return Return the found plots.
-     */
-    public List<PlotDBModel> getPlotOwnerPlots(UUID plotOwnerID) {
-        return plotDAO.getAllPlotsFromPlotOwner(plotOwnerID);
     }
 
     /**
@@ -272,15 +253,6 @@ public class DatabaseManager {
      */
     public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
         return plotDAO.getSpecificPlot(plotCoord);
-    }
-
-    /**
-     * This updates the plot in the DB.
-     * @param plot The plot to update.
-     * @return Return the result of the operation.
-     */
-    public boolean updatePlot(Plot plot) {
-        return plotDAO.update(plot);
     }
 
     //endregion

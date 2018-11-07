@@ -56,4 +56,9 @@ public class PlotCoord {
 
         return (x == other.x && z == other.z);
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(x) + " , " + Integer.toString(z);
+    }
 }
