@@ -266,4 +266,8 @@ public class RaceManager {
 
         return result;
     }
+
+    public static List<String> getAllRaceNames() {
+        return new ArrayList<>(RACE_ID_NAME.values());
+    }
 }
