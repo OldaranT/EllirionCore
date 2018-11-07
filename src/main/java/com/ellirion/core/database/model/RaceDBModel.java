@@ -2,10 +2,11 @@ package com.ellirion.core.database.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Property;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
 
 import java.util.HashSet;
@@ -21,11 +22,12 @@ public class RaceDBModel {
 
     @Getter @Setter private String raceName;
 
-    @Property(value = "players")
     @Getter private Set<UUID> players;
 
-    @Property(value = "color")
     @Getter @Setter private String color;
+
+    @Embedded
+    @Getter @Setter private PlotCoord homePlotCoord;
 
     /**
      * This class is the database object for the race data.
@@ -33,12 +35,15 @@ public class RaceDBModel {
      * @param raceName Name of the race.
      * @param players The players in the team.
      * @param color The color of the team.
+     * @param homePlotCoord The home plot coordinates.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color) {
+    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color,
+                       final PlotCoord homePlotCoord) {
         this.raceID = raceID;
         this.raceName = raceName;
         this.players = players;
         this.color = color;
+        this.homePlotCoord = homePlotCoord;
     }
 
     /**
@@ -50,6 +55,7 @@ public class RaceDBModel {
         raceName = race.getName();
         players = race.getPlayers();
         color = race.getTeamColor().toString();
+        homePlotCoord = race.getHomePlot().getPlotCoord();
     }
 
     /**
@@ -57,9 +63,17 @@ public class RaceDBModel {
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
      * @param color The color of the team.
+     * @param homePlotCoord The home plot coordinates.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final String color) {
-        this(raceID, raceName, new HashSet<>(), color);
+    public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord) {
+        this(raceID, raceName, new HashSet<>(), color, homePlotCoord);
+    }
+
+    /**
+     * This is a default constructor used by morphia.
+     */
+    public RaceDBModel() {
+        // empty on purpose.
     }
 
     /**
@@ -79,6 +93,7 @@ public class RaceDBModel {
         raceName = race.getName();
         players = race.getPlayers();
         color = race.getTeamColor().toString();
+        homePlotCoord = race.getHomePlot().getPlotCoord();
         return true;
     }
 }

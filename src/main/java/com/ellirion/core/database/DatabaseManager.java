@@ -13,6 +13,7 @@ import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.playerdata.model.PlayerData;
@@ -116,6 +117,7 @@ public class DatabaseManager {
         morphia.map(PlayerDBModel.class);
         morphia.map(RaceDBModel.class);
         morphia.map(PlotDBModel.class);
+        morphia.map(PlotOwnerDBModel.class);
     }
 
     private void createDatabaseAccessObjects() {
@@ -172,6 +174,15 @@ public class DatabaseManager {
     //endregion
 
     //region ===== Player =====
+
+    /**
+     * Delete the race from the database.
+     * @param raceID The UUID of the race to delete.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteRace(UUID raceID) {
+        return raceDAO.deleteRace(raceID);
+    }
 
     /**
      * This function directs the create request to the playerDAO.

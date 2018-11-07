@@ -22,7 +22,7 @@ public class OnPlayerJoin implements Listener {
             PlayerManager.updatePlayer(playerID);
         } else {
             event.setJoinMessage("Welcome!");
-            PlayerManager.newPlayer(player, null, "outsider", 0);
+            PlayerManager.newPlayer(player, null);
         }
     }
 }

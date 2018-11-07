@@ -32,7 +32,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
             return true;
         }
 
-        PlotCoord plotCoord = new PlotCoord(xCord, zCord);
+        PlotCoord plotCoord = new PlotCoord(xCord, zCord, player.getWorld().getName());
 
         Plot plot = PlotManager.getPlotByCoordinate(plotCoord);
 

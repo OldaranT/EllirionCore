@@ -44,7 +44,7 @@ public class PlotManager {
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
-        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ);
+        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
 
         return SAVED_PLOTS.get(plotCoord);
     }
@@ -97,7 +97,7 @@ public class PlotManager {
                         EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                     }
 
-                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
+                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
 
                     try {
                         //If plot already exist skip it.
