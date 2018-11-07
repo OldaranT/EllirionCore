@@ -42,7 +42,7 @@ public class PlotManager {
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
-        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ);
+        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
 
         return SAVED_PLOTS.get(plotCoord);
     }
@@ -87,7 +87,7 @@ public class PlotManager {
             int mapCenterZ = centerZ * CHUNK_SIZE;
             int currentPlot = 0;
             int amountOfPlots = mapRadius * mapRadius * 4;
-            
+
             for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
                 for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
                     currentPlot++;
@@ -95,7 +95,7 @@ public class PlotManager {
                         EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                     }
 
-                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
+                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
 
                     try {
                         //If plot already exist skip it.
