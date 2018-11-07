@@ -11,6 +11,7 @@ import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.util.Logging;
+import com.ellirion.util.async.Promise;
 
 import java.util.HashMap;
 import java.util.List;
@@ -80,39 +81,45 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static boolean createPlots(World world, int mapRadius, int centerX, int centerZ) {
-        int mapCenterX = centerX * CHUNK_SIZE;
-        int mapCenterZ = centerZ * CHUNK_SIZE;
-
-        for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
-            for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
-
-                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
-
-                try {
-                    //If plot already exist skip it.
-                    if (SAVED_PLOTS.get(plotCoord) == null) {
-
-                        String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
-
-                        int currentX = startCountX * PLOT_SIZE + mapCenterX;
-                        int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
-
-                        Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
-                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
-                                                       currentZ + PLOT_SIZE - 1);
-
-                        SAVED_PLOTS.put(plotCoord, new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
-                                                            world.getUID()));
+    public static Promise createPlots(World world, int mapRadius, int centerX, int centerZ) {
+        return new Promise<Boolean>(f -> {
+            int mapCenterX = centerX * CHUNK_SIZE;
+            int mapCenterZ = centerZ * CHUNK_SIZE;
+            int currentPlot = 0;
+            int amountOfPlots = mapRadius * mapRadius * 4;
+            
+            for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
+                for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
+                    currentPlot++;
+                    if (Math.floorMod(currentPlot, (amountOfPlots / 10)) == 0) {
+                        EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                     }
-                } catch (Exception e) {
-                    Logging.printStackTrace(e);
-                    return false;
+
+                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ);
+
+                    try {
+                        //If plot already exist skip it.
+                        if (SAVED_PLOTS.get(plotCoord) == null) {
+                            String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
+                            int currentX = startCountX * PLOT_SIZE + mapCenterX;
+                            int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
+
+                            Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
+                            Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
+                                                           currentZ + PLOT_SIZE - 1);
+
+                            SAVED_PLOTS.put(plotCoord,
+                                            new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
+                                                     world.getUID()));
+                        }
+                    } catch (Exception e) {
+                        Logging.printStackTrace(e);
+                        f.resolve(false);
+                    }
                 }
             }
-        }
-
-        return true;
+            f.resolve(true);
+        }, true);
     }
 
     /**
