@@ -1,5 +1,6 @@
 package com.ellirion.core.race;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
@@ -10,6 +11,7 @@ import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.StringHelper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,9 +23,10 @@ public class RaceManager {
 
     private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
+    @Getter private static Set<ChatColor> AVAILABLE_COLORS = new HashSet<>(Arrays.asList(ChatColor.values()));
     private static Race DEFAULT_RACE;
     private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
-    private static DatabaseManager DATABASE_MANAGAER = EllirionCore.getINSTANCE().getDbManager();
+    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
      * @param defaultRaceName The name of the default race.
@@ -37,7 +40,7 @@ public class RaceManager {
         Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY, null);
         RACES.put(race.getRaceUUID(), race);
         DEFAULT_RACE = race;
-        USED_COLORS.add(ChatColor.DARK_GRAY);
+        setColorToUsed(ChatColor.DARK_GRAY);
         RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return true;
     }
@@ -64,14 +67,14 @@ public class RaceManager {
 
         Race race = new Race(name, color, homePlot);
         RACES.putIfAbsent(race.getRaceUUID(), race);
-        USED_COLORS.add(color);
+        setColorToUsed(color);
         homePlot.setOwner(race);
         RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return createRaceInDB(race);
     }
 
     private static boolean createRaceInDB(Race race) {
-        return DATABASE_MANAGAER.createRace(race);
+        return DATABASE_MANAGER.createRace(race);
     }
 
     /**
@@ -228,7 +231,7 @@ public class RaceManager {
             PlayerManager.setPlayerRace(id, null);
         }
 
-        USED_COLORS.remove(race.getTeamColor());
+        setColorToAvailable(race.getTeamColor());
         RACES.remove(raceID);
 
         for (Plot plot : race.getPlots()) {
@@ -237,5 +240,15 @@ public class RaceManager {
 
         RACE_ID_NAME.remove(raceID);
         return true;
+    }
+
+    private static void setColorToUsed(ChatColor color) {
+        USED_COLORS.add(color);
+        AVAILABLE_COLORS.remove(color);
+    }
+
+    private static void setColorToAvailable(ChatColor color) {
+        USED_COLORS.remove(color);
+        AVAILABLE_COLORS.add(color);
     }
 }
