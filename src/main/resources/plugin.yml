@@ -3,6 +3,7 @@ main: com.ellirion.core.EllirionCore
 version: 0.0.1
 description: EllirionCore
 authors: [OldaranT, Nick Kronenberg]
+load: POSTWORLD
 commands:
   createRace:
       description: allows the server to create a race. players are not allowed to do this.
@@ -32,3 +33,4 @@ commands:
       Description: Removes the specified race.
       usage: /rr <raceName>
       aliases: [rr]
+depend: [EllirionUtil]

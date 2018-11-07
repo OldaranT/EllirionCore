@@ -24,7 +24,6 @@ public abstract class PlotOwner {
         } else {
             this.raceUUID = raceUUID;
         }
-        DATABASE_MANAGER.createPlotOwner(this);
     }
 
     /**
@@ -33,7 +32,6 @@ public abstract class PlotOwner {
      */
     public void addPlot(PlotCoord plot) {
         plotCoords.add(plot);
-        DATABASE_MANAGER.addPlotCoord(plot, raceUUID);
     }
 
     /**
@@ -42,7 +40,6 @@ public abstract class PlotOwner {
      */
     public void removePlot(PlotCoord plot) {
         plotCoords.remove(plot);
-        DATABASE_MANAGER.removePlotCoord(plot, raceUUID);
     }
 
     /**
