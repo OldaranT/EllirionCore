@@ -244,7 +244,7 @@ public class RaceManager {
         }
 
         RACE_ID_NAME.remove(raceID);
-        DATABASE_MANAGAER.deleteRace(raceID);
+        DATABASE_MANAGER.deleteRace(raceID);
         return true;
     }
 

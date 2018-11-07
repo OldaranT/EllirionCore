@@ -19,10 +19,9 @@ import com.ellirion.core.race.command.CreateRaceCommand;
 import com.ellirion.core.race.command.DestroyRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
+import com.ellirion.core.race.util.RaceNameTabCompleter;
 import com.ellirion.core.util.Logging;
 import com.ellirion.core.race.util.CreateRaceTabCompleter;
-import com.ellirion.core.race.util.DestroyRaceTabCompleter;
-import com.ellirion.core.race.util.JoinRaceTabCompleter;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,8 +126,8 @@ public class EllirionCore extends JavaPlugin {
 
     private void registerTabCompleters() {
         getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
-        getCommand("RemoveRace").setTabCompleter(new DestroyRaceTabCompleter());
-        getCommand("joinRace").setTabCompleter(new JoinRaceTabCompleter());
+        getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
+        getCommand("joinRace").setTabCompleter(new RaceNameTabCompleter());
         
     }
 }
