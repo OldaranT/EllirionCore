@@ -14,6 +14,7 @@ import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.model.Point;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -135,6 +136,8 @@ public class DatabaseManager {
         }
     }
 
+    //region ===== RACE =====
+
     /**
      * This saves a new race to the Database.
      * @param race The race to be stored in the database.
@@ -165,6 +168,10 @@ public class DatabaseManager {
     public boolean updateRace(Race race) {
         return raceDAO.updateRace(race);
     }
+
+    //endregion
+
+    //region ===== Player =====
 
     /**
      * This function directs the create request to the playerDAO.
@@ -203,6 +210,10 @@ public class DatabaseManager {
         return playerDAO.updatePlayer(data, player);
     }
 
+    //endregion
+
+    //region ===== Plot =====
+
     /**
      * This creates a plot in the DB.
      * @param plot The plot to be saved in the database.
@@ -214,12 +225,20 @@ public class DatabaseManager {
 
     /**
      * This creates a plot in the DB from raw data.
-     * @param plotCoord The plotCoord class corrisponding with the plot.
-     * @param plotOwnerID The UUID of the plotOwner.
+     * @param name name of the plot.
+     * @param plotCoord The plot coords class.
+     * @param plotSize Size of the plot when it was created.
+     * @param lowestCorner lowest point of the plot.
+     * @param highestCorner Highest point of the plot.
+     * @param worldUUID The id of the world the plot is placed in.
+     * @param worldName The name of the world the plot is saved in.
+     * @param plotOwnerID The plot owner UUID.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(PlotCoord plotCoord, UUID plotOwnerID) {
-        return plotDAO.createPlot(plotCoord, plotOwnerID);
+    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
+                              UUID worldUUID, String worldName, UUID plotOwnerID) {
+        return plotDAO.createPlot(name, plotCoord, plotSize, lowestCorner, highestCorner, worldUUID, worldName,
+                                  plotOwnerID);
     }
 
     public List<PlotDBModel> getAllPlots() {
@@ -252,4 +271,6 @@ public class DatabaseManager {
     public boolean updatePlot(Plot plot) {
         return plotDAO.update(plot);
     }
+
+    //endregion
 }
