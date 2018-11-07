@@ -14,7 +14,6 @@ import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
-import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.command.CreateRaceCommand;
 import com.ellirion.core.race.command.DestroyRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
