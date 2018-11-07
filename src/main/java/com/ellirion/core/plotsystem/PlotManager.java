@@ -22,6 +22,8 @@ public class PlotManager {
     @Getter private static final int LOWEST_Y = 0;
     @Getter private static final int HIGHEST_Y = 255;
     @Getter private static final int CHUNK_SIZE = 16;
+    @Setter @Getter private static int CENTER_OFFSET_X;
+    @Setter @Getter private static int CENTER_OFFSET_Z;
     @Setter @Getter private static int PLOT_SIZE;
 
     private static DatabaseManager DATABASE_MANAEGR = EllirionCore.getINSTANCE().getDbManager();
@@ -36,8 +38,8 @@ public class PlotManager {
      * @return The plot player is standing in.
      */
     public static Plot getPlotFromLocation(Location location) {
-        int x = location.getBlockX();
-        int z = location.getBlockZ();
+        int x = location.getBlockX() - (CENTER_OFFSET_X * CHUNK_SIZE);
+        int z = location.getBlockZ() - (CENTER_OFFSET_Z * CHUNK_SIZE);
 
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
@@ -87,7 +89,7 @@ public class PlotManager {
             int mapCenterZ = centerZ * CHUNK_SIZE;
             int currentPlot = 0;
             int amountOfPlots = mapRadius * mapRadius * 4;
-            
+
             for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
                 for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
                     currentPlot++;
