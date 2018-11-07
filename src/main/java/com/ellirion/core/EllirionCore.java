@@ -13,10 +13,12 @@ import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
+import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.command.CreateRaceCommand;
 import com.ellirion.core.race.command.DestroyRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
+import com.ellirion.core.race.util.CreateRaceTabCompleter;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +52,9 @@ public class EllirionCore extends JavaPlugin {
     public void onEnable() {
         registerCommands();
         registerEvents();
+        registerTabCompleters();
         createDBconnectionConfig();
+        getLogger().info(RaceManager.getAVAILABLE_COLORS().toString());
         getLogger().info("Introduction is enabled.");
         dbManager = new DatabaseManager(dbConnectionConfig);
     }
@@ -105,6 +109,10 @@ public class EllirionCore extends JavaPlugin {
         } catch (IOException e) {
             getLogger().throwing(EllirionCore.class.toString(), "createDBconnectionConfig", e);
         }
+    }
+
+    private void registerTabCompleters() {
+        getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
     }
 }
 

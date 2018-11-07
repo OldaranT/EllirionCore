@@ -11,10 +11,12 @@ import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.StringHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -23,7 +25,7 @@ public class RaceManager {
 
     private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
-    @Getter private static Set<ChatColor> AVAILABLE_COLORS = new HashSet<>(Arrays.asList(ChatColor.values()));
+    @Getter private static Set<ChatColor> AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
     private static Race DEFAULT_RACE;
     private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
     private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
@@ -250,5 +252,18 @@ public class RaceManager {
     private static void setColorToAvailable(ChatColor color) {
         USED_COLORS.remove(color);
         AVAILABLE_COLORS.add(color);
+    }
+
+    private static List<ChatColor> initAvailableColors() {
+        List<ChatColor> result = new ArrayList<>();
+        List<String> forbidden = Arrays.asList("§k", "§l", "§m", "§n", "§o", "§r");
+        for (ChatColor color : ChatColor.values()) {
+            if (forbidden.contains(color.toString())) {
+                continue;
+            }
+            result.add(color);
+        }
+
+        return result;
     }
 }

@@ -12,10 +12,20 @@ public class CreateRaceTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        List<String> completions = new ArrayList<>();
+        final List<String> completions = new ArrayList<>();
         List<String> availableColors = new ArrayList<>();
 
-        RaceManager.getAVAILABLE_COLORS().forEach(chatColor -> availableColors.add(chatColor.name()));
-        availableColors.forEach(s -> { });
+        if (args.length >= 1) {
+            RaceManager.getAVAILABLE_COLORS().forEach(chatColor -> availableColors.add(chatColor.name()));
+            availableColors.forEach(s -> {
+                if (s.startsWith(args[args.length - 1].toUpperCase())) {
+                    completions.add(s);
+                }
+            });
+        }
+        if (completions.isEmpty()) {
+            completions.addAll(availableColors);
+        }
+        return completions;
     }
 }
