@@ -4,6 +4,7 @@ import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.dao.BasicDAO;
 import org.mongodb.morphia.query.Query;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 
@@ -17,8 +18,8 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
     /**
      * Create a new PlotDAO.
-     * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
+     * @param entityClass the java class you want to persist using this DAO.
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO.
      */
     public PlotDAO(final Class<PlotDBModel> entityClass, final Datastore datastore) {
         super(entityClass, datastore);
@@ -40,12 +41,20 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
     /**
      * This creates a plot from raw data and not a plot object.
+     * @param name name of the plot.
      * @param plotCoord The plot coords class.
+     * @param plotSize Size of the plot when it was created.
+     * @param lowestCorner lowest point of the plot.
+     * @param highestCorner Highest point of the plot.
+     * @param worldUUID The id of the world the plot is placed in.
+     * @param worldName The name of the world the plot is saved in.
      * @param plotOwnerID The plot owner UUID.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(PlotCoord plotCoord, UUID plotOwnerID) {
-        return savePlot(new PlotDBModel(plotCoord, plotOwnerID));
+    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
+                              UUID worldUUID, String worldName, UUID plotOwnerID) {
+        return savePlot(new PlotDBModel(name, plotCoord, plotSize, lowestCorner,
+                                        highestCorner, worldUUID, worldName, plotOwnerID));
     }
 
     /**

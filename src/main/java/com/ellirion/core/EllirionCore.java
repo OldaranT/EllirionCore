@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
@@ -18,6 +19,7 @@ import com.ellirion.core.race.command.CreateRaceCommand;
 import com.ellirion.core.race.command.DestroyRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
+import com.ellirion.core.util.Logging;
 import com.ellirion.core.race.util.CreateRaceTabCompleter;
 import com.ellirion.core.race.util.DestroyRaceTabCompleter;
 import com.ellirion.core.race.util.JoinRaceTabCompleter;
@@ -59,6 +61,7 @@ public class EllirionCore extends JavaPlugin {
         getLogger().info(RaceManager.getAVAILABLE_COLORS().toString());
         getLogger().info("Introduction is enabled.");
         dbManager = new DatabaseManager(dbConnectionConfig);
+        setup();
     }
 
     private void registerCommands() {
@@ -110,6 +113,15 @@ public class EllirionCore extends JavaPlugin {
             dbConnectionConfig.save(dbConnectionConfigFile);
         } catch (IOException e) {
             getLogger().throwing(EllirionCore.class.toString(), "createDBconnectionConfig", e);
+        }
+    }
+
+    private void setup() {
+        try {
+            //PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
+            getLogger().info(PlotManager.getCHUNK_SIZE() + "");
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
         }
     }
 

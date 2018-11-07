@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.StringHelper;
@@ -236,11 +238,13 @@ public class RaceManager {
         setColorToAvailable(race.getTeamColor());
         RACES.remove(raceID);
 
-        for (Plot plot : race.getPlots()) {
+        for (final Iterator<PlotCoord> iterator = race.getPlotCoords().iterator(); iterator.hasNext();/**/) {
+            Plot plot = PlotManager.getPlotByCoordinate(iterator.next());
             plot.setOwner(Wilderness.getInstance());
         }
 
         RACE_ID_NAME.remove(raceID);
+        DATABASE_MANAGAER.deleteRace(raceID);
         return true;
     }
 
