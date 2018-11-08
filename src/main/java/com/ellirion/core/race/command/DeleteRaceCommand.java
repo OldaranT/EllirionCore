@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.util.StringHelper;
 
-public class DestroyRaceCommand implements CommandExecutor {
+public class DeleteRaceCommand implements CommandExecutor {
 
     private CommandSender sender;
 
