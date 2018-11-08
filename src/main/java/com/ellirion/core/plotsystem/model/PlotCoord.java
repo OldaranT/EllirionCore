@@ -1,7 +1,7 @@
 package com.ellirion.core.plotsystem.model;
 
 import lombok.Getter;
-import org.mongodb.morphia.annotations.Embedded;
+import xyz.morphia.annotations.Embedded;
 
 import java.util.Objects;
 
