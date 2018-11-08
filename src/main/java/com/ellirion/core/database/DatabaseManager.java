@@ -68,9 +68,9 @@ public class DatabaseManager {
         // The reason to do this is that, when you don't store it and then try to retrieve it,
         // it will result in a null pointer for an array or list.
         morphia.getMapper().getOptions().setStoreEmpties(true);
-        // This maps all the classes in the same package as PlotDBModel.
+        // This maps all the classes in the model package.
         // This means that all the DBModels are being mapped.
-        morphia.mapPackageFromClass(PlotDBModel.class);
+        morphia.mapPackage("model");
 
         datastore = morphia.createDatastore(mc, dbName);
         datastore.ensureIndexes();
