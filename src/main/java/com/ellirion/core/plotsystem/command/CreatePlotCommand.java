@@ -5,9 +5,22 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.util.EllirionUtil;
+import com.ellirion.util.async.Promise;
 
 public class CreatePlotCommand implements CommandExecutor {
+
+    private JavaPlugin plugin;
+
+    /**
+     * Constructor for this command executor.
+     * @param plugin the main class.
+     */
+    public CreatePlotCommand(final JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
@@ -36,13 +49,21 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
-        PlotManager plotManager = new PlotManager();
+        PlotManager.setPLOT_SIZE(plotSize);
+        PlotManager.setCENTER_OFFSET_X(centerX);
+        PlotManager.setCENTER_OFFSET_Z(centerZ);
 
-        if (!plotManager.createPlots(player.getWorld(), plotSize, mapRadius, centerX, centerZ)) {
-            player.sendMessage(ChatColor.DARK_RED + "Something went wrong with saving the plots.");
-        }
+        Promise<Boolean> createPlotsPromise = PlotManager.createPlots(player.getWorld(), mapRadius, centerX, centerZ);
+        EllirionUtil util = (EllirionUtil) plugin.getServer().getPluginManager().getPlugin("EllirionUtil");
+        util.schedulePromise(createPlotsPromise).then(f -> {
+            if (!createPlotsPromise.getResult()) {
+                player.sendMessage(ChatColor.DARK_RED + "Something went wrong with saving the plots.");
+            } else {
+                player.sendMessage(ChatColor.GREEN + "Plots have been created.");
+            }
+        });
 
-        player.sendMessage("Plots are created");
+        commandSender.sendMessage("Plots are now being created....");
 
         return true;
     }

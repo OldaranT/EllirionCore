@@ -1,8 +1,9 @@
 package com.ellirion.core.playerdata;
 
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.database.dao.PlayerDAO;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
@@ -14,17 +15,17 @@ public class PlayerManager {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
     private static EllirionCore INSTANCE = EllirionCore.getINSTANCE();
-    private static PlayerDAO PLAYERDB = INSTANCE.getDbManager().getPlayerDAO();
+    private static Server SERVER = INSTANCE.getServer();
+    private static DatabaseManager DATABASE_MANAGER = INSTANCE.getDbManager();
 
     /**
+     * This class manages the players and creates new players when needed.
      * @param player The player UUID.
      * @param raceID The UUID of the race.
-     * @param rank The player rank.
-     * @param cash The player cash.
-     * @return return a boolean that indicates if creating the new player was a success.
+     * @return Return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID), rank, cash);
+    public static boolean newPlayer(Player player, UUID raceID) {
+        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
         if (raceID != null) {
             RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
         }
@@ -35,6 +36,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method checks if the player exists or not.
      * @param playerID The player UUID.
      * @return Return a boolean whether the player exists.
      */
@@ -50,26 +52,29 @@ public class PlayerManager {
     }
 
     /**
+     * This method updates the player in the database.
      * @param playerID The player UUID.
+     * @return Return the result of the operation.
      */
-    public static void updatePlayer(UUID playerID) {
-        // commented until there is a database.
-        // PlayerData d = PLAYERS.get(p.getUniqueId());
-        // dbHandler.saveUser(d, p);
+    public static boolean updatePlayer(UUID playerID) {
+        PlayerData data = PLAYERS.get(playerID);
+        Player player = getPlayerByUUIDFromServer(playerID);
+        return DATABASE_MANAGER.updatePlayer(data, player);
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
-        return PLAYERDB.createPlayer(data, player);
+        return DATABASE_MANAGER.createPlayer(data, player);
     }
 
     /**
+     * This method sets the player race.
      * @param playerID The UUID from the player that is changing race.
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
     public static boolean setPlayerRace(UUID playerID, UUID raceID) {
         Player player = getPlayerByUUIDFromServer(playerID);
-        if (!(playerexists(playerID)) && !(newPlayer(player, raceID, "outsider", 0))) {
+        if (!(playerexists(playerID)) && !(newPlayer(player, raceID))) {
             return false;
         }
 
@@ -80,7 +85,9 @@ public class PlayerManager {
         if ((getPlayerRaceID(playerID) == null) && !(RaceManager.addPlayerToRace(playerID, raceID))) {
             return false;
         }
-        getPlayerData(playerID).setRace(RaceManager.getRaceByID(raceID));
+        PlayerData data = getPlayerData(playerID);
+        data.setRace(RaceManager.getRaceByID(raceID));
+        DATABASE_MANAGER.updatePlayer(data, player);
         return true;
     }
 
@@ -95,6 +102,7 @@ public class PlayerManager {
     }
 
     /**
+     * This method gets the race of the specified player.
      * @param playerID The UUID of the player to get the race from.
      * @return Return the player race.
      */
@@ -107,28 +115,7 @@ public class PlayerManager {
     }
 
     /**
-     * @param playerID The player UUID.
-     * @return return the player rank.
-     */
-    public static String getPlayerRank(UUID playerID) {
-        if (!playerexists(playerID)) {
-            return null;
-        }
-        return getPlayerData(playerID).getRank();
-    }
-
-    /**
-     * @param playerID The player UUID.
-     * @return return the player cash amount.
-     */
-    public static int getPlayerCash(UUID playerID) {
-        if (!playerexists(playerID)) {
-            return -1;
-        }
-        return getPlayerData(playerID).getCash();
-    }
-
-    /**
+     * This method compares 2 player teams and returns true if they are the same.
      * @param player1 The first player to get the race from.
      * @param player2 The second player to get the race from.
      * @return Return true if the teams are the same.
@@ -146,6 +133,6 @@ public class PlayerManager {
      * @return Return the found player.
      */
     private static Player getPlayerByUUIDFromServer(UUID playerID) {
-        return INSTANCE.getServer().getPlayer(playerID);
+        return SERVER.getPlayer(playerID);
     }
 }

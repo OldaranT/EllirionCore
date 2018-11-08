@@ -4,18 +4,24 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
-import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.dao.BasicDAO;
-import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.dao.PlayerDAO;
-import com.ellirion.core.database.model.PlayerModel;
-import com.ellirion.core.database.model.RaceModel;
+import com.ellirion.core.database.dao.PlotDAO;
+import com.ellirion.core.database.dao.RaceDAO;
+import com.ellirion.core.database.model.PlayerDBModel;
+import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotOwnerDBModel;
+import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.model.Point;
+import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.Logging;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,24 +32,29 @@ public class DatabaseManager {
     private Session session = null;
     private JSch jsch = new JSch();
 
-    // ssh connection
+    // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
 
-    // forwarding ports
+    // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
+    private String dbName;
 
+    // MongoDB interfacing.
     private MongoClient mc;
     private Morphia morphia;
     private Datastore datastore;
-    @Getter private PlayerDAO playerDAO;
-    private BasicDAO raceDAO;
+
+    // The DAO's
+    private PlayerDAO playerDAO;
+    private RaceDAO raceDAO;
+    private PlotDAO plotDAO;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -61,7 +72,7 @@ public class DatabaseManager {
 
         mapDataClasses();
 
-        datastore = morphia.createDatastore(mc, "EllirionCore");
+        datastore = morphia.createDatastore(mc, dbName);
         datastore.ensureIndexes();
 
         createDatabaseAccessObjects();
@@ -81,7 +92,7 @@ public class DatabaseManager {
             // tell the session to forward any request to our local port to the remote db server.
             session.setPortForwardingL(localPort, remoteHost, remotePort);
         } catch (JSchException e) {
-            printStackTrace(e);
+            Logging.printStackTrace(e);
         }
     }
 
@@ -99,46 +110,20 @@ public class DatabaseManager {
         remotePort = connectionConfig.getInt(forwardingHeader + "remotePort", 27017);
         localHost = connectionConfig.getString(forwardingHeader + "localHost", "localhost");
         remoteHost = connectionConfig.getString(forwardingHeader + "remoteHost", "localhost");
+        dbName = connectionConfig.getString(forwardingHeader + "DBName", "EllirionCore");
     }
 
     private void mapDataClasses() {
-        morphia.map(PlayerModel.class);
-        morphia.map(RaceModel.class);
+        morphia.map(PlayerDBModel.class);
+        morphia.map(RaceDBModel.class);
+        morphia.map(PlotDBModel.class);
+        morphia.map(PlotOwnerDBModel.class);
     }
 
     private void createDatabaseAccessObjects() {
-        playerDAO = new PlayerDAO(PlayerModel.class, datastore);
-        raceDAO = new BasicDAO(RaceModel.class, datastore);
-    }
-
-    /**
-     * Get all players from the database.
-     * @return return all the users.
-     */
-    public List<PlayerModel> getAllPlayers() {
-        return playerDAO.find().asList();
-    }
-
-    /**
-     * Get a specific player from the database.
-     * @param uuid the id of the player
-     * @return the player model
-     */
-    public PlayerModel getOnePlayer(UUID uuid) {
-        return (PlayerModel) playerDAO.findOne("_id", uuid);
-    }
-
-    public List<RaceModel> getAllRaces() {
-        return raceDAO.find().asList();
-    }
-
-    /**
-     * Get a specific race from the database.
-     * @param raceName The name of the race to fetch.
-     * @return return the found raceModel.
-     */
-    public RaceModel getSpecificRace(String raceName) {
-        return (RaceModel) raceDAO.findOne("_id", raceName);
+        playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
+        raceDAO = new RaceDAO(RaceDBModel.class, datastore);
+        plotDAO = new PlotDAO(PlotDBModel.class, datastore);
     }
 
     /**
@@ -149,13 +134,154 @@ public class DatabaseManager {
             session.delPortForwardingL(localPort);
             session.disconnect();
         } catch (JSchException e) {
-            printStackTrace(e);
+            Logging.printStackTrace(e);
         }
     }
 
-    private void printStackTrace(Exception e) {
-        StringWriter errors = new StringWriter();
-        e.printStackTrace(new PrintWriter(errors));
-        EllirionCore.getINSTANCE().getLogger().severe(errors.toString());
+    //region ===== RACE =====
+
+    /**
+     * This saves a new race to the Database.
+     * @param race The race to be stored in the database.
+     * @return Return the outcome of the operation.
+     */
+    public boolean createRace(Race race) {
+        return raceDAO.createRace(race);
     }
+
+    public List<RaceDBModel> getAllRaces() {
+        return raceDAO.getAllRaces();
+    }
+
+    /**
+     * Get a specific race from the database.
+     * @param raceID The UUID of the race to fetch.
+     * @return return the found raceModel.
+     */
+    public RaceDBModel getSpecificRace(UUID raceID) {
+        return raceDAO.getSpecificRace(raceID);
+    }
+
+    /**
+     * This updates the race in the DB.
+     * @param race The race to be updated.
+     * @return Return the result of the operation.
+     */
+    public boolean updateRace(Race race) {
+        return raceDAO.updateRace(race);
+    }
+
+    //endregion
+
+    //region ===== Player =====
+
+    /**
+     * Delete the race from the database.
+     * @param raceID The UUID of the race to delete.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteRace(UUID raceID) {
+        return raceDAO.deleteRace(raceID);
+    }
+
+    /**
+     * This function directs the create request to the playerDAO.
+     * @param player The player that owns the Data.
+     * @param playerData The Data of the player.
+     * @return Return if the creation was successful.
+     */
+    public boolean createPlayer(PlayerData playerData, Player player) {
+        return playerDAO.createPlayer(playerData, player);
+    }
+
+    /**
+     * Get all players from the database.
+     * @return return all the users.
+     */
+    public List<PlayerDBModel> getAllPlayers() {
+        return playerDAO.getAllPlayers();
+    }
+
+    /**
+     * Get a specific player from the database.
+     * @param uuid the id of the player
+     * @return the player model
+     */
+    public PlayerDBModel getOnePlayer(UUID uuid) {
+        return playerDAO.getSpecificPlayer(uuid);
+    }
+
+    /**
+     * This tells the playerDAO to update the given player with the given data.
+     * @param data The data to be transferred to the DB.
+     * @param player The player who owns the data.
+     * @return return the result of the operation.
+     */
+    public boolean updatePlayer(PlayerData data, Player player) {
+        return playerDAO.updatePlayer(data, player);
+    }
+
+    //endregion
+
+    //region ===== Plot =====
+
+    /**
+     * This creates a plot in the DB.
+     * @param plot The plot to be saved in the database.
+     * @return Return the result of the operation.
+     */
+    public boolean createPlot(Plot plot) {
+        return plotDAO.createPlot(plot);
+    }
+
+    /**
+     * This creates a plot in the DB from raw data.
+     * @param name name of the plot.
+     * @param plotCoord The plot coords class.
+     * @param plotSize Size of the plot when it was created.
+     * @param lowestCorner lowest point of the plot.
+     * @param highestCorner Highest point of the plot.
+     * @param worldUUID The id of the world the plot is placed in.
+     * @param worldName The name of the world the plot is saved in.
+     * @param plotOwnerID The plot owner UUID.
+     * @return Return the result of the operation.
+     */
+    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
+                              UUID worldUUID, String worldName, UUID plotOwnerID) {
+        return plotDAO.createPlot(name, plotCoord, plotSize, lowestCorner, highestCorner, worldUUID, worldName,
+                                  plotOwnerID);
+    }
+
+    public List<PlotDBModel> getAllPlots() {
+        return plotDAO.getAllPlots();
+    }
+
+    /**
+     * Get all the plots owned by the specified plot owner.
+     * @param plotOwnerID The UUID of the plot owner.
+     * @return Return the found plots.
+     */
+    public List<PlotDBModel> getPlotOwnerPlots(UUID plotOwnerID) {
+        return plotDAO.getAllPlotsFromPlotOwner(plotOwnerID);
+    }
+
+    /**
+     * Get the specified plot from the DB.
+     * @param plotCoord The plot coord corrisponding with the plot
+     * @return Return the found plot.
+     */
+    public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
+        return plotDAO.getSpecificPlot(plotCoord);
+    }
+
+    /**
+     * This updates the plot in the DB.
+     * @param plot The plot to update.
+     * @return Return the result of the operation.
+     */
+    public boolean updatePlot(Plot plot) {
+        return plotDAO.update(plot);
+    }
+
+    //endregion
 }

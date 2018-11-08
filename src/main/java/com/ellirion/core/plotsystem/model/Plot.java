@@ -41,7 +41,7 @@ public class Plot {
         this.plotSize = plotSize;
         this.world = world;
         this.worldUUID = worldUUID;
-        owner = Wilderness.getInstance();
+        setOwner(Wilderness.getInstance());
     }
 
     /**
@@ -49,8 +49,12 @@ public class Plot {
      * @param owner The new owner of the plot.
      */
     public void setOwner(PlotOwner owner) {
+        if (this.owner != null) {
+            this.owner.removePlot(plotCoord);
+        }
         this.owner = owner;
-        owner.addPlot(this);
+        owner.addPlot(plotCoord);
+        PlotManager.updatePlotInDB(this);
     }
 
     /**
