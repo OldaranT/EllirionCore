@@ -83,46 +83,42 @@ public class PlotManager {
      * @return Returns true if the plots are successfully created.
      */
     public static Boolean createPlots(World world, int mapRadius, int centerX, int centerZ) {
-        //return new Promise<Boolean>(f -> {
-            int mapCenterX = centerX * CHUNK_SIZE;
-            int mapCenterZ = centerZ * CHUNK_SIZE;
-            int currentPlot = 0;
-            int amountOfPlots = mapRadius * mapRadius * 4;
+        int mapCenterX = centerX * CHUNK_SIZE;
+        int mapCenterZ = centerZ * CHUNK_SIZE;
+        int currentPlot = 0;
+        int amountOfPlots = mapRadius * mapRadius * 4;
 
-            for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
-                for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
-                    currentPlot++;
-                    if (Math.floorMod(currentPlot, (amountOfPlots / 10)) == 0) {
-                        EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
+        for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
+            for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
+                currentPlot++;
+                if (Math.floorMod(currentPlot, (amountOfPlots / 10)) == 0) {
+                    EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
+                }
+
+                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
+
+                try {
+                    //If plot already exist skip it.
+                    if (SAVED_PLOTS.get(plotCoord) == null) {
+                        String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
+                        int currentX = startCountX * PLOT_SIZE + mapCenterX;
+                        int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
+
+                        Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
+                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
+                                                       currentZ + PLOT_SIZE - 1);
+
+                        SAVED_PLOTS.put(plotCoord,
+                                        new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
+                                                 world.getUID()));
                     }
-
-                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
-
-                    try {
-                        //If plot already exist skip it.
-                        if (SAVED_PLOTS.get(plotCoord) == null) {
-                            String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
-                            int currentX = startCountX * PLOT_SIZE + mapCenterX;
-                            int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
-
-                            Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
-                            Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
-                                                           currentZ + PLOT_SIZE - 1);
-
-                            SAVED_PLOTS.put(plotCoord,
-                                            new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
-                                                     world.getUID()));
-                        }
-                    } catch (Exception e) {
-                        Logging.printStackTrace(e);
-                        return false;
-                        //f.resolve(false);
-                    }
+                } catch (Exception e) {
+                    Logging.printStackTrace(e);
+                    return false;
                 }
             }
-            return true;
-            //f.resolve(true);
-        //}, true);
+        }
+        return true;
     }
 
     /**
