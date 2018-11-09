@@ -10,7 +10,6 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.util.Logging;
-import com.ellirion.util.async.Promise;
 
 import java.util.HashMap;
 
@@ -60,8 +59,8 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static Promise createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
-        return new Promise<Boolean>(f -> {
+    public static Boolean createPlots(World world, int plotSize, int mapRadius, int centerX, int centerZ) {
+        //return new Promise<Boolean>(f -> {
             int lowestBlock = 0;
             int highestBlock = 256;
 
@@ -91,12 +90,14 @@ public class PlotManager {
                         }
                     } catch (Exception e) {
                         Logging.printStackTrace(e);
-                        f.resolve(false);
+                        return false;
+                        //f.resolve(false);
                     }
                 }
             }
-            f.resolve(true);
-        }, true);
+            return true;
+            //f.resolve(true);
+        //}, true);
     }
 
     /**
