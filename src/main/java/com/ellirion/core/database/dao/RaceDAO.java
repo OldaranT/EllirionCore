@@ -1,7 +1,7 @@
 package com.ellirion.core.database.dao;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.dao.BasicDAO;
+import xyz.morphia.Datastore;
+import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
 
@@ -14,8 +14,8 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
     /**
      * Create a new RaceDAO.
-     * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
+     * @param entityClass the java class you want to persist using this DAO.
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO.
      */
     public RaceDAO(final Class<RaceDBModel> entityClass, final Datastore datastore) {
         super(entityClass, datastore);
@@ -57,5 +57,16 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         RaceDBModel model = getSpecificRace(race.getRaceUUID());
         model.update(race);
         return saveRace(model);
+    }
+
+    /**
+     * Deletes the race from the database.
+     * @param raceID The UUID of the race to delete.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteRace(UUID raceID) {
+        RaceDBModel race = findOne(id, raceID);
+        delete(race);
+        return true;
     }
 }

@@ -22,12 +22,10 @@ public class PlayerManager {
      * This class manages the players and creates new players when needed.
      * @param player The player UUID.
      * @param raceID The UUID of the race.
-     * @param rank The player rank.
-     * @param cash The player cash.
      * @return Return a boolean that indicates if creating the new player was a success.
      */
-    public static boolean newPlayer(Player player, UUID raceID, String rank, int cash) {
-        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID), rank, cash);
+    public static boolean newPlayer(Player player, UUID raceID) {
+        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
         if (raceID != null) {
             RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
         }
@@ -76,7 +74,7 @@ public class PlayerManager {
      */
     public static boolean setPlayerRace(UUID playerID, UUID raceID) {
         Player player = getPlayerByUUIDFromServer(playerID);
-        if (!(playerexists(playerID)) && !(newPlayer(player, raceID, "outsider", 0))) {
+        if (!(playerexists(playerID)) && !(newPlayer(player, raceID))) {
             return false;
         }
 
@@ -87,7 +85,9 @@ public class PlayerManager {
         if ((getPlayerRaceID(playerID) == null) && !(RaceManager.addPlayerToRace(playerID, raceID))) {
             return false;
         }
-        getPlayerData(playerID).setRace(RaceManager.getRaceByID(raceID));
+        PlayerData data = getPlayerData(playerID);
+        data.setRace(RaceManager.getRaceByID(raceID));
+        DATABASE_MANAGER.updatePlayer(data, player);
         return true;
     }
 
@@ -112,30 +112,6 @@ public class PlayerManager {
             return null;
         }
         return data.getRace();
-    }
-
-    /**
-     * This method get's the rank of the player.
-     * @param playerID The player UUID.
-     * @return return the player rank.
-     */
-    public static String getPlayerRank(UUID playerID) {
-        if (!playerexists(playerID)) {
-            return null;
-        }
-        return getPlayerData(playerID).getRank();
-    }
-
-    /**
-     * This method get's the cash amount of the player.
-     * @param playerID The player UUID.
-     * @return return the player cash amount.
-     */
-    public static int getPlayerCash(UUID playerID) {
-        if (!playerexists(playerID)) {
-            return -1;
-        }
-        return getPlayerData(playerID).getCash();
     }
 
     /**

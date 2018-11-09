@@ -49,8 +49,12 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
+        PlotManager.setPLOT_SIZE(plotSize);
+        PlotManager.setCENTER_OFFSET_X(centerX);
+        PlotManager.setCENTER_OFFSET_Z(centerZ);
+
         Promise<Boolean> createPlotsPromise = new Promise(f -> {
-            f.resolve(PlotManager.createPlots(player.getWorld(), plotSize, mapRadius, centerX, centerZ));
+            f.resolve(PlotManager.createPlots(player.getWorld(), mapRadius, centerX, centerZ));
         }, true);
         EllirionUtil util = (EllirionUtil) plugin.getServer().getPluginManager().getPlugin("EllirionUtil");
         util.schedulePromise(createPlotsPromise).then(f -> {

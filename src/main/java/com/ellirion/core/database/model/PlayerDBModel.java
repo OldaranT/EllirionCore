@@ -2,10 +2,10 @@ package com.ellirion.core.database.model;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Property;
+import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.Indexed;
+import xyz.morphia.annotations.Property;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.model.Race;
 
@@ -30,12 +30,9 @@ public class PlayerDBModel {
     /**
      * This class is the database object for the player data.
      * @param player The player who owns this data.
-     * @param cash the amount of cash the player has.
      * @param raceID the player race.
-     * @param rank the player rank
      */
-    public PlayerDBModel(final Player player, final int cash, final UUID raceID,
-                         final String rank) {
+    public PlayerDBModel(final Player player, final UUID raceID) {
         playerID = player.getUniqueId();
         ip = player.getAddress().getHostName();
         this.raceID = raceID;
