@@ -87,6 +87,9 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
      */
     public boolean update(Plot plot) {
         PlotDBModel dbModel = findOne(id, plot.getPlotCoord());
+        if (dbModel == null) {
+            return createPlot(plot);
+        }
         dbModel.update(plot);
         return savePlot(dbModel);
     }

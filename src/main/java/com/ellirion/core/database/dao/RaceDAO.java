@@ -55,6 +55,9 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      */
     public boolean updateRace(Race race) {
         RaceDBModel model = getSpecificRace(race.getRaceUUID());
+        if (model == null) {
+            return createRace(race);
+        }
         model.update(race);
         return saveRace(model);
     }
