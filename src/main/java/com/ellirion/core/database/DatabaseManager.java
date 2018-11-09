@@ -6,14 +6,16 @@ import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
+import xyz.morphia.Datastore;
+import xyz.morphia.Morphia;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.model.Point;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -25,30 +27,25 @@ import java.util.UUID;
 
 public class DatabaseManager {
 
+    private final Morphia morphia;
+    private final Datastore datastore;
     private FileConfiguration connectionConfig;
-
     private Session session = null;
     private JSch jsch = new JSch();
-
     // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
-
     // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
     private String dbName;
-
     // MongoDB interfacing.
     private MongoClient mc;
-    private Morphia morphia;
-    private Datastore datastore;
-
     // The DAO's
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
@@ -67,8 +64,13 @@ public class DatabaseManager {
         mc = new MongoClient(localHost, localPort);
 
         morphia = new Morphia();
-
-        mapDataClasses();
+        // This makes it so we can store empty lists and arrays in the database.
+        // The reason to do this is that, when you don't store it and then try to retrieve it,
+        // it will result in a null pointer for an array or list.
+        morphia.getMapper().getOptions().setStoreEmpties(true);
+        // This maps all the classes in the model package.
+        // This means that all the DBModels are being mapped.
+        morphia.mapPackage("model");
 
         datastore = morphia.createDatastore(mc, dbName);
         datastore.ensureIndexes();
@@ -115,6 +117,7 @@ public class DatabaseManager {
         morphia.map(PlayerDBModel.class);
         morphia.map(RaceDBModel.class);
         morphia.map(PlotDBModel.class);
+        morphia.map(PlotOwnerDBModel.class);
     }
 
     private void createDatabaseAccessObjects() {
@@ -134,6 +137,8 @@ public class DatabaseManager {
             Logging.printStackTrace(e);
         }
     }
+
+    //region ===== RACE =====
 
     /**
      * This saves a new race to the Database.
@@ -164,6 +169,19 @@ public class DatabaseManager {
      */
     public boolean updateRace(Race race) {
         return raceDAO.updateRace(race);
+    }
+
+    //endregion
+
+    //region ===== Player =====
+
+    /**
+     * Delete the race from the database.
+     * @param raceID The UUID of the race to delete.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteRace(UUID raceID) {
+        return raceDAO.deleteRace(raceID);
     }
 
     /**
@@ -203,6 +221,10 @@ public class DatabaseManager {
         return playerDAO.updatePlayer(data, player);
     }
 
+    //endregion
+
+    //region ===== Plot =====
+
     /**
      * This creates a plot in the DB.
      * @param plot The plot to be saved in the database.
@@ -214,12 +236,20 @@ public class DatabaseManager {
 
     /**
      * This creates a plot in the DB from raw data.
-     * @param plotCoord The plotCoord class corrisponding with the plot.
-     * @param plotOwnerID The UUID of the plotOwner.
+     * @param name name of the plot.
+     * @param plotCoord The plot coords class.
+     * @param plotSize Size of the plot when it was created.
+     * @param lowestCorner lowest point of the plot.
+     * @param highestCorner Highest point of the plot.
+     * @param worldUUID The id of the world the plot is placed in.
+     * @param worldName The name of the world the plot is saved in.
+     * @param plotOwnerID The plot owner UUID.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(PlotCoord plotCoord, UUID plotOwnerID) {
-        return plotDAO.createPlot(plotCoord, plotOwnerID);
+    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
+                              UUID worldUUID, String worldName, UUID plotOwnerID) {
+        return plotDAO.createPlot(name, plotCoord, plotSize, lowestCorner, highestCorner, worldUUID, worldName,
+                                  plotOwnerID);
     }
 
     public List<PlotDBModel> getAllPlots() {
@@ -252,4 +282,6 @@ public class DatabaseManager {
     public boolean updatePlot(Plot plot) {
         return plotDAO.update(plot);
     }
+
+    //endregion
 }

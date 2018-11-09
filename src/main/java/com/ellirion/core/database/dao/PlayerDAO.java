@@ -1,9 +1,9 @@
 package com.ellirion.core.database.dao;
 
 import org.bukkit.entity.Player;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.query.Query;
+import xyz.morphia.Datastore;
+import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
 
@@ -17,8 +17,8 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
 
     /**
      * Create a new PlayerDAO.
-     * @param entityClass the class of the POJO you want to persist using this DAO
-     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO
+     * @param entityClass the java class you want to persist using this DAO.
+     * @param datastore the Datastore which gives access to the MongoDB instance for this DAO.
      */
     public PlayerDAO(final Class<PlayerDBModel> entityClass, final Datastore datastore) {
         super(entityClass, datastore);
@@ -71,6 +71,9 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      */
     public boolean updatePlayer(PlayerData data, Player player) {
         PlayerDBModel playerDBModel = findOne(id, player.getUniqueId());
+        if (playerDBModel == null) {
+            return createPlayer(data, player);
+        }
         playerDBModel.update(data, player);
         return savePlayer(playerDBModel);
     }

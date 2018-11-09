@@ -11,15 +11,19 @@ import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
-import com.ellirion.core.race.command.DestroyRaceCommand;
+import com.ellirion.core.race.command.DeleteRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
+import com.ellirion.core.race.util.CreateRaceTabCompleter;
+import com.ellirion.core.race.util.RaceNameTabCompleter;
+import com.ellirion.core.util.Logging;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,9 +57,11 @@ public class EllirionCore extends JavaPlugin {
     public void onEnable() {
         registerCommands();
         registerEvents();
+        registerTabCompleters();
         createDBconnectionConfig();
         getLogger().info("Introduction is enabled.");
         dbManager = new DatabaseManager(dbConnectionConfig);
+        setup();
     }
 
     private void registerCommands() {
@@ -65,7 +71,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
-        getCommand("RemoveRace").setExecutor(new DestroyRaceCommand());
+        getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
 
         getCommand("GetGameState").setExecutor(new GetGameStateCommand());
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
@@ -112,6 +118,21 @@ public class EllirionCore extends JavaPlugin {
         } catch (IOException e) {
             getLogger().throwing(EllirionCore.class.toString(), "createDBconnectionConfig", e);
         }
+    }
+
+    private void setup() {
+        try {
+            //PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
+            getLogger().info(PlotManager.getCHUNK_SIZE() + "");
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+        }
+    }
+
+    private void registerTabCompleters() {
+        getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
+        getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
+        getCommand("joinRace").setTabCompleter(new RaceNameTabCompleter());
     }
 }
 

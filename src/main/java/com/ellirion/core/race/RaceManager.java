@@ -1,18 +1,24 @@
 package com.ellirion.core.race;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.StringHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -21,9 +27,10 @@ public class RaceManager {
 
     private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
+    @Getter private static Set<ChatColor> AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
     private static Race DEFAULT_RACE;
     private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
-    private static DatabaseManager DATABASE_MANAGAER = EllirionCore.getINSTANCE().getDbManager();
+    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
      * @param defaultRaceName The name of the default race.
@@ -37,7 +44,7 @@ public class RaceManager {
         Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY, null);
         RACES.put(race.getRaceUUID(), race);
         DEFAULT_RACE = race;
-        USED_COLORS.add(ChatColor.DARK_GRAY);
+        setColorToUsed(ChatColor.DARK_GRAY);
         RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return true;
     }
@@ -64,14 +71,14 @@ public class RaceManager {
 
         Race race = new Race(name, color, homePlot);
         RACES.putIfAbsent(race.getRaceUUID(), race);
-        USED_COLORS.add(color);
+        setColorToUsed(color);
         homePlot.setOwner(race);
         RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return createRaceInDB(race);
     }
 
     private static boolean createRaceInDB(Race race) {
-        return DATABASE_MANAGAER.createRace(race);
+        return DATABASE_MANAGER.createRace(race);
     }
 
     /**
@@ -228,14 +235,16 @@ public class RaceManager {
             PlayerManager.setPlayerRace(id, null);
         }
 
-        USED_COLORS.remove(race.getTeamColor());
+        setColorToAvailable(race.getTeamColor());
         RACES.remove(raceID);
 
-        for (Plot plot : race.getPlots()) {
+        for (final Iterator<PlotCoord> iterator = race.getPlotCoords().iterator(); iterator.hasNext();/**/) {
+            Plot plot = PlotManager.getPlotByCoordinate(iterator.next());
             plot.setOwner(Wilderness.getInstance());
         }
 
         RACE_ID_NAME.remove(raceID);
+        DATABASE_MANAGER.deleteRace(raceID);
         return true;
     }
 
@@ -245,5 +254,32 @@ public class RaceManager {
      */
     public static int getRaceCount() {
         return RACES.size();
+    }
+
+    private static void setColorToUsed(ChatColor color) {
+        USED_COLORS.add(color);
+        AVAILABLE_COLORS.remove(color);
+    }
+
+    private static void setColorToAvailable(ChatColor color) {
+        USED_COLORS.remove(color);
+        AVAILABLE_COLORS.add(color);
+    }
+
+    private static List<ChatColor> initAvailableColors() {
+        List<ChatColor> result = new ArrayList<>();
+        List<String> forbidden = Arrays.asList("§k", "§l", "§m", "§n", "§o", "§r");
+        for (ChatColor color : ChatColor.values()) {
+            if (forbidden.contains(color.toString())) {
+                continue;
+            }
+            result.add(color);
+        }
+
+        return result;
+    }
+
+    public static List<String> getAllRaceNames() {
+        return new ArrayList<>(RACE_ID_NAME.values());
     }
 }
