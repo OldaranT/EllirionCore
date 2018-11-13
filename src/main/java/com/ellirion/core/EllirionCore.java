@@ -122,7 +122,7 @@ public class EllirionCore extends JavaPlugin {
 
     private void setup() {
         try {
-            PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());\
+            PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
         } catch (Exception exception) {
             Logging.printStackTrace(exception);
         }
