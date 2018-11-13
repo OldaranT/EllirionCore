@@ -10,6 +10,7 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 
@@ -57,6 +58,8 @@ public class GetPlotMapCommand implements CommandExecutor {
                 builder.append(((Race) owner).getTeamColor()).append('+');
             } else if (allNeighbours[i].getOwner().equals(Wilderness.getInstance())) {      //If the neighbouring plot is wilderness
                 builder.append(ChatColor.GRAY).append('#');
+            } else if (allNeighbours[i].getOwner().equals(TradingCenter.getInstance())) {   //If the neighbouring plot is trading center
+                builder.append(ChatColor.GOLD).append('$');
             } else {                                                                        //neighbouring plot is enemy race
                 builder.append(((Race) allNeighbours[i].getOwner()).getTeamColor()).append('-');
             }

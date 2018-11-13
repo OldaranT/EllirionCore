@@ -45,4 +45,7 @@ commands:
   PlotMap:
       Description: Get a map of surrounding plots.
       usage: /plotmap
+  AssignTradingCenter:
+      Description: Assign trading center to be the owner of a plot
+      usage: /assigntradingcenter [<X> <Z>]
 depend: [EllirionUtil]
