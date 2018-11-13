@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.command.AssignTradingCenterCommand;
 import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
@@ -82,6 +83,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
+        getCommand("AssignTradingCenter").setExecutor(new AssignTradingCenterCommand());
     }
 
     private void registerEvents() {
