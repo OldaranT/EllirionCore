@@ -30,11 +30,11 @@ public class GetPlotCommand implements CommandExecutor {
 
         player.sendMessage("Size: " + plot.getPlotSize());
 
-        player.sendMessage("Lower Corner: " + plot.getLowestCorner().toString());
+        player.sendMessage("Lower Corner: " + plot.getBoundingBox().getPoint1().toString());
 
-        player.sendMessage("Highest Corner: " + plot.getHighestCorner().toString());
+        player.sendMessage("Highest Corner: " + plot.getBoundingBox().getPoint2().toString());
 
-        player.sendMessage("World: " + plot.getWorld().getName());
+        player.sendMessage("World: " + plot.getPlotCoord().getWorldName());
 
         player.sendMessage("Owner: \n" + plot.getOwner().getName());
 
