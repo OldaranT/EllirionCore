@@ -2,19 +2,15 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
-import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlotDBModel;
-import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 
 import java.util.List;
-import java.util.UUID;
 
 public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
     private String id = "_id";
-    private String plotOwnerIDColumn = "plotOwnerID";
 
     /**
      * Create a new PlotDAO.
@@ -41,20 +37,11 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
     /**
      * This creates a plot from raw data and not a plot object.
-     * @param name name of the plot.
      * @param plotCoord The plot coords class.
-     * @param plotSize Size of the plot when it was created.
-     * @param lowestCorner lowest point of the plot.
-     * @param highestCorner Highest point of the plot.
-     * @param worldUUID The id of the world the plot is placed in.
-     * @param worldName The name of the world the plot is saved in.
-     * @param plotOwnerID The plot owner UUID.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
-                              UUID worldUUID, String worldName, UUID plotOwnerID) {
-        return savePlot(new PlotDBModel(name, plotCoord, plotSize, lowestCorner,
-                                        highestCorner, worldUUID, worldName, plotOwnerID));
+    public boolean createPlot(PlotCoord plotCoord) {
+        return savePlot(new PlotDBModel(plotCoord));
     }
 
     /**
@@ -68,29 +55,5 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
     public List<PlotDBModel> getAllPlots() {
         return find().asList();
-    }
-
-    /**
-     * Get the plots belonging to a specific plot owner.
-     * @param plotOwnerID The UUID of the plotOwner.
-     * @return Return the found plots as a list.
-     */
-    public List<PlotDBModel> getAllPlotsFromPlotOwner(UUID plotOwnerID) {
-        Query query = createQuery().filter(plotOwnerIDColumn, plotOwnerID);
-        return find(query).asList();
-    }
-
-    /**
-     * Update the plot in the DB.
-     * @param plot The plot to update in the DB.
-     * @return Return the result of the operation.
-     */
-    public boolean update(Plot plot) {
-        PlotDBModel dbModel = findOne(id, plot.getPlotCoord());
-        if (dbModel == null) {
-            return createPlot(plot);
-        }
-        dbModel.update(plot);
-        return savePlot(dbModel);
     }
 }
