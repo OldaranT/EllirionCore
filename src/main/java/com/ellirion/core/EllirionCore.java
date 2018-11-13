@@ -15,6 +15,7 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
+import com.ellirion.core.plotsystem.command.GetPlotMapCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
@@ -65,14 +66,19 @@ public class EllirionCore extends JavaPlugin {
     }
 
     private void registerCommands() {
+        //Race
         getCommand("createRace").setExecutor(new CreateRaceCommand());
         getCommand("joinRace").setExecutor(new JoinRaceCommand());
+        getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
+        
+        //Plots
         getCommand("CreatePlots").setExecutor(new CreatePlotCommand(this));
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
-        getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
-
+        getCommand("PlotMap").setExecutor(new GetPlotMapCommand());
+        
+        //Gamemode
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
