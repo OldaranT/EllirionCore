@@ -117,7 +117,7 @@ public class PlotManager {
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
-                    return null;
+                    return new ArrayList<>();
                 }
             }
         }
