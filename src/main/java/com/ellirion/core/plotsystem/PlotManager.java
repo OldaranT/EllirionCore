@@ -13,6 +13,7 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,17 +84,20 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static Boolean createPlots(World world, int mapRadius, int centerX, int centerZ) {
+    public static List<Plot> createPlots(World world, int mapRadius, int centerX, int centerZ) {
         int mapCenterX = centerX * CHUNK_SIZE;
         int mapCenterZ = centerZ * CHUNK_SIZE;
         int currentPlot = 0;
         int amountOfPlots = mapRadius * mapRadius * 4;
+        int interval = 10;
+
         PLOT_SIZE = GameManager.getInstance().getPlotSize();
+        List<Plot> result = new ArrayList<>();
 
         for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
             for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
                 currentPlot++;
-                if (Math.floorMod(currentPlot, (amountOfPlots / 10)) == 0) {
+                if (amountOfPlots > interval && Math.floorMod(currentPlot, (amountOfPlots / interval)) == 0) {
                     EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                 }
 
@@ -102,34 +106,22 @@ public class PlotManager {
                 try {
                     //If plot already exist skip it.
                     if (SAVED_PLOTS.get(plotCoord) == null) {
-                        String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
+                        String name = plotCoord.toString();
                         int currentX = startCountX * PLOT_SIZE + mapCenterX;
                         int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
 
                         Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
                         Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
                                                        currentZ + PLOT_SIZE - 1);
-
-                        SAVED_PLOTS.put(plotCoord,
-                                        new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
-                                                 world.getUID()));
+                        result.add(new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world));
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
-                    return false;
+                    return new ArrayList<>();
                 }
             }
         }
-        return true;
-    }
-
-    /**
-     * This updates the plot in the database.
-     * @param plot The plot to update in the database.
-     * @return Return the result of the operation.
-     */
-    public static boolean updatePlotInDB(Plot plot) {
-        return DATABASE_MANAEGR.updatePlot(plot);
+        return result;
     }
 }
 

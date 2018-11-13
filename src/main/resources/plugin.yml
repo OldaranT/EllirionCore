@@ -33,4 +33,16 @@ commands:
       Description: Removes the specified race.
       usage: /rr <raceName>
       aliases: [rr]
+  BeginGamemode:
+      Description: Begin creating a gamemode.
+      usage: /begingamemode
+  GameState:
+      Description: Get the current game state.
+      usage: /gamestate
+  NextStep:
+      Description: Advance the gamemode to the next setup step.
+      usage: /nextstep
+  PlotMap:
+      Description: Get a map of surrounding plots.
+      usage: /plotmap
 depend: [EllirionUtil]

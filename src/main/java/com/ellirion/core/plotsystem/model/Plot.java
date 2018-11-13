@@ -7,8 +7,6 @@ import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 
-import java.util.UUID;
-
 public class Plot {
 
     //@Getter private UUID id;
@@ -18,7 +16,6 @@ public class Plot {
     @Getter private Point lowestCorner;
     @Getter private Point highestCorner;
     @Getter private World world;
-    @Getter private UUID worldUUID;
     @Getter private PlotOwner owner;
 
     /**
@@ -29,18 +26,16 @@ public class Plot {
      * @param highestCorner Highest corner of the cubic form of the plot.
      * @param plotSize The size of the plot.
      * @param world The world that the plot is located in.
-     * @param worldUUID The UUID of the world the plot is located in.
      */
     public Plot(final String name, final PlotCoord plotCoord, final Point lowestCorner, final Point highestCorner,
                 final int plotSize,
-                final World world, final UUID worldUUID) {
+                final World world) {
         this.name = name;
         this.plotCoord = plotCoord;
         this.lowestCorner = lowestCorner;
         this.highestCorner = highestCorner;
         this.plotSize = plotSize;
         this.world = world;
-        this.worldUUID = worldUUID;
         setOwner(Wilderness.getInstance());
     }
 
@@ -54,7 +49,6 @@ public class Plot {
         }
         this.owner = owner;
         owner.addPlot(plotCoord);
-        PlotManager.updatePlotInDB(this);
     }
 
     /**
