@@ -6,9 +6,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.util.EllirionUtil;
 import com.ellirion.util.async.Promise;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class CreatePlotCommand implements CommandExecutor {
 
@@ -49,12 +55,17 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
-        PlotManager.setPLOT_SIZE(plotSize);
+        GameManager.getInstance().setPlotSize(plotSize);
         PlotManager.setCENTER_OFFSET_X(centerX);
         PlotManager.setCENTER_OFFSET_Z(centerZ);
 
         Promise<Boolean> createPlotsPromise = new Promise(f -> {
-            f.resolve(PlotManager.createPlots(player.getWorld(), mapRadius, centerX, centerZ));
+            List<Plot> plots = PlotManager.createPlots(player.getWorld(), mapRadius, centerX, centerZ);
+            HashMap<PlotCoord, Plot> plotMap = PlotManager.getSavedPlots();
+            for (Plot plot : plots) {
+                plotMap.put(plot.getPlotCoord(), plot);
+            }
+            f.resolve(plots != null);
         }, true);
         EllirionUtil util = (EllirionUtil) plugin.getServer().getPluginManager().getPlugin("EllirionUtil");
         util.schedulePromise(createPlotsPromise).then(f -> {

@@ -274,4 +274,8 @@ public class RaceManager {
     public static List<String> getAllRaceNames() {
         return new ArrayList<>(RACE_ID_NAME.values());
     }
+
+    public static int getRaceCount() {
+        return RACES.size();
+    }
 }
