@@ -7,6 +7,7 @@ import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -87,6 +88,7 @@ public class PlotManager {
         int mapCenterZ = centerZ * CHUNK_SIZE;
         int currentPlot = 0;
         int amountOfPlots = mapRadius * mapRadius * 4;
+        PLOT_SIZE = GameManager.getInstance().getPlotSize();
 
         for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
             for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
