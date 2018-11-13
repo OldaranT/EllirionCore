@@ -1,9 +1,9 @@
 package com.ellirion.core.database.dao;
 
 import org.bukkit.entity.Player;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.query.Query;
+import xyz.morphia.Datastore;
+import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
 
@@ -71,6 +71,9 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      */
     public boolean updatePlayer(PlayerData data, Player player) {
         PlayerDBModel playerDBModel = findOne(id, player.getUniqueId());
+        if (playerDBModel == null) {
+            return createPlayer(data, player);
+        }
         playerDBModel.update(data, player);
         return savePlayer(playerDBModel);
     }

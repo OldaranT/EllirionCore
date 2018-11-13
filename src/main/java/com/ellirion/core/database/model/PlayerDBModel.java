@@ -2,10 +2,10 @@ package com.ellirion.core.database.model;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
-import org.mongodb.morphia.annotations.Property;
+import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.Indexed;
+import xyz.morphia.annotations.Property;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.model.Race;
 

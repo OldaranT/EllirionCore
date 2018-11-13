@@ -15,7 +15,7 @@ import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
-import com.ellirion.core.race.command.DestroyRaceCommand;
+import com.ellirion.core.race.command.DeleteRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
 import com.ellirion.core.race.util.CreateRaceTabCompleter;
@@ -68,7 +68,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
-        getCommand("RemoveRace").setExecutor(new DestroyRaceCommand());
+        getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
     }
 
     private void registerEvents() {

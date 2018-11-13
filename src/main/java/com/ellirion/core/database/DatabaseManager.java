@@ -6,8 +6,8 @@ import com.jcraft.jsch.Session;
 import com.mongodb.MongoClient;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
+import xyz.morphia.Datastore;
+import xyz.morphia.Morphia;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
@@ -26,30 +26,25 @@ import java.util.UUID;
 
 public class DatabaseManager {
 
+    private final Morphia morphia;
+    private final Datastore datastore;
     private FileConfiguration connectionConfig;
-
     private Session session = null;
     private JSch jsch = new JSch();
-
     // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
-
     // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
     private String dbName;
-
     // MongoDB interfacing.
     private MongoClient mc;
-    private Morphia morphia;
-    private Datastore datastore;
-
     // The DAO's
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
@@ -68,8 +63,13 @@ public class DatabaseManager {
         mc = new MongoClient(localHost, localPort);
 
         morphia = new Morphia();
-
-        mapDataClasses();
+        // This makes it so we can store empty lists and arrays in the database.
+        // The reason to do this is that, when you don't store it and then try to retrieve it,
+        // it will result in a null pointer for an array or list.
+        morphia.getMapper().getOptions().setStoreEmpties(true);
+        // This maps all the classes in the model package.
+        // This means that all the DBModels are being mapped.
+        morphia.mapPackage("model");
 
         datastore = morphia.createDatastore(mc, dbName);
         datastore.ensureIndexes();

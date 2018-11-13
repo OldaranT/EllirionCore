@@ -11,7 +11,6 @@ import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.util.Logging;
-import com.ellirion.util.async.Promise;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,12 +82,11 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static Promise createPlots(World world, int mapRadius, int centerX, int centerZ) {
-        return new Promise<Boolean>(f -> {
-            int mapCenterX = centerX * CHUNK_SIZE;
-            int mapCenterZ = centerZ * CHUNK_SIZE;
-            int currentPlot = 0;
-            int amountOfPlots = mapRadius * mapRadius * 4;
+    public static Boolean createPlots(World world, int mapRadius, int centerX, int centerZ) {
+        int mapCenterX = centerX * CHUNK_SIZE;
+        int mapCenterZ = centerZ * CHUNK_SIZE;
+        int currentPlot = 0;
+        int amountOfPlots = mapRadius * mapRadius * 4;
             int interval = 10;
 
             for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
@@ -98,7 +96,7 @@ public class PlotManager {
                         EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                     }
 
-                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
+                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
 
                     try {
                         //If plot already exist skip it.
@@ -107,21 +105,20 @@ public class PlotManager {
                             int currentX = startCountX * PLOT_SIZE + mapCenterX;
                             int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
 
-                            Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
-                            Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
-                                                           currentZ + PLOT_SIZE - 1);
+                        Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
+                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
+                                                       currentZ + PLOT_SIZE - 1);
 
                             SAVED_PLOTS.put(plotCoord,
                                             new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world));
-                        }
-                    } catch (Exception e) {
-                        Logging.printStackTrace(e);
-                        f.resolve(false);
                     }
+                } catch (Exception e) {
+                    Logging.printStackTrace(e);
+                    return false;
                 }
             }
-            f.resolve(true);
-        }, true);
+        }
+        return true;
     }
 }
 
