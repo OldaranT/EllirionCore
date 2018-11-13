@@ -1,8 +1,8 @@
 package com.ellirion.core.database.dao;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.dao.BasicDAO;
-import org.mongodb.morphia.query.Query;
+import xyz.morphia.Datastore;
+import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -87,6 +87,9 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
      */
     public boolean update(Plot plot) {
         PlotDBModel dbModel = findOne(id, plot.getPlotCoord());
+        if (dbModel == null) {
+            return createPlot(plot);
+        }
         dbModel.update(plot);
         return savePlot(dbModel);
     }

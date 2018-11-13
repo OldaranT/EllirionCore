@@ -1,10 +1,10 @@
 package com.ellirion.core.database.model;
 
 import lombok.Getter;
-import org.mongodb.morphia.annotations.Embedded;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-import org.mongodb.morphia.annotations.Indexed;
+import xyz.morphia.annotations.Embedded;
+import xyz.morphia.annotations.Entity;
+import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
