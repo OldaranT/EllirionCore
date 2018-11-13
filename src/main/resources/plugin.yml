@@ -39,4 +39,7 @@ commands:
   GameState:
       Description: Get the current game state.
       usage: /gamestate
+  NextStep:
+      Description: Advance the gamemode to the next setup step.
+      usage: /nextstep
 depend: [EllirionUtil]
