@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.util.EllirionUtil;
 import com.ellirion.util.async.Promise;
@@ -49,7 +50,7 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
-        PlotManager.setPLOT_SIZE(plotSize);
+        GameManager.getInstance().setPlotSize(plotSize);
         PlotManager.setCENTER_OFFSET_X(centerX);
         PlotManager.setCENTER_OFFSET_Z(centerZ);
 

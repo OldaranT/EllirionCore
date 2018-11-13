@@ -16,9 +16,11 @@ public class GameManager {
     }
 
     private static GameManager INSTANCE;
+    @Getter private int gameID;
     @Getter private GameState state;
     private Step[] setupSteps;
     private int currentStep;
+    @Getter @Setter private int plotSize;
 
     private GameManager() {
         state = GameState.NOT_STARTED;
@@ -53,8 +55,8 @@ public class GameManager {
      * Get the current setup step.
      * @return the current setup step
      */
-    public String currentStep() {
-        return setupSteps[currentStep].getMessage();
+    public String currentStepMessage() {
+        return getCurrentStep().getMessage();
     }
 
     /**
@@ -101,7 +103,7 @@ public class GameManager {
         StringBuilder sb = new StringBuilder(20);
         sb.append("Current game state: ").append(state.name());
         if (state == GameState.SETUP) {
-            sb.append("\nCurrent step:\n-").append(currentStep());
+            sb.append("\nCurrent step:\n-").append(currentStepMessage());
         }
         return sb.toString();
     }
