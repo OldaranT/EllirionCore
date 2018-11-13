@@ -64,7 +64,6 @@ public class PlotDBModel {
         Point highestCorner = new Point(maxX, PlotManager.getHIGHEST_Y(), maxZ);
         String name = plotCoord.toString();
 
-        return new Plot(name, plotCoord, lowestCorner, highestCorner, plotSize,
-                        EllirionCore.getINSTANCE().getServer().getWorld(plotCoord.getWorldName()));
+        return new Plot(name, plotCoord, lowestCorner, highestCorner, plotSize, worldToCheck);
     }
 }
