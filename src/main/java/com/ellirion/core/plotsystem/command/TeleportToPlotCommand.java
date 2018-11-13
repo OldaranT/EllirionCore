@@ -41,7 +41,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
             return true;
         }
 
-        Location teleportToLocation = plot.getCenterLocation(player.getLocation().getYaw(),
+        Location teleportToLocation = plot.getCenterLocation(player.getWorld(), player.getLocation().getYaw(),
                                                              player.getLocation().getPitch());
 
         player.teleport(teleportToLocation);
