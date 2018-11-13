@@ -248,6 +248,14 @@ public class RaceManager {
         return true;
     }
 
+    /**
+     * Get the amount of races.
+     * @return the amount of races.
+     */
+    public static int getRaceCount() {
+        return RACES.size();
+    }
+
     private static void setColorToUsed(ChatColor color) {
         USED_COLORS.add(color);
         AVAILABLE_COLORS.remove(color);
