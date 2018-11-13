@@ -28,14 +28,6 @@ public class PlotDBModel {
     }
 
     /**
-     * The overloaded constructor.
-     * @param plot The plot to be saved.
-     */
-    public PlotDBModel(final Plot plot) {
-        plotCoord = plot.getPlotCoord();
-    }
-
-    /**
      * Default constructor used by morphia.
      */
     public PlotDBModel() {

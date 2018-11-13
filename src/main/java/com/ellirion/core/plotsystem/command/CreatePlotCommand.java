@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -39,7 +40,8 @@ public class CreatePlotCommand implements CommandExecutor {
 
         GameManager manager = GameManager.getInstance();
         if (manager.getState() != GameManager.GameState.SETUP || !manager.currentStepMessage().equals("Create plots")) {
-            player.sendMessage(ChatColor.DARK_RED + "You can only create plots during the SETUP stage of the gamemode.");
+            player.sendMessage(
+                    ChatColor.DARK_RED + "You can only create plots during the SETUP stage of the gamemode.");
             return true;
         }
 
@@ -70,6 +72,7 @@ public class CreatePlotCommand implements CommandExecutor {
             HashMap<PlotCoord, Plot> plotMap = PlotManager.getSavedPlots();
             for (Plot plot : plots) {
                 plotMap.put(plot.getPlotCoord(), plot);
+                EllirionCore.getINSTANCE().getDbManager().savePlot(plot.getPlotCoord());
             }
             f.resolve(plots != null);
         }, true);

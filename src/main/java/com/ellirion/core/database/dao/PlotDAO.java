@@ -3,7 +3,6 @@ package com.ellirion.core.database.dao;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.PlotDBModel;
-import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 
 import java.util.List;
@@ -27,20 +26,11 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
     }
 
     /**
-     * This creates a new plot in the database.
-     * @param plot The plot to be saved.
-     * @return Return the result of the operation.
-     */
-    public boolean createPlot(Plot plot) {
-        return savePlot(new PlotDBModel(plot));
-    }
-
-    /**
-     * This creates a plot from raw data and not a plot object.
+     * This saves a plot from raw data and not a plot object to the database.
      * @param plotCoord The plot coords class.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(PlotCoord plotCoord) {
+    public boolean savePlot(PlotCoord plotCoord) {
         return savePlot(new PlotDBModel(plotCoord));
     }
 

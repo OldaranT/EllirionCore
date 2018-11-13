@@ -70,14 +70,14 @@ public class EllirionCore extends JavaPlugin {
         getCommand("createRace").setExecutor(new CreateRaceCommand());
         getCommand("joinRace").setExecutor(new JoinRaceCommand());
         getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
-        
+
         //Plots
         getCommand("CreatePlots").setExecutor(new CreatePlotCommand(this));
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
         getCommand("PlotMap").setExecutor(new GetPlotMapCommand());
-        
+
         //Gamemode
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
         getCommand("GameState").setExecutor(new GetGameStateCommand());
@@ -128,6 +128,7 @@ public class EllirionCore extends JavaPlugin {
 
     private void setup() {
         try {
+            PlotManager.setPLOT_SIZE(128);
             PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
         } catch (Exception exception) {
             Logging.printStackTrace(exception);
