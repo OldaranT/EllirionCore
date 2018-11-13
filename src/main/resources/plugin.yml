@@ -33,4 +33,7 @@ commands:
       Description: Removes the specified race.
       usage: /rr <raceName>
       aliases: [rr]
+  BeginGamemode:
+      Description: Begin creating a gamemode.
+      usage: /begingamemode
 depend: [EllirionUtil]
