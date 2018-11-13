@@ -8,10 +8,11 @@ import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.util.model.BoundingBox;
+import com.ellirion.util.model.Point;
 
 @Entity(value = "plot", noClassnameStored = true)
 public class PlotDBModel {
@@ -62,8 +63,9 @@ public class PlotDBModel {
 
         Point lowestCorner = new Point(minX, PlotManager.getLOWEST_Y(), minZ);
         Point highestCorner = new Point(maxX, PlotManager.getHIGHEST_Y(), maxZ);
+        BoundingBox boundingBox = new BoundingBox(lowestCorner, highestCorner);
         String name = plotCoord.toString();
 
-        return new Plot(name, plotCoord, lowestCorner, highestCorner, plotSize, worldToCheck);
+        return new Plot(name, plotCoord, boundingBox, plotSize);
     }
 }
