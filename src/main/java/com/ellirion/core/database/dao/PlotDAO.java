@@ -2,7 +2,6 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
-import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -56,29 +55,5 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
 
     public List<PlotDBModel> getAllPlots() {
         return find().asList();
-    }
-
-    /**
-     * Get the plots belonging to a specific plot owner.
-     * @param plotOwnerID The UUID of the plotOwner.
-     * @return Return the found plots as a list.
-     */
-    public List<PlotDBModel> getAllPlotsFromPlotOwner(UUID plotOwnerID) {
-        Query query = createQuery().filter(plotOwnerIDColumn, plotOwnerID);
-        return find(query).asList();
-    }
-
-    /**
-     * Update the plot in the DB.
-     * @param plot The plot to update in the DB.
-     * @return Return the result of the operation.
-     */
-    public boolean update(Plot plot) {
-        PlotDBModel dbModel = findOne(id, plot.getPlotCoord());
-        if (dbModel == null) {
-            return createPlot(plot);
-        }
-        dbModel.update(plot);
-        return savePlot(dbModel);
     }
 }
