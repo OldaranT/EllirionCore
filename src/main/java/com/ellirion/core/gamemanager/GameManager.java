@@ -1,10 +1,7 @@
 package com.ellirion.core.gamemanager;
 
 import lombok.Getter;
-<<<<<<< HEAD
 import lombok.Setter;
-=======
->>>>>>> Add_Game_Manager
 import com.ellirion.core.gamemanager.setup.Step;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.race.RaceManager;

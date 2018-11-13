@@ -38,7 +38,7 @@ public class CreatePlotCommand implements CommandExecutor {
         Player player = (Player) commandSender;
 
         GameManager manager = GameManager.getInstance();
-        if (manager.getState() != GameManager.GameState.SETUP || !manager.currentStep().equals("Create plots")) {
+        if (manager.getState() != GameManager.GameState.SETUP || !manager.currentStepMessage().equals("Create plots")) {
             player.sendMessage(ChatColor.DARK_RED + "You can only create plots during the SETUP stage of the gamemode.");
             return true;
         }

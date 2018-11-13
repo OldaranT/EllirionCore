@@ -5,10 +5,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
+import com.ellirion.core.race.model.Race;
 
 public class GetPlotMapCommand implements CommandExecutor {
 
@@ -29,9 +32,9 @@ public class GetPlotMapCommand implements CommandExecutor {
         PlotCoord coord = plot.getPlotCoord();
         Plot[] corners = new Plot[]{
                 PlotManager.getPlotByCoordinate(coord.translate(-1, 1)),
-                PlotManager.getPlotByCoordinate(coord.translate(1, -1)),
+                PlotManager.getPlotByCoordinate(coord.translate(1, 1)),
                 PlotManager.getPlotByCoordinate(coord.translate(-1, -1)),
-                PlotManager.getPlotByCoordinate(coord.translate(1, 1))
+                PlotManager.getPlotByCoordinate(coord.translate(1, -1))
         };
 
         Plot[] allNeighbours = new Plot[]{
@@ -48,16 +51,17 @@ public class GetPlotMapCommand implements CommandExecutor {
         //Build map string
         StringBuilder builder = new StringBuilder();
         int current = 0;
+        PlotOwner owner = PlayerManager.getPlayerRace(player.getUniqueId());
         for (int i = 0; i < allNeighbours.length; i++) {
-            if (allNeighbours[i].getOwner().equals(plot.getOwner())) {
-                builder.append(ChatColor.GREEN).append('+');
-            } else if (allNeighbours[i].getOwner() == Wilderness.getInstance()) {
+            if (allNeighbours[i].getOwner().equals(owner)) {                                //If the neighbouring plot has the same owner
+                builder.append(((Race) owner).getTeamColor()).append('+');
+            } else if (allNeighbours[i].getOwner().equals(Wilderness.getInstance())) {      //If the neighbouring plot is wilderness
                 builder.append(ChatColor.GRAY).append('#');
-            } else {
-                builder.append(ChatColor.RED).append('-');
+            } else {                                                                        //neighbouring plot is enemy race
+                builder.append(((Race) allNeighbours[i].getOwner()).getTeamColor()).append('-');
             }
             if (i == 3) {
-                builder.append(ChatColor.GREEN).append('+');
+                builder.append(ChatColor.GREEN).append('O');
                 current++;
             }
             if ((current + 1) % 3 == 0) {
