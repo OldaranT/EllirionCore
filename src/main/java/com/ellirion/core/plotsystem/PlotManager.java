@@ -2,6 +2,8 @@ package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.server.v1_12_R1.Tuple;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
@@ -10,6 +12,10 @@ import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.PlotOwner;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
+import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 import com.ellirion.util.model.BoundingBox;
 import com.ellirion.util.model.Point;
@@ -125,6 +131,52 @@ public class PlotManager {
             }
         }
         return result;
+    }
+
+    /**
+     * Get a plot map.
+     * @param center the center plot of the plot map
+     * @param radius the radius of the plot map
+     * @param owner the owner that generates the plot map
+     * @return the plot map
+     */
+    public static String getPlotMap(Plot center, int radius, PlotOwner owner) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                if (i == 0 && j == 0) {
+                    builder.append(ChatColor.WHITE).append('O');
+                    continue;
+                }
+
+                PlotCoord coord = center.getPlotCoord().translate(j, i);
+                Plot plot = getPlotByCoordinate(coord);
+
+                //Get color + symbol for plot
+                if (plot != null) {
+                    Tuple<ChatColor, Character> chatData = getPlotMapSymbol(owner, plot);
+                    builder.append(chatData.a()).append(chatData.b());
+                } else {
+                    builder.append(ChatColor.BLACK).append('#');
+                }
+            }
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
+
+    private static Tuple<ChatColor, Character> getPlotMapSymbol(PlotOwner a, Plot b) {
+        if (b.getOwner().equals(Wilderness.getInstance())) {
+            return new Tuple(ChatColor.GRAY, '#');
+        }
+        if (b.getOwner().equals(TradingCenter.getInstance())) {
+            return new Tuple(ChatColor.GOLD, '$');
+        }
+        if (a.equals(b.getOwner())) {
+            return new Tuple(ChatColor.GREEN, '+');
+        }
+
+        return new Tuple(((Race) b.getOwner()).getTeamColor(), '-');
     }
 }
 
