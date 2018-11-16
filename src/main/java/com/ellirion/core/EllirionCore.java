@@ -10,6 +10,8 @@ import com.ellirion.core.gamemanager.command.AssignTradingCenterCommand;
 import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
+import com.ellirion.core.groundwar.command.CreateGroundwarCommand;
+import com.ellirion.core.groundwar.command.WagerPlotCommand;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.PlotManager;
@@ -84,6 +86,10 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
         getCommand("AssignTradingCenter").setExecutor(new AssignTradingCenterCommand());
+
+        //GroundWar
+        getCommand("CreateGroundWar").setExecutor(new CreateGroundwarCommand());
+        getCommand("WagerPlot").setExecutor(new WagerPlotCommand());
     }
 
     private void registerEvents() {

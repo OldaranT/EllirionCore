@@ -48,4 +48,10 @@ commands:
   AssignTradingCenter:
       Description: Assign trading center to be the owner of a plot
       usage: /assigntradingcenter [<X> <Z>]
+  CreateGroundWar:
+      Description: create a ground war
+      usage: /creategroundwar
+  WagerPlot:
+      Description: wager a plot in your ground war
+      usage: /wagerplot [<plot-x> <plot-z>]
 depend: [EllirionUtil]
