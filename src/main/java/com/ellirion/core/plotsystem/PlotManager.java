@@ -8,10 +8,11 @@ import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.gamemanager.GameManager;
-import com.ellirion.core.model.Point;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.util.Logging;
+import com.ellirion.util.model.BoundingBox;
+import com.ellirion.util.model.Point;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +114,9 @@ public class PlotManager {
                         Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
                         Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
                                                        currentZ + PLOT_SIZE - 1);
-                        result.add(new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world));
+                        BoundingBox boundingBox = new BoundingBox(lowerPoint, highestPoint);
+
+                        result.add(new Plot(name, plotCoord, boundingBox, PLOT_SIZE));
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
