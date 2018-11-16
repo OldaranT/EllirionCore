@@ -81,19 +81,30 @@ public class GameManager {
      * @return whether the currentStep was advanced.
      */
     public Boolean nextStep() {
-        if (currentStep >= setupSteps.length) {
+        //setupSteps.length - 1 because last step is confirm
+        if (currentStep >= setupSteps.length - 1) {
             return false;
         }
         Step step = setupSteps[currentStep];
         if (step.requirementComplete(new Object())) {
             currentStep++;
-            if (currentStep >= setupSteps.length) {
-                state = GameState.SAVING;
-            }
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * Confirm the gamemode.
+     */
+    public void confirmGamemode() {
+        //Validate gamemode?
+
+        changeState(GameState.SAVING);
+
+        //TODO Save the game
+
+        changeState(GameState.IN_PROGRESS);
     }
 
     /**
