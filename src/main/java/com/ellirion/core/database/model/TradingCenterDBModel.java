@@ -76,9 +76,9 @@ public class TradingCenterDBModel {
     }
 
     /**
-     * This adds a single plot coord to the owned plots list
-     * @param coord
-     * @return
+     * This adds a single plot coord to the owned plots list.
+     * @param coord The coord of the plot to add.
+     * @return return the result of the operation.
      */
     public boolean addPlot(PlotCoord coord) {
         if (ownedPlots.contains(coord)) {

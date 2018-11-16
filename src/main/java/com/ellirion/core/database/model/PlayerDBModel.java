@@ -18,8 +18,6 @@ public class PlayerDBModel {
 
     @Id @Indexed @Getter private UUID playerID;
 
-    @Getter private String ip;
-
     @Getter private UUID raceID;
 
     @Property("ip_history")
@@ -39,7 +37,7 @@ public class PlayerDBModel {
      */
     public PlayerDBModel(final Player player, final UUID raceID) {
         playerID = player.getUniqueId();
-        ip = player.getAddress().getHostName();
+        String ip = player.getAddress().getHostName();
         this.raceID = raceID;
         ipHistory.add(ip);
     }
@@ -51,18 +49,10 @@ public class PlayerDBModel {
      */
     public PlayerDBModel(final PlayerData data, final Player player) {
         playerID = player.getUniqueId();
-        ip = player.getAddress().getHostName();
+        String ip = player.getAddress().getHostName();
         Race race = data.getRace();
         setRaceID(race);
         ipHistory.add(ip);
-    }
-
-    /**
-     * @param ip the current ip
-     */
-    public void setIp(String ip) {
-        ipHistory.add(ip);
-        this.ip = ip;
     }
 
     public Set<String> getIpHistory() {
@@ -76,7 +66,7 @@ public class PlayerDBModel {
      */
     public void update(PlayerData data, Player player) {
         setRaceID(data.getRace());
-        setIp(player.getAddress().getHostName());
+        ipHistory.add(player.getAddress().getHostName());
     }
 
     private void setRaceID(Race race) {

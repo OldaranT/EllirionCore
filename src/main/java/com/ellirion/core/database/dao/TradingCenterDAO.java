@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> {
 
-    private final String id = "_id";
+    private static final String id = "_id";
 
     /**
      * This creates a new TradingCenterDAO.

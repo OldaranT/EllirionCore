@@ -66,6 +66,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @param raceID The race ID of the players their race.
      * @return Return the list of players in that race.
      */
+    @SuppressWarnings("Duplicates")
     public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
         try {
             Query query = createQuery().filter(raceIDColumn, raceID);
