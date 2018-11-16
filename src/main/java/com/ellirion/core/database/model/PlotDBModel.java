@@ -20,18 +20,18 @@ public class PlotDBModel {
     @Id @Indexed @Embedded @Getter private PlotCoord plotCoord;
 
     /**
+     * Default constructor used by morphia.
+     */
+    public PlotDBModel() {
+        // this is intentionally empty.
+    }
+
+    /**
      * This class is the database object for the plots.
      * @param plotCoord The plotCoordinates according to the custom grid.
      */
     public PlotDBModel(final PlotCoord plotCoord) {
         this.plotCoord = plotCoord;
-    }
-
-    /**
-     * Default constructor used by morphia.
-     */
-    public PlotDBModel() {
-        // this is intentionally empty.
     }
 
     /**

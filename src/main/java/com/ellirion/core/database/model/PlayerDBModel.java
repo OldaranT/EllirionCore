@@ -16,9 +16,7 @@ import java.util.UUID;
 @Entity(value = "Player", noClassnameStored = true)
 public class PlayerDBModel {
 
-    @Id
-    @Indexed
-    @Getter private UUID playerID;
+    @Id @Indexed @Getter private UUID playerID;
 
     @Getter private String ip;
 
@@ -26,6 +24,13 @@ public class PlayerDBModel {
 
     @Property("ip_history")
     private Set<String> ipHistory = new HashSet<>();
+
+    /**
+     * This constructor is used by morphia.
+     */
+    public PlayerDBModel() {
+        // empty on purpose.
+    }
 
     /**
      * This class is the database object for the player data.
@@ -50,13 +55,6 @@ public class PlayerDBModel {
         Race race = data.getRace();
         setRaceID(race);
         ipHistory.add(ip);
-    }
-
-    /**
-     * This constructor is used by morphia.
-     */
-    public PlayerDBModel() {
-        // empty on purpose.
     }
 
     /**

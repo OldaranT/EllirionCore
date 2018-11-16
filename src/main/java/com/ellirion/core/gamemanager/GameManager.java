@@ -2,21 +2,18 @@ package com.ellirion.core.gamemanager;
 
 import lombok.Getter;
 import lombok.Setter;
+import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.gamemanager.setup.Step;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.race.RaceManager;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class GameManager {
-    public enum GameState {
-        NOT_STARTED,
-        SETUP,
-        IN_PROGRESS,
-        SAVING,
-        LOADING,
-        FINISHED
-    }
 
     private static GameManager INSTANCE;
+    @Getter private static Set<Game> GAMES;
     @Getter private int gameID;
     @Getter private GameState state;
     private Step[] setupSteps;
@@ -25,6 +22,7 @@ public class GameManager {
 
     private GameManager() {
         state = GameState.NOT_STARTED;
+        GAMES = new HashSet<>();
         init();
     }
 
@@ -100,6 +98,7 @@ public class GameManager {
      * Create a string of the current game state.
      * @return the current game state
      */
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(20);
         sb.append("Current game state: ").append(state.name());
@@ -107,5 +106,14 @@ public class GameManager {
             sb.append("\nCurrent step:\n-").append(currentStepMessage());
         }
         return sb.toString();
+    }
+
+    public enum GameState {
+        NOT_STARTED,
+        SETUP,
+        IN_PROGRESS,
+        SAVING,
+        LOADING,
+        FINISHED
     }
 }

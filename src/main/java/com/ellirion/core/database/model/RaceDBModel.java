@@ -39,6 +39,27 @@ public class RaceDBModel {
     @Getter private List<PlotCoord> ownedPlots;
 
     /**
+     * This is a default constructor used by morphia.
+     */
+    public RaceDBModel() {
+        // empty on purpose.
+    }
+    /**
+     * An overloaded version of the constructor that can use a race instead of multiple variables.
+     * @param race The race that needs to be saved.
+     * @param gameID The game ID this race belongs to.
+     */
+    public RaceDBModel(final Race race, final int gameID) {
+        raceID = race.getRaceUUID();
+        raceName = race.getName();
+        players = race.getPlayers();
+        color = race.getTeamColor().toString();
+        homePlotCoord = race.getHomePlot().getPlotCoord();
+        ownedPlots = new ArrayList<>(race.getPlotCoords());
+        this.gameID = gameID;
+    }
+
+    /**
      * This class is the database object for the race data.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
@@ -60,21 +81,6 @@ public class RaceDBModel {
     }
 
     /**
-     * An overloaded version of the constructor that can use a race instead of multiple variables.
-     * @param race The race that needs to be saved.
-     * @param gameID The game ID this race belongs to.
-     */
-    public RaceDBModel(final Race race, final int gameID) {
-        raceID = race.getRaceUUID();
-        raceName = race.getName();
-        players = race.getPlayers();
-        color = race.getTeamColor().toString();
-        homePlotCoord = race.getHomePlot().getPlotCoord();
-        ownedPlots = new ArrayList<>(race.getPlotCoords());
-        this.gameID = gameID;
-    }
-
-    /**
      * An overloaded constructor for when you don't have players.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
@@ -86,13 +92,6 @@ public class RaceDBModel {
     public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord,
                        final List<PlotCoord> ownedPlots, final int gameID) {
         this(raceID, raceName, new HashSet<>(), color, homePlotCoord, ownedPlots, gameID);
-    }
-
-    /**
-     * This is a default constructor used by morphia.
-     */
-    public RaceDBModel() {
-        // empty on purpose.
     }
 
     /**
