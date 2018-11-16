@@ -8,13 +8,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
+import com.ellirion.core.database.dao.GameDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
+import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
-import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
@@ -45,6 +47,7 @@ public class DatabaseManager {
     // MongoDB interfacing.
     private MongoClient mc;
     // The DAO's
+    private GameDAO gameDAO;
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
     private PlotDAO plotDAO;
@@ -111,14 +114,8 @@ public class DatabaseManager {
         dbName = connectionConfig.getString(forwardingHeader + "DBName", "EllirionCore");
     }
 
-    private void mapDataClasses() {
-        morphia.map(PlayerDBModel.class);
-        morphia.map(RaceDBModel.class);
-        morphia.map(PlotDBModel.class);
-        morphia.map(PlotOwnerDBModel.class);
-    }
-
     private void createDatabaseAccessObjects() {
+        gameDAO = new GameDAO(GameDBModel.class, datastore);
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
         plotDAO = new PlotDAO(PlotDBModel.class, datastore);
@@ -135,6 +132,50 @@ public class DatabaseManager {
             Logging.printStackTrace(e);
         }
     }
+
+    //region ==== Game ====
+
+    /**
+     * This saves a new game to the Database.
+     * @param game The game to be stored in the database.
+     * @return Return the outcome of the operation.
+     */
+    public boolean createGame(Game game) {
+        return gameDAO.createGame(game);
+    }
+
+    /**
+     * Get a specific game from the database.
+     * @param gameID The UUID of the game to fetch.
+     * @return return the found gameDBModel.
+     */
+    public GameDBModel getSpecificGame(UUID gameID) {
+        return gameDAO.getSpecificGame(gameID);
+    }
+
+    public List<GameDBModel> getAllGames() {
+        return gameDAO.getAllGames();
+    }
+
+    /**
+     * This updates the game in the DB.
+     * @param game The game to be updated.
+     * @return Return the result of the operation.
+     */
+    public boolean updateGame(Game game) {
+        return gameDAO.updateRace(game);
+    }
+
+    /**
+     * This deletes the game from the DB.
+     * @param game The game to be deleted.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteGame(Game game) {
+        return gameDAO.deleteGame(game.getGameID());
+    }
+
+    //endregion
 
     //region ===== RACE =====
 

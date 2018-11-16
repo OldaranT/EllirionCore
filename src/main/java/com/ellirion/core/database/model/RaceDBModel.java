@@ -30,6 +30,25 @@ public class RaceDBModel {
     @Getter @Setter private PlotCoord homePlotCoord;
 
     /**
+     * This is a default constructor used by morphia.
+     */
+    public RaceDBModel() {
+        // empty on purpose.
+    }
+
+    /**
+     * An overloaded version of the constructor that can use a race instead of multiple variables.
+     * @param race The race that needs to be saved.
+     */
+    public RaceDBModel(final Race race) {
+        raceID = race.getRaceUUID();
+        raceName = race.getName();
+        players = race.getPlayers();
+        color = race.getTeamColor().toString();
+        homePlotCoord = race.getHomePlot().getPlotCoord();
+    }
+
+    /**
      * This class is the database object for the race data.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
@@ -47,18 +66,6 @@ public class RaceDBModel {
     }
 
     /**
-     * An overloaded version of the constructor that can use a race instead of multiple variables.
-     * @param race The race that needs to be saved.
-     */
-    public RaceDBModel(final Race race) {
-        raceID = race.getRaceUUID();
-        raceName = race.getName();
-        players = race.getPlayers();
-        color = race.getTeamColor().toString();
-        homePlotCoord = race.getHomePlot().getPlotCoord();
-    }
-
-    /**
      * An overloaded constructor for when you don't have players.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
@@ -67,13 +74,6 @@ public class RaceDBModel {
      */
     public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord) {
         this(raceID, raceName, new HashSet<>(), color, homePlotCoord);
-    }
-
-    /**
-     * This is a default constructor used by morphia.
-     */
-    public RaceDBModel() {
-        // empty on purpose.
     }
 
     /**

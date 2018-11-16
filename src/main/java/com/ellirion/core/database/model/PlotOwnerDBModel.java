@@ -23,13 +23,10 @@ public class PlotOwnerDBModel {
     @Getter private List<PlotCoord> plotCoords;
 
     /**
-     * This is the database version of the Plot owner.
-     * @param plotOwnerID The UUID of the plot owner.
-     * @param plotCoords The plot coords of the owned plots.
+     * Empty constructor used by morphia.
      */
-    public PlotOwnerDBModel(final UUID plotOwnerID, final List<PlotCoord> plotCoords) {
-        this.plotOwnerID = plotOwnerID;
-        this.plotCoords = plotCoords;
+    public PlotOwnerDBModel() {
+        // empty on on purpose.
     }
 
     /**
@@ -43,10 +40,13 @@ public class PlotOwnerDBModel {
     }
 
     /**
-     * Empty constructor used by morphia.
+     * This is the database version of the Plot owner.
+     * @param plotOwnerID The UUID of the plot owner.
+     * @param plotCoords The plot coords of the owned plots.
      */
-    public PlotOwnerDBModel() {
-        // empty on on purpose.
+    public PlotOwnerDBModel(final UUID plotOwnerID, final List<PlotCoord> plotCoords) {
+        this.plotOwnerID = plotOwnerID;
+        this.plotCoords = plotCoords;
     }
 
     /**
