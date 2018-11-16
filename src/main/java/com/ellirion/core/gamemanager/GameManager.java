@@ -13,7 +13,7 @@ import java.util.Set;
 public class GameManager {
 
     private static GameManager INSTANCE;
-    @Getter private static Set<Game> games;
+    @Getter private static Set<Game> GAMES;
     @Getter private int gameID;
     @Getter private GameState state;
     private Step[] setupSteps;
@@ -22,7 +22,7 @@ public class GameManager {
 
     private GameManager() {
         state = GameState.NOT_STARTED;
-        games = new HashSet<>();
+        GAMES = new HashSet<>();
         init();
     }
 

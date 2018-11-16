@@ -5,12 +5,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.Logging;
 import com.ellirion.core.util.StringHelper;
 
 import java.util.ArrayList;
@@ -75,6 +77,25 @@ public class RaceManager {
         homePlot.setOwner(race);
         RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         return createRaceInDB(race);
+    }
+
+    /**
+     * Add a race from the database.
+     * @param databaseRace The database object to be converted into a race.
+     * @return return true if the operation is successful.
+     */
+    public static boolean addRace(RaceDBModel databaseRace) {
+        try {
+            Race race = new Race(databaseRace);
+            RACES.putIfAbsent(race.getRaceUUID(), race);
+            setColorToUsed(race.getTeamColor());
+            race.getHomePlot().setOwner(race);
+            RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
+            return true;
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return false;
+        }
     }
 
     private static boolean createRaceInDB(Race race) {

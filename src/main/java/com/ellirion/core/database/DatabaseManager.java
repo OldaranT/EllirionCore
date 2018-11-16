@@ -16,12 +16,14 @@ import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +54,9 @@ public class DatabaseManager {
     private RaceDAO raceDAO;
     private PlotDAO plotDAO;
 
+    // The gameMode ID.
+    private int gameID;
+
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
      * @param configuration The connection configuration that contains the data to be used to connect.
@@ -77,6 +82,7 @@ public class DatabaseManager {
         datastore.ensureIndexes();
 
         createDatabaseAccessObjects();
+        gameID = GameManager.getInstance().getGameID();
     }
 
     private void connectToServer() {
@@ -185,7 +191,7 @@ public class DatabaseManager {
      * @return Return the outcome of the operation.
      */
     public boolean createRace(Race race) {
-        return raceDAO.createRace(race);
+        return raceDAO.createRace(race, gameID);
     }
 
     public List<RaceDBModel> getAllRaces() {
@@ -207,7 +213,21 @@ public class DatabaseManager {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race) {
-        return raceDAO.updateRace(race);
+        return raceDAO.updateRace(race, gameID);
+    }
+
+    /**
+     * This get's all the races from a specific game from the database.
+     * @param gameID The ID of the game to get the races from.
+     * @return return the found list or an empty list but not a null to prevent NPE's.
+     */
+    public List<RaceDBModel> getAllGameRaces(int gameID) {
+        try {
+            return raceDAO.getGameRaces(gameID);
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return new ArrayList<>();
+        }
     }
 
     //endregion

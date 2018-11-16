@@ -5,6 +5,7 @@ import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +24,20 @@ public abstract class PlotOwner {
             this.raceUUID = UUID.randomUUID();
         } else {
             this.raceUUID = raceUUID;
+        }
+    }
+
+    /**
+     * This constructor exists to turn database objects back into working Plot Owners.
+     * @param raceUUID The UUID of the race.
+     * @param plotCoords The Owned plots.
+     */
+    public PlotOwner(final UUID raceUUID, final List<PlotCoord> plotCoords) {
+        this(raceUUID);
+        if (plotCoords == null) {
+            this.plotCoords = new HashSet<>();
+        } else {
+            this.plotCoords.addAll(plotCoords);
         }
     }
 
