@@ -29,10 +29,11 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
     /**
      * This creates a new race in the database.
      * @param race The race that is to be added to the DB.
+     * @param gameID The ID of the game where the race is from.
      * @return Return the result of the operation.
      */
-    public boolean createRace(Race race) {
-        return saveRace(new RaceDBModel(race));
+    public boolean createRace(Race race, int gameID) {
+        return saveRace(new RaceDBModel(race, gameID));
     }
 
     /**
@@ -51,12 +52,13 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
     /**
      * This method updates a race in the database.
      * @param race The race that should be updated in the DB.
+     * @param gameID The ID of the game where this race belongs.
      * @return Return the result of the operation.
      */
-    public boolean updateRace(Race race) {
+    public boolean updateRace(Race race, int gameID) {
         RaceDBModel model = getSpecificRace(race.getRaceUUID());
         if (model == null) {
-            return createRace(race);
+            return createRace(race, gameID);
         }
         model.update(race);
         return saveRace(model);

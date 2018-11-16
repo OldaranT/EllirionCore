@@ -13,8 +13,8 @@ import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
-import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -50,6 +50,9 @@ public class DatabaseManager {
     private RaceDAO raceDAO;
     private PlotDAO plotDAO;
 
+    // The gameMode ID.
+    private int gameID;
+
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
      * @param configuration The connection configuration that contains the data to be used to connect.
@@ -75,6 +78,7 @@ public class DatabaseManager {
         datastore.ensureIndexes();
 
         createDatabaseAccessObjects();
+        gameID = GameManager.getInstance().getGameID();
     }
 
     private void connectToServer() {
@@ -112,13 +116,6 @@ public class DatabaseManager {
         dbName = connectionConfig.getString(forwardingHeader + "DBName", "EllirionCore");
     }
 
-    private void mapDataClasses() {
-        morphia.map(PlayerDBModel.class);
-        morphia.map(RaceDBModel.class);
-        morphia.map(PlotDBModel.class);
-        morphia.map(PlotOwnerDBModel.class);
-    }
-
     private void createDatabaseAccessObjects() {
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
@@ -145,7 +142,7 @@ public class DatabaseManager {
      * @return Return the outcome of the operation.
      */
     public boolean createRace(Race race) {
-        return raceDAO.createRace(race);
+        return raceDAO.createRace(race, gameID);
     }
 
     public List<RaceDBModel> getAllRaces() {
@@ -167,7 +164,7 @@ public class DatabaseManager {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race) {
-        return raceDAO.updateRace(race);
+        return raceDAO.updateRace(race, gameID);
     }
 
     //endregion
