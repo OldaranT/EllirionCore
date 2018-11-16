@@ -9,6 +9,7 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.util.PlayerScoreboardManager;
 import com.ellirion.core.util.StringHelper;
 
 import java.util.Arrays;
@@ -54,6 +55,7 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
         sendmsg(raceName + " created");
+        PlayerScoreboardManager.updateBoards();
         return true;
     }
 

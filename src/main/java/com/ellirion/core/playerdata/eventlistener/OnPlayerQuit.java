@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.util.PlayerScoreboardManager;
 
 public class OnPlayerQuit implements Listener {
 
@@ -17,5 +18,7 @@ public class OnPlayerQuit implements Listener {
         event.setQuitMessage("bye bye " + player.getName());
         player.getServer().broadcastMessage(player.getName() + " logged out");
         PlayerManager.updatePlayer(player.getUniqueId());
+
+        PlayerScoreboardManager.removePlayerScoreboard(player.getUniqueId());
     }
 }
