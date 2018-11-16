@@ -51,4 +51,7 @@ commands:
   ConfirmGamemode:
       Description: Confirm the gamemode and start saving configuration.
       usage: /confirmgamemode while on the last step of the setup
+  CancelSetup:
+      Description: Cancel the gamemode setup.
+      usage: /cancelsetup during the gamemode setup phase
 depend: [EllirionUtil]

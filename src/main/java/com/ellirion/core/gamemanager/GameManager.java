@@ -41,6 +41,7 @@ public class GameManager {
 
     private void init() {
         createSteps();
+        state = GameState.NOT_STARTED;
     }
 
     private void createSteps() {
@@ -105,6 +106,15 @@ public class GameManager {
         //TODO Save the game
 
         changeState(GameState.IN_PROGRESS);
+    }
+
+    /**
+     * Cancel the gamemode setup.
+     */
+    public void cancelSetup() {
+        init();
+        PlotManager.removeAllPlots();
+        RaceManager.removeAllRaces();
     }
 
     /**

@@ -165,6 +165,13 @@ public class PlotManager {
         return builder.toString();
     }
 
+    /**
+     * Remove all plots.
+     */
+    public static void removeAllPlots() {
+        SAVED_PLOTS.clear();
+    }
+
     private static Tuple<ChatColor, Character> getPlotMapSymbol(PlotOwner a, Plot b) {
         if (b.getOwner().equals(Wilderness.getInstance())) {
             return new Tuple(ChatColor.GRAY, '#');
