@@ -20,6 +20,7 @@ import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -164,6 +165,20 @@ public class DatabaseManager {
      */
     public boolean updateRace(Race race) {
         return raceDAO.updateRace(race, gameID);
+    }
+
+    /**
+     * This get's all the races from a specific game from the database.
+     * @param gameID The ID of the game to get the races from.
+     * @return return the found list or an empty list but not a null to prevent NPE's.
+     */
+    public List<RaceDBModel> getAllGameRaces(int gameID) {
+        try {
+            return raceDAO.getGameRaces(gameID);
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return new ArrayList<>();
+        }
     }
 
     //endregion

@@ -2,6 +2,7 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
     private String id = "_id";
+    private String gameIDColumn = "gameID";
 
     /**
      * Create a new RaceDAO.
@@ -47,6 +49,16 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
     public List<RaceDBModel> getAllRaces() {
         return find().asList();
+    }
+
+    /**
+     * This get's all the races from a specific game.
+     * @param gameID The ID of the game to get the races from.
+     * @return return the found races.
+     */
+    public List<RaceDBModel> getGameRaces(int gameID) {
+        Query query = createQuery().filter(gameIDColumn, gameID);
+        return find(query).asList();
     }
 
     /**
