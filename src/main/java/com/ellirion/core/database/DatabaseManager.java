@@ -11,12 +11,15 @@ import xyz.morphia.Morphia;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
+import com.ellirion.core.database.dao.TradingCenterDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 
@@ -31,24 +34,29 @@ public class DatabaseManager {
     private FileConfiguration connectionConfig;
     private Session session = null;
     private JSch jsch = new JSch();
+
     // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
+
     // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
     private String dbName;
+
     // MongoDB interfacing.
     private MongoClient mc;
+
     // The DAO's
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
     private PlotDAO plotDAO;
+    private TradingCenterDAO tradingCenterDAO;
 
     // The gameMode ID.
     private int gameID;
@@ -120,6 +128,7 @@ public class DatabaseManager {
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
         plotDAO = new PlotDAO(PlotDBModel.class, datastore);
+        tradingCenterDAO = new TradingCenterDAO(TradingCenterDBModel.class, datastore);
     }
 
     /**
@@ -255,6 +264,19 @@ public class DatabaseManager {
      */
     public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
         return plotDAO.getSpecificPlot(plotCoord);
+    }
+
+    //endregion
+
+    //region ===== Trading Center =====
+
+    /**
+     * Save the trading center to the database.
+     * @param tradingCenter The trading center to save.
+     * @return return the result of the operation.
+     */
+    public boolean saveTradingCenter(TradingCenter tradingCenter) {
+        return tradingCenterDAO.saveTradingCenter(tradingCenter, gameID);
     }
 
     //endregion
