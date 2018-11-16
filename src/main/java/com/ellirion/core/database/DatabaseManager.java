@@ -16,7 +16,6 @@ import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
-import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
@@ -222,21 +221,12 @@ public class DatabaseManager {
     //region ===== Plot =====
 
     /**
-     * This creates a plot in the DB.
-     * @param plot The plot to be saved in the database.
-     * @return Return the result of the operation.
-     */
-    public boolean createPlot(Plot plot) {
-        return plotDAO.createPlot(plot);
-    }
-
-    /**
-     * This creates a plot in the DB from raw data.
+     * This saves a plot from raw data and not a plot object to the database.
      * @param plotCoord The plot coords class.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(PlotCoord plotCoord) {
-        return plotDAO.createPlot(plotCoord);
+    public boolean savePlot(PlotCoord plotCoord) {
+        return plotDAO.savePlot(plotCoord);
     }
 
     public List<PlotDBModel> getAllPlots() {

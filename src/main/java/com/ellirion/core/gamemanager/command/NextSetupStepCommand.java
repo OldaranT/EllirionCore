@@ -25,6 +25,5 @@ public class NextSetupStepCommand implements CommandExecutor {
         commandSender.sendMessage(manager.toString());
 
         return true;
-
     }
 }

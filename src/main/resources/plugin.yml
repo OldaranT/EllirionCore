@@ -42,4 +42,7 @@ commands:
   NextStep:
       Description: Advance the gamemode to the next setup step.
       usage: /nextstep
+  PlotMap:
+      Description: Get a map of surrounding plots.
+      usage: /plotmap
 depend: [EllirionUtil]
