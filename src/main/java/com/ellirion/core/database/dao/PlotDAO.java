@@ -4,6 +4,7 @@ import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.util.Logging;
 
 import java.util.List;
 
@@ -20,9 +21,15 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
+    @SuppressWarnings({"Duplicates", "CPD-START"})
     private boolean savePlot(PlotDBModel plot) {
-        save(plot);
-        return true;
+        try {
+            save(plot);
+            return true;
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return false;
+        }
     }
 
     /**

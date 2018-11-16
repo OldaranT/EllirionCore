@@ -5,7 +5,9 @@ import xyz.morphia.dao.BasicDAO;
 import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,9 +25,15 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
+    @SuppressWarnings({"Duplicates", "CPD-START"})
     private boolean saveRace(RaceDBModel race) {
-        save(race);
-        return true;
+        try {
+            save(race);
+            return true;
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return false;
+        }
     }
 
     /**
@@ -56,9 +64,15 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param gameID The ID of the game to get the races from.
      * @return return the found races.
      */
+    @SuppressWarnings("Duplicates")
     public List<RaceDBModel> getGameRaces(int gameID) {
-        Query query = createQuery().filter(gameIDColumn, gameID);
-        return find(query).asList();
+        try {
+            Query query = createQuery().filter(gameIDColumn, gameID);
+            return find(query).asList();
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -82,8 +96,13 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean deleteRace(UUID raceID) {
-        RaceDBModel race = findOne(id, raceID);
-        delete(race);
-        return true;
+        try {
+            RaceDBModel model = findOne(id, raceID);
+            delete(model);
+            return true;
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return false;
+        }
     }
 }

@@ -6,7 +6,9 @@ import xyz.morphia.dao.BasicDAO;
 import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,9 +26,15 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
+    @SuppressWarnings({"Duplicates", "CPD-START"})
     private boolean savePlayer(PlayerDBModel player) {
-        save(player);
-        return true;
+        try {
+            save(player);
+            return true;
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return false;
+        }
     }
 
     /**
@@ -59,8 +67,13 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @return Return the list of players in that race.
      */
     public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
-        Query query = createQuery().filter(raceIDColumn, raceID);
-        return find(query).asList();
+        try {
+            Query query = createQuery().filter(raceIDColumn, raceID);
+            return find(query).asList();
+        } catch (Exception exception) {
+            Logging.printStackTrace(exception);
+            return new ArrayList<>();
+        }
     }
 
     /**
