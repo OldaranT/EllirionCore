@@ -5,8 +5,8 @@ import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.gamemanager.model.Game;
-import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +23,7 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
+    //TODO check with crhis.
     private boolean saveGame(GameDBModel game) {
         return GenericTryCatch.tryCatch(() -> save(game));
         //        try {
@@ -76,14 +77,15 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      * @param gameID The UUID of the game to delete.
      * @return Return the result of the operation.
      */
-    public boolean deleteGame(UUID gameID) {
-        try {
-            GameDBModel model = findOne(id, gameID);
-            delete(model);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+    public boolean deleteGame(UUID gameID) { //TODO check this with chris.
+        return GenericTryCatch.tryCatch(() -> delete(findOne(id, gameID)));
+        //        try {
+        //            GameDBModel model = findOne(id, gameID);
+        //            delete(model);
+        //            return true;
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return false;
+        //        }
     }
 }

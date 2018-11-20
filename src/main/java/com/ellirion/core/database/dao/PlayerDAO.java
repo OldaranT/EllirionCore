@@ -3,11 +3,9 @@ package com.ellirion.core.database.dao;
 import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
-import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.playerdata.model.PlayerData;
-import com.ellirion.core.util.Logging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,15 +67,19 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @param raceID The race ID of the players their race.
      * @return Return the list of players in that race.
      */
-    @SuppressWarnings("Duplicates")
+    //    @SuppressWarnings("Duplicates")
     public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
-        try {
-            Query query = createQuery().filter(raceIDColumn, raceID);
-            return find(query).asList();
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return new ArrayList<>();
-        }
+        List<PlayerDBModel> result = new ArrayList<>();
+        //        Query query = createQuery().filter(raceIDColumn, raceID);
+        GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()));
+        return result;
+        //        try {
+        //            Query query = createQuery().filter(raceIDColumn, raceID);
+        //            return find(query).asList();
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return new ArrayList<>();
+        //        }
     }
 
     /**

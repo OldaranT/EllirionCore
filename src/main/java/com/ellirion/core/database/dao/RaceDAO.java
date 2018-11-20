@@ -2,7 +2,6 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
-import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.race.model.Race;
@@ -67,15 +66,19 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param gameID The ID of the game to get the races from.
      * @return return the found races.
      */
-    @SuppressWarnings("Duplicates")
+    //    @SuppressWarnings("Duplicates")
+    // TODO: check this try catch with chris.
     public List<RaceDBModel> getGameRaces(int gameID) {
-        try {
-            Query query = createQuery().filter(gameIDColumn, gameID);
-            return find(query).asList();
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return new ArrayList<>();
-        }
+        final List<RaceDBModel> result = new ArrayList<>();
+        GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()));
+        return result;
+        //        try {
+        //            Query query = createQuery().filter(gameIDColumn, gameID);
+        //            return find(query).asList();
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return new ArrayList<>();
+        //        }
     }
 
     /**
