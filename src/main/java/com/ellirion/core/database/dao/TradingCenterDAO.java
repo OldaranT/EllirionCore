@@ -3,6 +3,7 @@ package com.ellirion.core.database.dao;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.TradingCenterDBModel;
+import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.util.Logging;
 
@@ -22,15 +23,16 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
         super(entityClass, datastore);
     }
 
-    @SuppressWarnings({"Duplicates", "CPD-START"})
+    @SuppressWarnings({"Duplicates"})
     private boolean saveTradingCenter(TradingCenterDBModel tradingCenterDBModel) {
-        try {
-            save(tradingCenterDBModel);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return GenericTryCatch.tryCatch(() -> save(tradingCenterDBModel));
+        //        try {
+        //            save(tradingCenterDBModel);
+        //            return true;
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return false;
+        //        }
     }
 
     /**

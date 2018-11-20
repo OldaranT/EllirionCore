@@ -3,8 +3,8 @@ package com.ellirion.core.database.dao;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.plotsystem.model.PlotCoord;
-import com.ellirion.core.util.Logging;
 
 import java.util.List;
 
@@ -21,15 +21,17 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    @SuppressWarnings({"Duplicates", "CPD-START"})
+    //    @SuppressWarnings({"Duplicates", "CPD-START"})
+    //TODO: validate generic try and catch method with chris.
     private boolean savePlot(PlotDBModel plot) {
-        try {
-            save(plot);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return GenericTryCatch.tryCatch(() -> save(plot));
+        //        try {
+        //            save(plot);
+        //            return true;
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return false;
+        //        }
     }
 
     /**

@@ -5,6 +5,7 @@ import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlayerDBModel;
+import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.util.Logging;
 
@@ -26,15 +27,17 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    @SuppressWarnings({"Duplicates", "CPD-START"})
+    //    @SuppressWarnings({"Duplicates", "CPD-START"})
+    // TODO: validate generic try and catch with chris. If this is aproved remove commented code.
     private boolean savePlayer(PlayerDBModel player) {
-        try {
-            save(player);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return GenericTryCatch.tryCatch(() -> save(player));
+        //        try {
+        //            save(player);
+        //            return true;
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return false;
+        //        }
     }
 
     /**

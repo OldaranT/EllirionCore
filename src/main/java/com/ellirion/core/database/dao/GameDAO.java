@@ -3,6 +3,7 @@ package com.ellirion.core.database.dao;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.GameDBModel;
+import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.util.Logging;
 
@@ -23,14 +24,15 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
     }
 
     private boolean saveGame(GameDBModel game) {
-        try {
-            save(game);
-            return true;
-        } catch (Exception exception) {
-
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return GenericTryCatch.tryCatch(() -> save(game));
+        //        try {
+        //            save(game);
+        //            return true;
+        //        } catch (Exception exception) {
+        //
+        //            Logging.printStackTrace(exception);
+        //            return false;
+        //        }
     }
 
     /**

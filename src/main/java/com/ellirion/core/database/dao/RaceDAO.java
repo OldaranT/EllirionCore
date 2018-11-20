@@ -4,6 +4,7 @@ import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 
@@ -25,15 +26,17 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    @SuppressWarnings({"Duplicates", "CPD-START"})
+    //    @SuppressWarnings({"Duplicates", "CPD-START"})
+    //TODO: validate the try and catch with chris. If approved then remove commented code.
     private boolean saveRace(RaceDBModel race) {
-        try {
-            save(race);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return GenericTryCatch.tryCatch(() -> save(race));
+        //        try {
+        //            save(race);
+        //            return true;
+        //        } catch (Exception exception) {
+        //            Logging.printStackTrace(exception);
+        //            return false;
+        //        }
     }
 
     /**
