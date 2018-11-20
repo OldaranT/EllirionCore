@@ -6,9 +6,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+
+import java.util.UUID;
 
 public class TeleportToPlotCommand implements CommandExecutor {
 
@@ -20,6 +23,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
+        UUID gameID = GameManager.getGAME_ID();
 
         // Check if a name was entered
         int xCord, zCord;
@@ -32,7 +36,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
             return true;
         }
 
-        PlotCoord plotCoord = new PlotCoord(xCord, zCord, player.getWorld().getName());
+        PlotCoord plotCoord = new PlotCoord(gameID, xCord, zCord, player.getWorld().getName());
 
         Plot plot = PlotManager.getPlotByCoordinate(plotCoord);
 

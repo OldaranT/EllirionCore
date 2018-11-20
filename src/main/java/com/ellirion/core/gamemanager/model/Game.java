@@ -1,6 +1,7 @@
 package com.ellirion.core.gamemanager.model;
 
 import lombok.Getter;
+import com.ellirion.core.database.model.GameDBModel;
 
 import java.util.UUID;
 
@@ -11,6 +12,18 @@ public class Game {
     @Getter private final int centerOffsetX;
     @Getter private final int centerOffsetZ;
     @Getter private final int plotSize;
+
+    /**
+     * Convert gameDBmodel to Game model.
+     * @param gameDBModel Database model of a game.
+     */
+    public Game(final GameDBModel gameDBModel) {
+        gameID = gameDBModel.getGameID();
+        uName = gameDBModel.getUName();
+        centerOffsetX = gameDBModel.getCenterOffsetX();
+        centerOffsetZ = gameDBModel.getCenterOffsetZ();
+        plotSize = gameDBModel.getPlotSize();
+    }
 
     /**
      * This model is used to save the game id and static values of a game.

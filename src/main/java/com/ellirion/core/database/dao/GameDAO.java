@@ -12,6 +12,7 @@ import java.util.UUID;
 public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
 
     private String id = "_id";
+    private String uNameColumn = "uName";
 
     /**
      * Create a new GameDAO.
@@ -49,6 +50,15 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      */
     public GameDBModel getSpecificGame(UUID gameID) {
         return findOne(id, gameID);
+    }
+
+    /**
+     * This fetches a specific game from the DB.
+     * @param uName The unique name of the game.
+     * @return Return the found game.
+     */
+    public GameDBModel getSpecificGameByName(String uName) {
+        return findOne(uNameColumn, uName);
     }
 
     public List<GameDBModel> getAllGames() {

@@ -12,8 +12,8 @@ import com.ellirion.core.database.dao.GameDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
-import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.dao.TradingCenterDAO;
+import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
@@ -63,7 +63,7 @@ public class DatabaseManager {
     private TradingCenterDAO tradingCenterDAO;
 
     // The gameMode ID.
-    private int gameID;
+    private UUID gameID;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -90,7 +90,7 @@ public class DatabaseManager {
         datastore.ensureIndexes();
 
         createDatabaseAccessObjects();
-        gameID = GameManager.getInstance().getGameID();
+        gameID = GameManager.getGAME_ID();
     }
 
     private void connectToServer() {
@@ -166,6 +166,15 @@ public class DatabaseManager {
      */
     public GameDBModel getSpecificGame(UUID gameID) {
         return gameDAO.getSpecificGame(gameID);
+    }
+
+    /**
+     * This fetches a specific game from the DB.
+     * @param uName The unique name of the game.
+     * @return Return the found game.
+     */
+    public GameDBModel getSpecificGameByName(String uName) {
+        return gameDAO.getSpecificGameByName(uName);
     }
 
     public List<GameDBModel> getAllGames() {
@@ -302,10 +311,6 @@ public class DatabaseManager {
         return plotDAO.savePlot(plotCoord);
     }
 
-    public List<PlotDBModel> getAllPlots() {
-        return plotDAO.getAllPlots();
-    }
-
     /**
      * Get the specified plot from the DB.
      * @param plotCoord The plot coord corrisponding with the plot
@@ -313,6 +318,19 @@ public class DatabaseManager {
      */
     public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
         return plotDAO.getSpecificPlot(plotCoord);
+    }
+
+    public List<PlotDBModel> getAllPlots() {
+        return plotDAO.getAllPlots();
+    }
+
+    /**
+     * Get all plots by gameID.
+     * @param gameID the gameID of the plots to fetch.
+     * @return return the found plots.
+     */
+    public List<PlotDBModel> getPlotsByGameID(UUID gameID) {
+        return plotDAO.getPlotsByGameID(gameID);
     }
 
     //endregion
