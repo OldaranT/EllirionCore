@@ -13,6 +13,7 @@ import java.util.UUID;
 public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
 
     private String id = "_id";
+    private String uName = "uName";
 
     /**
      * Create a new GameDAO.
@@ -87,5 +88,15 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
         //            Logging.printStackTrace(exception);
         //            return false;
         //        }
+    }
+
+    /**
+     * Get all the game names from the database.
+     * @return return the string
+     */
+    public List<String> getAllGameNames() {
+        List<String> result = new ArrayList<>();
+        find().asList().forEach(model -> result.add(model.getUName()));
+        return result;
     }
 }
