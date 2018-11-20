@@ -33,4 +33,25 @@ commands:
       Description: Removes the specified race.
       usage: /rr <raceName>
       aliases: [rr]
+  BeginGamemode:
+      Description: Begin creating a gamemode.
+      usage: /begingamemode
+  GameState:
+      Description: Get the current game state.
+      usage: /gamestate
+  NextStep:
+      Description: Advance the gamemode to the next setup step.
+      usage: /nextstep
+  PlotMap:
+      Description: Get a map of surrounding plots.
+      usage: /plotmap
+  AssignTradingCenter:
+      Description: Assign trading center to be the owner of a plot
+      usage: /assigntradingcenter [<X> <Z>]
+  ConfirmGamemode:
+      Description: Confirm the gamemode and start saving configuration.
+      usage: /confirmgamemode while on the last step of the setup
+  CancelSetup:
+      Description: Cancel the gamemode setup.
+      usage: /cancelsetup during the gamemode setup phase
 depend: [EllirionUtil]

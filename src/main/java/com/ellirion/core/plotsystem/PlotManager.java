@@ -2,17 +2,25 @@ package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.server.v1_12_R1.Tuple;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.PlotDBModel;
-import com.ellirion.core.model.Point;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.PlotOwner;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
+import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
-import com.ellirion.util.async.Promise;
+import com.ellirion.util.model.BoundingBox;
+import com.ellirion.util.model.Point;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,54 +91,99 @@ public class PlotManager {
      * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static Promise createPlots(World world, int mapRadius, int centerX, int centerZ) {
-        return new Promise<Boolean>(f -> {
-            int mapCenterX = centerX * CHUNK_SIZE;
-            int mapCenterZ = centerZ * CHUNK_SIZE;
-            int currentPlot = 0;
-            int amountOfPlots = mapRadius * mapRadius * 4;
+    public static List<Plot> createPlots(World world, int mapRadius, int centerX, int centerZ) {
+        int mapCenterX = centerX * CHUNK_SIZE;
+        int mapCenterZ = centerZ * CHUNK_SIZE;
+        int currentPlot = 0;
+        int amountOfPlots = mapRadius * mapRadius * 4;
+        int interval = 10;
 
-            for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
-                for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
-                    currentPlot++;
-                    if (Math.floorMod(currentPlot, (amountOfPlots / 10)) == 0) {
-                        EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
+        PLOT_SIZE = GameManager.getInstance().getPlotSize();
+        List<Plot> result = new ArrayList<>();
+
+        for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
+            for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
+                currentPlot++;
+                if (amountOfPlots > interval && Math.floorMod(currentPlot, (amountOfPlots / interval)) == 0) {
+                    EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
+                }
+
+                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
+
+                try {
+                    //If plot already exist skip it.
+                    if (SAVED_PLOTS.get(plotCoord) == null) {
+                        String name = plotCoord.toString();
+                        int currentX = startCountX * PLOT_SIZE + mapCenterX;
+                        int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
+
+                        Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
+                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
+                                                       currentZ + PLOT_SIZE - 1);
+                        BoundingBox boundingBox = new BoundingBox(lowerPoint, highestPoint);
+
+                        result.add(new Plot(name, plotCoord, boundingBox, PLOT_SIZE));
                     }
-
-                    PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
-
-                    try {
-                        //If plot already exist skip it.
-                        if (SAVED_PLOTS.get(plotCoord) == null) {
-                            String name = Integer.toString(startCountX) + " , " + Integer.toString(startCountZ);
-                            int currentX = startCountX * PLOT_SIZE + mapCenterX;
-                            int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
-
-                            Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
-                            Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
-                                                           currentZ + PLOT_SIZE - 1);
-
-                            SAVED_PLOTS.put(plotCoord,
-                                            new Plot(name, plotCoord, lowerPoint, highestPoint, PLOT_SIZE, world,
-                                                     world.getUID()));
-                        }
-                    } catch (Exception e) {
-                        Logging.printStackTrace(e);
-                        f.resolve(false);
-                    }
+                } catch (Exception e) {
+                    Logging.printStackTrace(e);
+                    return new ArrayList<>();
                 }
             }
-            f.resolve(true);
-        }, true);
+        }
+        return result;
     }
 
     /**
-     * This updates the plot in the database.
-     * @param plot The plot to update in the database.
-     * @return Return the result of the operation.
+     * Get a plot map.
+     * @param center the center plot of the plot map
+     * @param radius the radius of the plot map
+     * @param owner the owner that generates the plot map
+     * @return the plot map
      */
-    public static boolean updatePlotInDB(Plot plot) {
-        return DATABASE_MANAEGR.updatePlot(plot);
+    public static String getPlotMap(Plot center, int radius, PlotOwner owner) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = -radius; i <= radius; i++) {
+            for (int j = -radius; j <= radius; j++) {
+                if (i == 0 && j == 0) {
+                    builder.append(ChatColor.WHITE).append('O');
+                    continue;
+                }
+
+                PlotCoord coord = center.getPlotCoord().translate(j, i);
+                Plot plot = getPlotByCoordinate(coord);
+
+                //Get color + symbol for plot
+                if (plot != null) {
+                    Tuple<ChatColor, Character> chatData = getPlotMapSymbol(owner, plot);
+                    builder.append(chatData.a()).append(chatData.b());
+                } else {
+                    builder.append(ChatColor.BLACK).append('#');
+                }
+            }
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Remove all plots.
+     */
+    public static void removeAllPlots() {
+        SAVED_PLOTS.clear();
+    }
+
+    private static Tuple<ChatColor, Character> getPlotMapSymbol(PlotOwner a, Plot b) {
+        if (b.getOwner().equals(Wilderness.getInstance())) {
+            return new Tuple(ChatColor.GRAY, '#');
+        }
+        if (b.getOwner().equals(TradingCenter.getInstance())) {
+            return new Tuple(ChatColor.GOLD, '$');
+        }
+        if (a.equals(b.getOwner())) {
+            return new Tuple(ChatColor.GREEN, '+');
+        }
+
+        return new Tuple(((Race) b.getOwner()).getTeamColor(), '-');
     }
 }
 

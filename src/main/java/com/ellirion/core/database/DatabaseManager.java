@@ -15,7 +15,6 @@ import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.PlotOwnerDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
-import com.ellirion.core.model.Point;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -27,30 +26,25 @@ import java.util.UUID;
 
 public class DatabaseManager {
 
+    private final Morphia morphia;
+    private final Datastore datastore;
     private FileConfiguration connectionConfig;
-
     private Session session = null;
     private JSch jsch = new JSch();
-
     // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
-
     // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
     private String dbName;
-
     // MongoDB interfacing.
     private MongoClient mc;
-    private Morphia morphia;
-    private Datastore datastore;
-
     // The DAO's
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
@@ -69,8 +63,13 @@ public class DatabaseManager {
         mc = new MongoClient(localHost, localPort);
 
         morphia = new Morphia();
-
-        mapDataClasses();
+        // This makes it so we can store empty lists and arrays in the database.
+        // The reason to do this is that, when you don't store it and then try to retrieve it,
+        // it will result in a null pointer for an array or list.
+        morphia.getMapper().getOptions().setStoreEmpties(true);
+        // This maps all the classes in the model package.
+        // This means that all the DBModels are being mapped.
+        morphia.mapPackage("model");
 
         datastore = morphia.createDatastore(mc, dbName);
         datastore.ensureIndexes();
@@ -236,33 +235,15 @@ public class DatabaseManager {
 
     /**
      * This creates a plot in the DB from raw data.
-     * @param name name of the plot.
      * @param plotCoord The plot coords class.
-     * @param plotSize Size of the plot when it was created.
-     * @param lowestCorner lowest point of the plot.
-     * @param highestCorner Highest point of the plot.
-     * @param worldUUID The id of the world the plot is placed in.
-     * @param worldName The name of the world the plot is saved in.
-     * @param plotOwnerID The plot owner UUID.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(String name, PlotCoord plotCoord, int plotSize, Point lowestCorner, Point highestCorner,
-                              UUID worldUUID, String worldName, UUID plotOwnerID) {
-        return plotDAO.createPlot(name, plotCoord, plotSize, lowestCorner, highestCorner, worldUUID, worldName,
-                                  plotOwnerID);
+    public boolean createPlot(PlotCoord plotCoord) {
+        return plotDAO.createPlot(plotCoord);
     }
 
     public List<PlotDBModel> getAllPlots() {
         return plotDAO.getAllPlots();
-    }
-
-    /**
-     * Get all the plots owned by the specified plot owner.
-     * @param plotOwnerID The UUID of the plot owner.
-     * @return Return the found plots.
-     */
-    public List<PlotDBModel> getPlotOwnerPlots(UUID plotOwnerID) {
-        return plotDAO.getAllPlotsFromPlotOwner(plotOwnerID);
     }
 
     /**
@@ -272,15 +253,6 @@ public class DatabaseManager {
      */
     public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
         return plotDAO.getSpecificPlot(plotCoord);
-    }
-
-    /**
-     * This updates the plot in the DB.
-     * @param plot The plot to update.
-     * @return Return the result of the operation.
-     */
-    public boolean updatePlot(Plot plot) {
-        return plotDAO.update(plot);
     }
 
     //endregion

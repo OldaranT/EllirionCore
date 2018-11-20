@@ -71,6 +71,9 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      */
     public boolean updatePlayer(PlayerData data, Player player) {
         PlayerDBModel playerDBModel = findOne(id, player.getUniqueId());
+        if (playerDBModel == null) {
+            return createPlayer(data, player);
+        }
         playerDBModel.update(data, player);
         return savePlayer(playerDBModel);
     }

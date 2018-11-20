@@ -248,6 +248,14 @@ public class RaceManager {
         return true;
     }
 
+    /**
+     * Get the amount of races.
+     * @return the amount of races.
+     */
+    public static int getRaceCount() {
+        return RACES.size();
+    }
+
     private static void setColorToUsed(ChatColor color) {
         USED_COLORS.add(color);
         AVAILABLE_COLORS.remove(color);
@@ -273,5 +281,15 @@ public class RaceManager {
 
     public static List<String> getAllRaceNames() {
         return new ArrayList<>(RACE_ID_NAME.values());
+    }
+
+    /**
+     * Remove all races.
+     */
+    public static void removeAllRaces() {
+        RACES.clear();
+        RACE_ID_NAME.clear();
+        USED_COLORS.clear();
+        AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
     }
 }
