@@ -40,6 +40,7 @@ public class TradingCenterDBModel {
      */
     public TradingCenterDBModel(final UUID tradingCenterID, final int gameID) {
         this.tradingCenterID = tradingCenterID;
+        this.gameID = gameID;
     }
 
     /**
@@ -61,6 +62,7 @@ public class TradingCenterDBModel {
     public TradingCenterDBModel(final TradingCenter tradingCenter, final int gameID) {
         tradingCenterID = tradingCenter.getRaceUUID();
         ownedPlots.addAll(tradingCenter.getPlotCoords());
+        this.gameID = gameID;
     }
 
     /**

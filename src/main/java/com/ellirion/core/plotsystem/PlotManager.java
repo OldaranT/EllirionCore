@@ -7,9 +7,11 @@ import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.util.Logging;
 import com.ellirion.util.model.BoundingBox;
 import com.ellirion.util.model.Point;
@@ -125,6 +127,15 @@ public class PlotManager {
             }
         }
         return result;
+    }
+
+    /**
+     * This method assigns the trading center plots that where saved in the database.
+     * @param tradingCenterDBModel The database model that stores the trading center owned plots.
+     */
+    public static void assignTradingCenterPlots(TradingCenterDBModel tradingCenterDBModel) {
+        tradingCenterDBModel.getOwnedPlots().forEach(
+                plotCoord -> PlotManager.getPlotByCoordinate(plotCoord).setOwner(TradingCenter.getInstance()));
     }
 }
 

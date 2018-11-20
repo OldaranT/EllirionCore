@@ -2,10 +2,10 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
-import com.ellirion.core.util.Logging;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +13,7 @@ import java.util.UUID;
 public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> {
 
     private static final String id = "_id";
+    private static final String gameIDColumn = "gameID";
 
     /**
      * This creates a new TradingCenterDAO.
@@ -57,5 +58,15 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
 
     public List<TradingCenterDBModel> getAllTradingCenters() {
         return find().asList();
+    }
+
+    /**
+     * This method gets the trading center from a specific game.
+     * @param gameID The ID of the game.
+     * @return Return the found tradingCenterDBModel
+     */
+    public TradingCenterDBModel getTradingCenterFromGame(int gameID) {
+        Query query = createQuery().filter(gameIDColumn, gameID);
+        return findOne(query);
     }
 }

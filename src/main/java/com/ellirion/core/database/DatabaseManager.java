@@ -12,8 +12,8 @@ import com.ellirion.core.database.dao.GameDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotDAO;
 import com.ellirion.core.database.dao.RaceDAO;
-import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.dao.TradingCenterDAO;
+import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
@@ -326,6 +326,10 @@ public class DatabaseManager {
      */
     public boolean saveTradingCenter(TradingCenter tradingCenter) {
         return tradingCenterDAO.saveTradingCenter(tradingCenter, gameID);
+    }
+
+    public TradingCenterDBModel getTradingCenterFromGame() {
+        return tradingCenterDAO.getTradingCenterFromGame(gameID);
     }
 
     //endregion
