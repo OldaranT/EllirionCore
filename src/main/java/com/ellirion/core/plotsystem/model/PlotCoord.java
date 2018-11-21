@@ -5,6 +5,7 @@ import xyz.morphia.annotations.Embedded;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Embedded
 public class PlotCoord {
@@ -53,12 +54,13 @@ public class PlotCoord {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PlotCoord)) {
+            Logger.getGlobal().info("not comparing with PlotCoord");
             return false;
         }
 
         PlotCoord other = (PlotCoord) obj;
 
-        return (gameID == other.gameID && x == other.x && z == other.z);
+        return (gameID.equals(other.gameID) && x == other.x && z == other.z && worldName.equals(other.worldName));
     }
 
     @Override

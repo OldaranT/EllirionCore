@@ -2,7 +2,6 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
-import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -25,7 +24,7 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
     }
 
     //    @SuppressWarnings({"Duplicates", "CPD-START"})
-    //TODO: validate generic try and catch method with chris.
+    //TODO validate generic try and catch method with chris.
     private boolean savePlot(PlotDBModel plot) {
         return GenericTryCatch.tryCatch(() -> save(plot));
         //        try {
@@ -65,8 +64,6 @@ public class PlotDAO extends BasicDAO<PlotDBModel, Datastore> {
      * @return return the found plots.
      */
     public List<PlotDBModel> getPlotsByGameID(UUID gameID) {
-        Query query = getDatastore().createQuery(PlotCoord.class).filter(gameIDColumn, gameID);
-        Query query2 = createQuery().field(id).elemMatch(query);
-        return find(query2).asList();
+        return createQuery().filter(id + "." + gameIDColumn, gameID).asList();
     }
 }

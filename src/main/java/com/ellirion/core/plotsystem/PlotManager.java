@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
@@ -24,7 +23,9 @@ import com.ellirion.util.model.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class PlotManager {
 
@@ -35,8 +36,6 @@ public class PlotManager {
     @Setter @Getter private static int CENTER_OFFSET_X;
     @Setter @Getter private static int CENTER_OFFSET_Z;
     @Setter @Getter private static int PLOT_SIZE;
-
-    private static DatabaseManager DATABASE_MANAEGR = EllirionCore.getINSTANCE().getDbManager();
 
     public static HashMap<PlotCoord, Plot> getSavedPlots() {
         return SAVED_PLOTS;
@@ -54,7 +53,7 @@ public class PlotManager {
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
-        PlotCoord plotCoord = new PlotCoord(GameManager.getGAME_ID(), plotCordX, plotCordZ,
+        PlotCoord plotCoord = new PlotCoord(GameManager.getInstance().getGame().getGameID(), plotCordX, plotCordZ,
                                             location.getWorld().getName());
 
         return SAVED_PLOTS.get(plotCoord);
@@ -66,6 +65,14 @@ public class PlotManager {
      * @return the plot that is requested.
      */
     public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
+        //Not using SAVED_PLOTS.get because it wouldn't find the race homePlot after loading.
+        for (Map.Entry entry : SAVED_PLOTS.entrySet()) {
+            PlotCoord key = (PlotCoord) entry.getKey();
+            if (key.equals(plotCoord)) {
+                return (Plot) entry.getValue();
+            }
+        }
+
         return SAVED_PLOTS.get(plotCoord);
     }
 
@@ -77,10 +84,10 @@ public class PlotManager {
     public static boolean createPlotsFromDatabase(List<PlotDBModel> plots) {
         for (PlotDBModel plotDBModel : plots) {
             Plot plot = new Plot(plotDBModel);
+            PlotCoord coord = plot.getPlotCoord();
 
-            if (SAVED_PLOTS.get(plotDBModel.getPlotCoord()) == null) {
-                SAVED_PLOTS.put(plot.getPlotCoord(), plot);
-                EllirionCore.getINSTANCE().getLogger().info(plot.getName());
+            if (SAVED_PLOTS.get(coord) == null) {
+                SAVED_PLOTS.put(coord, plot);
             }
         }
         return true;
@@ -101,7 +108,7 @@ public class PlotManager {
         int amountOfPlots = mapRadius * mapRadius * 4;
         int interval = 10;
 
-        UUID gameID = GameManager.getGAME_ID();
+        UUID gameID = GameManager.getInstance().getGame().getGameID();
         PLOT_SIZE = GameManager.getInstance().getPlotSize();
         List<Plot> result = new ArrayList<>();
 

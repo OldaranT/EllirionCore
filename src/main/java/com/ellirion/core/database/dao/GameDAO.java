@@ -24,7 +24,7 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    //TODO check with crhis.
+    //TODO check with chris.
     private boolean saveGame(GameDBModel game) {
         return GenericTryCatch.tryCatch(() -> save(game));
         //        try {

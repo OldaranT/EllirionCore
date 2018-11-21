@@ -9,8 +9,6 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 
-import java.util.UUID;
-
 public class GetPlotCommand implements CommandExecutor {
 
     @Override
@@ -21,7 +19,6 @@ public class GetPlotCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
-        UUID gameID = GameManager.getGAME_ID();
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
 
@@ -32,7 +29,7 @@ public class GetPlotCommand implements CommandExecutor {
 
         player.sendMessage("Name: " + plot.getName());
 
-        player.sendMessage("Size: " + GameManager.getGAMES().get(gameID).getPlotSize());
+        player.sendMessage("Size: " + GameManager.getInstance().getGame().getPlotSize());
 
         player.sendMessage("Lower Corner: " + plot.getBoundingBox().getPoint1().toString());
 

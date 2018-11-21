@@ -36,7 +36,7 @@ public class Plot {
             EllirionCore.getINSTANCE().getServer().getWorlds().add(world);
         }
 
-        int plotSize = GameManager.getGAMES().get(plotCoord.getGameID()).getPlotSize();
+        int plotSize = GameManager.getInstance().getGame().getPlotSize();
         int minX = plotCoord.getX() * plotSize;
         int minZ = plotCoord.getZ() * plotSize;
         int maxX = minX + plotSize - 1;

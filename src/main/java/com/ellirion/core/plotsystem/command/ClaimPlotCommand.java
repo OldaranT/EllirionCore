@@ -28,7 +28,7 @@ public class ClaimPlotCommand implements CommandExecutor {
         }
 
         player = (Player) commandSender;
-        UUID gameID = GameManager.getGAME_ID();
+        UUID gameID = GameManager.getInstance().getGame().getGameID();
 
         Plot plotToCheck;
 

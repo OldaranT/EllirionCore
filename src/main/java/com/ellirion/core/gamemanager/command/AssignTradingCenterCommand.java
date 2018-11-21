@@ -27,7 +27,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             try {
                 int x = Integer.parseInt(strings[0]);
                 int z = Integer.parseInt(strings[1]);
-                PlotCoord coord = new PlotCoord(GameManager.getGAME_ID(), x, z, player.getWorld().getName());
+                PlotCoord coord = new PlotCoord(GameManager.getInstance().getGame().getGameID(), x, z, player.getWorld().getName());
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
                 player.sendMessage(ChatColor.DARK_RED +

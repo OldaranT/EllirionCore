@@ -23,7 +23,7 @@ public class LoadGameModeCommand implements CommandExecutor {
             return false;
         }
 
-        String uName = args[0];
+        String uName = "Game-" + String.join(" ", args);
 
         GameManager.getInstance().loadGame(uName);
 

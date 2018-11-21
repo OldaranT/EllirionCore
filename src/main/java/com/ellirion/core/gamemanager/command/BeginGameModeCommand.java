@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.gamemanager.model.Game;
 
@@ -36,11 +35,11 @@ public class BeginGameModeCommand implements CommandExecutor {
                 .replaceFirst(uName.charAt(0) + "", Character.toUpperCase(uName.charAt(0)) + "");
 
         if (manager.getState().ordinal() < GameManager.GameState.SETUP.ordinal()) {
-            manager.changeState(GameManager.GameState.SETUP);
-            GameManager.getInstance().setGameId(gameID);
             //TODO NEEDS TO BE CHANGED TESTING PURPOSES.
             game = new Game(gameID, uName, 0, 0, 128);
-            EllirionCore.getINSTANCE().getDbManager().createGame(game);
+            GameManager.getInstance().setGame(game);
+
+            manager.changeState(GameManager.GameState.SETUP);
 
             sender.sendMessage("The GameMode is now in the SETUP stage.");
         } else {
