@@ -3,6 +3,7 @@ package com.ellirion.core.database.model;
 import lombok.Getter;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
+import xyz.morphia.annotations.IndexOptions;
 import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.util.Logging;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class GameDBModel {
 
     @Id @Indexed @Getter private UUID gameID;
-    @Getter private String uName;
+    @Indexed(options = @IndexOptions(unique = true)) @Getter private String uName;
     @Getter private int centerOffsetX;
     @Getter private int centerOffsetZ;
     @Getter private int plotSize;

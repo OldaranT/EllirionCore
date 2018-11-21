@@ -6,9 +6,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.database.model.GameDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
+import com.ellirion.core.gamemanager.command.LoadGameModeCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
+import com.ellirion.core.gamemanager.model.Game;
+import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.PlotManager;
@@ -28,6 +33,7 @@ import com.ellirion.core.util.Logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class EllirionCore extends JavaPlugin {
 
@@ -82,6 +88,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
+        getCommand("LoadGame").setExecutor(new LoadGameModeCommand());
     }
 
     private void registerEvents() {
@@ -129,7 +136,11 @@ public class EllirionCore extends JavaPlugin {
     private void setup() {
         try {
             PlotManager.setPLOT_SIZE(128);
-            PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
+            List<GameDBModel> gameDBModels = dbManager.getAllGames();
+
+            for (GameDBModel gameDbModel : gameDBModels) {
+                GameManager.getGAMES().put(gameDbModel.getGameID(), new Game(gameDbModel));
+            }
         } catch (Exception exception) {
             Logging.printStackTrace(exception);
         }
@@ -139,6 +150,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
         getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("joinRace").setTabCompleter(new RaceNameTabCompleter());
+        getCommand("LoadGame").setTabCompleter(new GameNameTabCompleter());
     }
 }
 

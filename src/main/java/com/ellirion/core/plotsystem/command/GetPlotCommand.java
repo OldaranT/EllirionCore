@@ -5,8 +5,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
+
+import java.util.UUID;
 
 public class GetPlotCommand implements CommandExecutor {
 
@@ -18,6 +21,7 @@ public class GetPlotCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
+        UUID gameID = GameManager.getGAME_ID();
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
 
@@ -28,7 +32,7 @@ public class GetPlotCommand implements CommandExecutor {
 
         player.sendMessage("Name: " + plot.getName());
 
-        player.sendMessage("Size: " + plot.getPlotSize());
+        player.sendMessage("Size: " + GameManager.getGAMES().get(gameID).getPlotSize());
 
         player.sendMessage("Lower Corner: " + plot.getBoundingBox().getPoint1().toString());
 

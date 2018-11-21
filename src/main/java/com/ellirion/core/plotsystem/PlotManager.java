@@ -19,6 +19,7 @@ import com.ellirion.util.model.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class PlotManager {
 
@@ -48,7 +49,8 @@ public class PlotManager {
         int plotCordX = Math.floorDiv(x, PLOT_SIZE);
         int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
 
-        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
+        PlotCoord plotCoord = new PlotCoord(GameManager.getGAME_ID(), plotCordX, plotCordZ,
+                                            location.getWorld().getName());
 
         return SAVED_PLOTS.get(plotCoord);
     }
@@ -69,7 +71,7 @@ public class PlotManager {
      */
     public static boolean createPlotsFromDatabase(List<PlotDBModel> plots) {
         for (PlotDBModel plotDBModel : plots) {
-            Plot plot = plotDBModel.convertPlotFromDatabase();
+            Plot plot = new Plot(plotDBModel);
 
             if (SAVED_PLOTS.get(plotDBModel.getPlotCoord()) == null) {
                 SAVED_PLOTS.put(plot.getPlotCoord(), plot);
@@ -94,6 +96,7 @@ public class PlotManager {
         int amountOfPlots = mapRadius * mapRadius * 4;
         int interval = 10;
 
+        UUID gameID = GameManager.getGAME_ID();
         PLOT_SIZE = GameManager.getInstance().getPlotSize();
         List<Plot> result = new ArrayList<>();
 
@@ -104,7 +107,7 @@ public class PlotManager {
                     EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                 }
 
-                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
+                PlotCoord plotCoord = new PlotCoord(gameID, startCountX, startCountZ, world.getName());
 
                 try {
                     //If plot already exist skip it.

@@ -42,6 +42,9 @@ commands:
   NextStep:
       Description: Advance the gamemode to the next setup step.
       usage: /nextstep
+  LoadGame:
+      Description: Load the game from the database by name
+      usage: /LoadGame <GameName>
   PlotMap:
       Description: Get a map of surrounding plots.
       usage: /plotmap

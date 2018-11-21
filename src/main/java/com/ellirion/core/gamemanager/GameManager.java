@@ -2,19 +2,22 @@ package com.ellirion.core.gamemanager;
 
 import lombok.Getter;
 import lombok.Setter;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.model.PlotDBModel;
 import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.gamemanager.setup.Step;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.race.RaceManager;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class GameManager {
 
     private static GameManager INSTANCE;
-    @Getter private static Set<Game> GAMES;
-    @Getter private int gameID;
+    @Getter private static HashMap<UUID, Game> GAMES;
+    @Getter private static UUID GAME_ID;
     @Getter private GameState state;
     private Step[] setupSteps;
     private int currentStep;
@@ -22,7 +25,7 @@ public class GameManager {
 
     private GameManager() {
         state = GameState.NOT_STARTED;
-        GAMES = new HashSet<>();
+        GAMES = new HashMap<>();
         init();
     }
 
@@ -92,6 +95,27 @@ public class GameManager {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Load a gamemode from a name.
+     * @param uName Unique name of a game.
+     * @return returns true if game has been loaded correctly.
+     */
+    public boolean loadGame(String uName) {
+
+        Game game = new Game(EllirionCore.getINSTANCE().getDbManager().getSpecificGameByName(uName));
+
+        GAME_ID = game.getGameID();
+
+        List<PlotDBModel> plotDBModelList = EllirionCore.getINSTANCE().getDbManager().getPlotsByGameID(
+                game.getGameID());
+        PlotManager.createPlotsFromDatabase(plotDBModelList);
+        return true;
+    }
+
+    public void setGameId(UUID gameId) {
+        GAME_ID = gameId;
     }
 
     /**
