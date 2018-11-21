@@ -8,7 +8,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.gamemanager.GameManager;
+import com.ellirion.core.gamemanager.command.AssignTradingCenterCommand;
 import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
+import com.ellirion.core.gamemanager.command.CancelSetupCommand;
+import com.ellirion.core.gamemanager.command.ConfirmGamemodeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.LoadGameModeCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
@@ -89,6 +92,9 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
         getCommand("LoadGame").setExecutor(new LoadGameModeCommand());
+        getCommand("AssignTradingCenter").setExecutor(new AssignTradingCenterCommand());
+        getCommand("ConfirmGamemode").setExecutor(new ConfirmGamemodeCommand());
+        getCommand("CancelSetup").setExecutor(new CancelSetupCommand());
     }
 
     private void registerEvents() {

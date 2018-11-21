@@ -303,4 +303,14 @@ public class RaceManager {
     public static List<String> getAllRaceNames() {
         return new ArrayList<>(RACE_ID_NAME.values());
     }
+
+    /**
+     * Remove all races.
+     */
+    public static void removeAllRaces() {
+        RACES.clear();
+        RACE_ID_NAME.clear();
+        USED_COLORS.clear();
+        AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
+    }
 }
