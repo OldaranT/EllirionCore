@@ -24,7 +24,7 @@ public class RaceDBModel {
     @Getter private UUID raceID;
 
     @Indexed
-    @Getter private int gameID;
+    @Getter private UUID gameID;
 
     @Getter @Setter private String raceName;
 
@@ -44,12 +44,13 @@ public class RaceDBModel {
     public RaceDBModel() {
         // empty on purpose.
     }
+
     /**
      * An overloaded version of the constructor that can use a race instead of multiple variables.
      * @param race The race that needs to be saved.
      * @param gameID The game ID this race belongs to.
      */
-    public RaceDBModel(final Race race, final int gameID) {
+    public RaceDBModel(final Race race, final UUID gameID) {
         raceID = race.getRaceUUID();
         raceName = race.getName();
         players = race.getPlayers();
@@ -70,7 +71,7 @@ public class RaceDBModel {
      * @param gameID The ID of the game this race belongs to.
      */
     public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color,
-                       final PlotCoord homePlotCoord, final List<PlotCoord> ownedPlots, final int gameID) {
+                       final PlotCoord homePlotCoord, final List<PlotCoord> ownedPlots, final UUID gameID) {
         this.raceID = raceID;
         this.raceName = raceName;
         this.players = players;
@@ -90,7 +91,7 @@ public class RaceDBModel {
      * @param gameID The game ID where this race belongs to.
      */
     public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord,
-                       final List<PlotCoord> ownedPlots, final int gameID) {
+                       final List<PlotCoord> ownedPlots, final UUID gameID) {
         this(raceID, raceName, new HashSet<>(), color, homePlotCoord, ownedPlots, gameID);
     }
 

@@ -44,7 +44,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param gameID The ID of the game where the race is from.
      * @return Return the result of the operation.
      */
-    public boolean createRace(Race race, int gameID) {
+    public boolean createRace(Race race, UUID gameID) {
         return saveRace(new RaceDBModel(race, gameID));
     }
 
@@ -87,7 +87,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param gameID The ID of the game where this race belongs.
      * @return Return the result of the operation.
      */
-    public boolean updateRace(Race race, int gameID) {
+    public boolean updateRace(Race race, UUID gameID) {
         RaceDBModel model = getSpecificRace(race.getRaceUUID());
         if (model == null) {
             return createRace(race, gameID);

@@ -21,7 +21,7 @@ public class TradingCenterDBModel {
     @Getter private UUID tradingCenterID;
 
     @Indexed
-    @Getter private int gameID;
+    @Getter private UUID gameID;
 
     @Embedded
     @Getter private List<PlotCoord> ownedPlots = new ArrayList<>();
@@ -38,7 +38,7 @@ public class TradingCenterDBModel {
      * @param tradingCenterID The UUID of the trading center.
      * @param gameID The id of the Game.
      */
-    public TradingCenterDBModel(final UUID tradingCenterID, final int gameID) {
+    public TradingCenterDBModel(final UUID tradingCenterID, final UUID gameID) {
         this.tradingCenterID = tradingCenterID;
         this.gameID = gameID;
     }
@@ -49,7 +49,7 @@ public class TradingCenterDBModel {
      * @param ownedPlots The List of Plot coords that the trading center owns.
      * @param gameID The id of the Game.
      */
-    public TradingCenterDBModel(final UUID tradingCenterID, final List<PlotCoord> ownedPlots, final int gameID) {
+    public TradingCenterDBModel(final UUID tradingCenterID, final List<PlotCoord> ownedPlots, final UUID gameID) {
         this(tradingCenterID, gameID);
         this.ownedPlots.addAll(ownedPlots);
     }
@@ -59,7 +59,7 @@ public class TradingCenterDBModel {
      * @param tradingCenter The trading center to convert to a database model.
      * @param gameID The id of the Game.
      */
-    public TradingCenterDBModel(final TradingCenter tradingCenter, final int gameID) {
+    public TradingCenterDBModel(final TradingCenter tradingCenter, final UUID gameID) {
         tradingCenterID = tradingCenter.getRaceUUID();
         ownedPlots.addAll(tradingCenter.getPlotCoords());
         this.gameID = gameID;

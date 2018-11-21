@@ -18,6 +18,8 @@ public class PlayerDBModel {
 
     @Id @Indexed @Getter private UUID playerID;
 
+    @Indexed @Getter private UUID gameID;
+
     @Getter private UUID raceID;
 
     @Property("ip_history")
@@ -34,12 +36,14 @@ public class PlayerDBModel {
      * This class is the database object for the player data.
      * @param player The player who owns this data.
      * @param raceID the player race.
+     * @param gameID The UUID of the game.
      */
-    public PlayerDBModel(final Player player, final UUID raceID) {
+    public PlayerDBModel(final Player player, final UUID raceID, final UUID gameID) {
         playerID = player.getUniqueId();
         String ip = player.getAddress().getHostName();
         this.raceID = raceID;
         ipHistory.add(ip);
+        this.gameID = gameID;
     }
 
     /**
@@ -53,6 +57,7 @@ public class PlayerDBModel {
         Race race = data.getRace();
         setRaceID(race);
         ipHistory.add(ip);
+        //TODO add game ID here.
     }
 
     public Set<String> getIpHistory() {

@@ -42,7 +42,7 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
      * @param gameID The ID of the game where this trading center belongs.
      * @return return a boolean indicating success or failure.
      */
-    public boolean saveTradingCenter(TradingCenter tradingCenter, int gameID) {
+    public boolean saveTradingCenter(TradingCenter tradingCenter, UUID gameID) {
         TradingCenterDBModel model = new TradingCenterDBModel(tradingCenter, gameID);
         return saveTradingCenter(model);
     }
@@ -65,7 +65,7 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
      * @param gameID The ID of the game.
      * @return Return the found tradingCenterDBModel
      */
-    public TradingCenterDBModel getTradingCenterFromGame(int gameID) {
+    public TradingCenterDBModel getTradingCenterFromGame(UUID gameID) {
         Query query = createQuery().filter(gameIDColumn, gameID);
         return findOne(query);
     }

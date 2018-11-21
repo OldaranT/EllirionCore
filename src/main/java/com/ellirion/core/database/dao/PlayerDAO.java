@@ -69,7 +69,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      */
     //    @SuppressWarnings("Duplicates")
     public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
-        List<PlayerDBModel> result = new ArrayList<>();
+        List<PlayerDBModel> result = new ArrayList<>();//TODO validate with chris.
         //        Query query = createQuery().filter(raceIDColumn, raceID);
         GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()));
         return result;
