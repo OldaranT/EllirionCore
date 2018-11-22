@@ -15,7 +15,6 @@ import com.ellirion.core.gamemanager.command.ConfirmGamemodeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.LoadGameModeCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
-import com.ellirion.core.gamemanager.model.Game;
 import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
@@ -65,13 +64,13 @@ public class EllirionCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        dbManager = new DatabaseManager(dbConnectionConfig);
         registerCommands();
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
-        getLogger().info("Introduction is enabled.");
-        dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
+        getLogger().info("Introduction is enabled.");
     }
 
     private void registerCommands() {
@@ -145,7 +144,7 @@ public class EllirionCore extends JavaPlugin {
             List<GameDBModel> gameDBModels = dbManager.getAllGames();
 
             for (GameDBModel gameDbModel : gameDBModels) {
-                GameManager.getGAMES().put(gameDbModel.getGameID(), new Game(gameDbModel));
+                GameManager.addGame(gameDbModel);
             }
         } catch (Exception exception) {
             Logging.printStackTrace(exception);
