@@ -50,7 +50,7 @@ public class CreateRaceCommand implements CommandExecutor {
         }
 
         if (!RaceManager.addRace(raceName, color, plot)) {
-            sendmsg("something went wrong!");
+            sendmsg("something went wrong when creating a race.");
             return true;
         }
         sendmsg(raceName + " created");
