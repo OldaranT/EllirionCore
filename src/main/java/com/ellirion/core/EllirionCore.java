@@ -64,11 +64,11 @@ public class EllirionCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        dbManager = new DatabaseManager(dbConnectionConfig);
         registerCommands();
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
+        dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
         getLogger().info("Introduction is enabled.");
     }
