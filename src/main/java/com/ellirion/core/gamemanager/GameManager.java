@@ -32,7 +32,6 @@ public class GameManager {
 
     private GameManager() {
         state = GameState.NOT_STARTED;
-        GAMES = new HashMap<>();
         init();
     }
 
@@ -45,6 +44,14 @@ public class GameManager {
             INSTANCE = new GameManager();
         }
         return INSTANCE;
+    }
+
+    /**
+     * adds game to GAMES.
+     * @param gameDBModel the game to add.
+     */
+    public static void addGame(GameDBModel gameDBModel) {
+        GAMES.put(gameDBModel.getGameID(), new Game(gameDBModel));
     }
 
     private void init() {
