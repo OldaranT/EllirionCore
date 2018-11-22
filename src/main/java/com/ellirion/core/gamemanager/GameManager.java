@@ -19,7 +19,6 @@ import com.ellirion.core.race.model.Race;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class GameManager {
 
