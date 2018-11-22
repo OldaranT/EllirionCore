@@ -24,7 +24,7 @@ public class JoinRaceCommand implements CommandExecutor {
         Location loc = player.getLocation();
         if (!PlayerManager.setPlayerRace(player.getUniqueId(),
                                          PlotManager.getPlotFromLocation(loc).getOwner().getRaceUUID())) {
-            sendmsg("something went wrong please try again with different arguments");
+            sendmsg("something went wrong when adding you to a race. please try again.");
             return false;
         }
         String raceName = PlayerManager.getPlayerRace(player.getUniqueId()).getName();

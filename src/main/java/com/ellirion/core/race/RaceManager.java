@@ -76,7 +76,8 @@ public class RaceManager {
         RACES.putIfAbsent(race.getRaceUUID(), race);
         setColorToUsed(color);
         homePlot.setOwner(race);
-        return RACE_ID_NAME.put(race.getRaceUUID(), race.getName()) != null;
+        // This should return null because if it returns a value then it has replaced something.
+        return RACE_ID_NAME.put(race.getRaceUUID(), race.getName()) == null;
     }
 
     /**
