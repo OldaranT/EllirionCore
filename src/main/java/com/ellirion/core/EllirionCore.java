@@ -18,7 +18,6 @@ import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
 import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
-import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
@@ -64,11 +63,11 @@ public class EllirionCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        dbManager = new DatabaseManager(dbConnectionConfig);
         registerCommands();
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
+        dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
         getLogger().info("Introduction is enabled.");
     }
@@ -140,7 +139,6 @@ public class EllirionCore extends JavaPlugin {
 
     private void setup() {
         try {
-            PlotManager.setPLOT_SIZE(128);
             List<GameDBModel> gameDBModels = dbManager.getAllGames();
 
             for (GameDBModel gameDbModel : gameDBModels) {

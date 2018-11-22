@@ -4,26 +4,22 @@ import lombok.Getter;
 import xyz.morphia.annotations.Embedded;
 
 import java.util.Objects;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @Embedded
 public class PlotCoord {
 
-    @Getter private UUID gameID;
     @Getter private int x;
     @Getter private int z;
     @Getter private String worldName;
 
     /**
      * Plot coordinate to locate a plot.
-     * @param gameID the id of the game.
      * @param x x of the coordinate.
      * @param z z of the coordinate.
      * @param worldName The name of the world where this plot coord belongs.
      */
-    public PlotCoord(final UUID gameID, final int x, final int z, final String worldName) {
-        this.gameID = gameID;
+    public PlotCoord(final int x, final int z, final String worldName) {
         this.x = x;
         this.z = z;
         this.worldName = worldName;
@@ -43,12 +39,12 @@ public class PlotCoord {
      * @return returns translated coordinate.
      */
     public PlotCoord translate(int x, int z) {
-        return new PlotCoord(gameID, this.x + x, this.z + z, worldName);
+        return new PlotCoord(this.x + x, this.z + z, worldName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gameID, x, z, worldName);
+        return Objects.hash(x, z, worldName);
     }
 
     @Override
@@ -60,7 +56,7 @@ public class PlotCoord {
 
         PlotCoord other = (PlotCoord) obj;
 
-        return (gameID.equals(other.gameID) && x == other.x && z == other.z && worldName.equals(other.worldName));
+        return (x == other.x && z == other.z && worldName.equals(other.worldName));
     }
 
     @Override

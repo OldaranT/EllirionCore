@@ -12,7 +12,6 @@ import com.ellirion.core.plotsystem.model.PlotOwner;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 public class Race extends PlotOwner {
 
@@ -46,10 +45,7 @@ public class Race extends PlotOwner {
         players = raceDBModel.getPlayers();
         teamColor = ChatColor.valueOf(raceDBModel.getColor());
         PlotCoord homePlotCoord = raceDBModel.getHomePlotCoord();
-        Logger.getGlobal().info("Race " + name + " loading home plot " + homePlotCoord.getX() + ", " + homePlotCoord.getZ() + ", " + homePlotCoord.getGameID() + ", " + homePlotCoord.getWorldName());
-        Plot homePlot = PlotManager.getPlotByCoordinate(homePlotCoord);
-        Logger.getGlobal().info("Race " + name + " loaded plot " + homePlot.getName() + " as home plot");
-        this.homePlot = homePlot;
+        homePlot = PlotManager.getPlotByCoordinate(homePlotCoord);
     }
 
     public String getNameWithColor() {
