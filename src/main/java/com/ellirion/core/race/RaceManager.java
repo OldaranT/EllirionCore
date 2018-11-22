@@ -17,6 +17,7 @@ import com.ellirion.core.util.StringHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,8 +76,7 @@ public class RaceManager {
         RACES.putIfAbsent(race.getRaceUUID(), race);
         setColorToUsed(color);
         homePlot.setOwner(race);
-        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
-        return createRaceInDB(race);
+        return RACE_ID_NAME.put(race.getRaceUUID(), race.getName()) != null;
     }
 
     /**
@@ -89,7 +89,8 @@ public class RaceManager {
             Race race = new Race(databaseRace);
             RACES.putIfAbsent(race.getRaceUUID(), race);
             setColorToUsed(race.getTeamColor());
-            race.getHomePlot().setOwner(race);
+            Plot homePlot = race.getHomePlot();
+            homePlot.setOwner(race);
             RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
             return true;
         } catch (Exception exception) {
@@ -312,5 +313,19 @@ public class RaceManager {
         RACE_ID_NAME.clear();
         USED_COLORS.clear();
         AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
+    }
+
+    public static Collection<Race> getRaces() {
+        return RACES.values();
+    }
+
+    /**
+     * Load races from database models.
+     * @param races the database models of the races
+     */
+    public static void loadRaces(List<RaceDBModel> races) {
+        for (RaceDBModel race : races) {
+            addRace(race);
+        }
     }
 }

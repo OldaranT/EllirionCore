@@ -62,9 +62,6 @@ public class DatabaseManager {
     private PlotDAO plotDAO;
     private TradingCenterDAO tradingCenterDAO;
 
-    // The gameMode ID.
-    private UUID gameID;
-
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
      * @param configuration The connection configuration that contains the data to be used to connect.
@@ -90,7 +87,6 @@ public class DatabaseManager {
         datastore.ensureIndexes();
 
         createDatabaseAccessObjects();
-        gameID = GameManager.getGAME_ID();
     }
 
     private void connectToServer() {
@@ -209,7 +205,7 @@ public class DatabaseManager {
      * @return Return the outcome of the operation.
      */
     public boolean createRace(Race race) {
-        return raceDAO.createRace(race, gameID);
+        return raceDAO.createRace(race, GameManager.getInstance().getGame().getGameID());
     }
 
     public List<RaceDBModel> getAllRaces() {
@@ -231,7 +227,7 @@ public class DatabaseManager {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race) {
-        return raceDAO.updateRace(race, gameID);
+        return raceDAO.updateRace(race, GameManager.getInstance().getGame().getGameID());
     }
 
     /**
@@ -239,7 +235,7 @@ public class DatabaseManager {
      * @param gameID The ID of the game to get the races from.
      * @return return the found list or an empty list but not a null to prevent NPE's.
      */
-    public List<RaceDBModel> getAllGameRaces(int gameID) {
+    public List<RaceDBModel> getAllGameRaces(UUID gameID) {
         try {
             return raceDAO.getGameRaces(gameID);
         } catch (Exception exception) {
@@ -343,11 +339,16 @@ public class DatabaseManager {
      * @return return the result of the operation.
      */
     public boolean saveTradingCenter(TradingCenter tradingCenter) {
-        return tradingCenterDAO.saveTradingCenter(tradingCenter, gameID);
+        return tradingCenterDAO.saveTradingCenter(tradingCenter, GameManager.getInstance().getGame().getGameID());
     }
 
-    public TradingCenterDBModel getTradingCenterFromGame() {
-        return tradingCenterDAO.getTradingCenterFromGame(gameID);
+    /**
+     * Get the trading center db model.
+     * @param game the game whose trading center model to retrieve
+     * @return a model of a trading center
+     */
+    public TradingCenterDBModel getTradingCenterFromGame(UUID game) {
+        return tradingCenterDAO.getTradingCenterFromGame(game);
     }
 
     //endregion

@@ -26,7 +26,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
     }
 
     //    @SuppressWarnings({"Duplicates", "CPD-START"})
-    //TODO: validate the try and catch with chris. If approved then remove commented code.
+    //TODO validate the try and catch with chris. If approved then remove commented code.
     private boolean saveRace(RaceDBModel race) {
         return GenericTryCatch.tryCatch(() -> save(race));
         //        try {
@@ -67,8 +67,8 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return return the found races.
      */
     //    @SuppressWarnings("Duplicates")
-    // TODO: check this try catch with chris.
-    public List<RaceDBModel> getGameRaces(int gameID) {
+    // TODO check this try catch with chris.
+    public List<RaceDBModel> getGameRaces(UUID gameID) {
         final List<RaceDBModel> result = new ArrayList<>();
         GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()));
         return result;

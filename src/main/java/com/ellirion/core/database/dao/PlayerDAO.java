@@ -26,7 +26,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
     }
 
     //    @SuppressWarnings({"Duplicates", "CPD-START"})
-    // TODO: validate generic try and catch with chris. If this is aproved remove commented code.
+    // TODO validate generic try and catch with chris. If this is aproved remove commented code.
     private boolean savePlayer(PlayerDBModel player) {
         return GenericTryCatch.tryCatch(() -> save(player));
         //        try {

@@ -23,7 +23,7 @@ public class TeleportToPlotCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
-        UUID gameID = GameManager.getGAME_ID();
+        UUID gameID = GameManager.getInstance().getGame().getGameID();
 
         // Check if a name was entered
         int xCord, zCord;

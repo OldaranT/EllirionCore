@@ -54,7 +54,7 @@ public class RaceDBModel {
         raceID = race.getRaceUUID();
         raceName = race.getName();
         players = race.getPlayers();
-        color = race.getTeamColor().toString();
+        color = race.getTeamColor().name();
         homePlotCoord = race.getHomePlot().getPlotCoord();
         ownedPlots = new ArrayList<>(race.getPlotCoords());
         this.gameID = gameID;
