@@ -1,6 +1,4 @@
-package com.ellirion.core.database.util;
-
-import com.ellirion.core.util.Logging;
+package com.ellirion.core.util;
 
 public class GenericTryCatch {
 

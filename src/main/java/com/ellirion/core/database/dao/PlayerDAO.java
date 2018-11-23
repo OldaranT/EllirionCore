@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.PlayerDBModel;
-import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.playerdata.model.PlayerData;
+import com.ellirion.core.util.GenericTryCatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +25,8 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    //    @SuppressWarnings({"Duplicates", "CPD-START"})
-    // TODO validate generic try and catch with chris. If this is aproved remove commented code.
     private boolean savePlayer(PlayerDBModel player) {
         return GenericTryCatch.tryCatch(() -> save(player));
-        //        try {
-        //            save(player);
-        //            return true;
-        //        } catch (Exception exception) {
-        //            Logging.printStackTrace(exception);
-        //            return false;
-        //        }
     }
 
     /**
