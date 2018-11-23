@@ -23,7 +23,7 @@ import java.util.UUID;
 public class GameManager {
 
     private static GameManager INSTANCE;
-    @Getter private static HashMap<UUID, Game> GAMES;
+    @Getter private static HashMap<UUID, Game> GAMES = new HashMap<>();
     @Getter @Setter private Game game;
     @Getter private GameState state;
     private Step[] setupSteps;

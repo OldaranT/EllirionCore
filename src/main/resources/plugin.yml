@@ -35,7 +35,7 @@ commands:
       aliases: [rr]
   BeginGamemode:
       Description: Begin creating a gamemode.
-      usage: /begingamemode
+      usage: /begingamemode <GameName>
   GameState:
       Description: Get the current game state.
       usage: /gamestate
