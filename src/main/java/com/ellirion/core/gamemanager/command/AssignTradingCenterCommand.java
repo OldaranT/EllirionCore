@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -27,7 +26,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             try {
                 int x = Integer.parseInt(strings[0]);
                 int z = Integer.parseInt(strings[1]);
-                PlotCoord coord = new PlotCoord(GameManager.getInstance().getGame().getGameID(), x, z, player.getWorld().getName());
+                PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
                 player.sendMessage(ChatColor.DARK_RED +
@@ -46,6 +45,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
                                "Something went wrong with setting the plot owner. Did you select the plot right?");
         }
 
+        player.sendMessage(ChatColor.GREEN + plot.getName() + " is now a trading center plot.");
         return true;
     }
 }

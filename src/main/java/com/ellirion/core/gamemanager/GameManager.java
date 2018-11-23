@@ -23,12 +23,22 @@ import java.util.UUID;
 public class GameManager {
 
     private static GameManager INSTANCE;
+
+    //Games
     @Getter private static HashMap<UUID, Game> GAMES = new HashMap<>();
-    @Getter @Setter private Game game;
-    @Getter private GameState state;
+
+    //Setup
     private Step[] setupSteps;
     private int currentStep;
+    @Getter private GameState state;
+
+    //Game Data
+    @Getter @Setter private Game game;
+    @Getter @Setter private UUID gameID;
+    @Getter @Setter private String uName;
     @Getter @Setter private int plotSize;
+    @Getter @Setter private int xOffset;
+    @Getter @Setter private int zOffset;
 
     private GameManager() {
         state = GameState.NOT_STARTED;
@@ -120,6 +130,8 @@ public class GameManager {
         DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
 
         //Save game
+        game = new Game(UUID.randomUUID(), uName, plotSize, xOffset, zOffset);
+        GAMES.put(game.getGameID(), game);
         db.createGame(game);
 
         //save plots
@@ -156,8 +168,8 @@ public class GameManager {
         DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
 
         //Load game
-        GameDBModel gameModel = db.getSpecificGameByName(uName);
-        Game game = new Game(gameModel);
+        GameDBModel gameDBModel = db.getSpecificGameByName(uName);
+        Game game = new Game(gameDBModel);
         this.game = game;
 
         //Load plots

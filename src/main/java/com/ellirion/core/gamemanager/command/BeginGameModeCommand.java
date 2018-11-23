@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.gamemanager.GameManager;
-import com.ellirion.core.gamemanager.model.Game;
 
 import java.util.UUID;
 
@@ -20,9 +19,8 @@ public class BeginGameModeCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        GameManager manager = GameManager.getInstance();
+        GameManager gameManager = GameManager.getInstance();
         UUID gameID = UUID.randomUUID();
-        Game game;
 
         if (args.length <= 0) {
             player.sendMessage(ChatColor.DARK_RED + "please give a unique name for the game.");
@@ -34,12 +32,14 @@ public class BeginGameModeCommand implements CommandExecutor {
                 .toLowerCase()
                 .replaceFirst(uName.charAt(0) + "", Character.toUpperCase(uName.charAt(0)) + "");
 
-        if (manager.getState().ordinal() < GameManager.GameState.SETUP.ordinal()) {
-            //TODO NEEDS TO BE CHANGED TESTING PURPOSES.
-            game = new Game(gameID, uName, 0, 0, 128);
-            GameManager.getInstance().setGame(game);
+        if (gameManager.getState().ordinal() < GameManager.GameState.SETUP.ordinal()) {
 
-            manager.changeState(GameManager.GameState.SETUP);
+            //Start the setup.
+            gameManager.changeState(GameManager.GameState.SETUP);
+
+            //temp Save gameid and uName
+            gameManager.setGameID(gameID);
+            gameManager.setUName(uName);
 
             sender.sendMessage("The GameMode is now in the SETUP stage.");
         } else {

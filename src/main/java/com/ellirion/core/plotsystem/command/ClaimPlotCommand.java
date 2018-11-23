@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -13,8 +12,6 @@ import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.model.Race;
-
-import java.util.UUID;
 
 public class ClaimPlotCommand implements CommandExecutor {
 
@@ -28,7 +25,6 @@ public class ClaimPlotCommand implements CommandExecutor {
         }
 
         player = (Player) commandSender;
-        UUID gameID = GameManager.getInstance().getGame().getGameID();
 
         Plot plotToCheck;
 
@@ -37,7 +33,7 @@ public class ClaimPlotCommand implements CommandExecutor {
             int xCoord = Integer.parseInt(args[0]);
             int zCoord = Integer.parseInt(args[1]);
 
-            PlotCoord plotCoord = new PlotCoord(gameID, xCoord, zCoord, player.getWorld().getName());
+            PlotCoord plotCoord = new PlotCoord(xCoord, zCoord, player.getWorld().getName());
 
             plotToCheck = PlotManager.getPlotByCoordinate(plotCoord);
         } else if (args.length == 0) {

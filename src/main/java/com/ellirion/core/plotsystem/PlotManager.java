@@ -1,7 +1,6 @@
 package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.server.v1_12_R1.Tuple;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class PlotManager {
 
@@ -32,9 +30,7 @@ public class PlotManager {
     @Getter private static final int LOWEST_Y = 0;
     @Getter private static final int HIGHEST_Y = 255;
     @Getter private static final int CHUNK_SIZE = 16;
-    @Setter @Getter private static int CENTER_OFFSET_X;
-    @Setter @Getter private static int CENTER_OFFSET_Z;
-    @Setter @Getter private static int PLOT_SIZE;
+    @Getter private GameManager gameManager = GameManager.getInstance();
 
     public static HashMap<PlotCoord, Plot> getSavedPlots() {
         return SAVED_PLOTS;
@@ -46,14 +42,15 @@ public class PlotManager {
      * @return The plot player is standing in.
      */
     public static Plot getPlotFromLocation(Location location) {
-        int x = location.getBlockX() - (CENTER_OFFSET_X * CHUNK_SIZE);
-        int z = location.getBlockZ() - (CENTER_OFFSET_Z * CHUNK_SIZE);
+        GameManager gameManager = GameManager.getInstance();
 
-        int plotCordX = Math.floorDiv(x, PLOT_SIZE);
-        int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
+        int x = location.getBlockX() - (gameManager.getXOffset() * CHUNK_SIZE);
+        int z = location.getBlockZ() - (gameManager.getZOffset() * CHUNK_SIZE);
 
-        PlotCoord plotCoord = new PlotCoord(GameManager.getInstance().getGame().getGameID(), plotCordX, plotCordZ,
-                                            location.getWorld().getName());
+        int plotCordX = Math.floorDiv(x, gameManager.getPlotSize());
+        int plotCordZ = Math.floorDiv(z, gameManager.getPlotSize());
+
+        PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
 
         return SAVED_PLOTS.get(plotCoord);
     }
@@ -96,19 +93,17 @@ public class PlotManager {
      * Create a hashmap with plots.
      * @param world The world plots being created in.
      * @param mapRadius The radius of the map.
-     * @param centerX The center X of the map.
-     * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static List<Plot> createPlots(World world, int mapRadius, int centerX, int centerZ) {
-        int mapCenterX = centerX * CHUNK_SIZE;
-        int mapCenterZ = centerZ * CHUNK_SIZE;
+    public static List<Plot> createPlots(World world, int mapRadius) {
+        GameManager gameManager = GameManager.getInstance();
+
+        int mapCenterX = gameManager.getXOffset() * CHUNK_SIZE;
+        int mapCenterZ = gameManager.getZOffset() * CHUNK_SIZE;
         int currentPlot = 0;
         int amountOfPlots = mapRadius * mapRadius * 4;
         int interval = 10;
-
-        UUID gameID = GameManager.getInstance().getGame().getGameID();
-        PLOT_SIZE = GameManager.getInstance().getPlotSize();
+        int plotSize = GameManager.getInstance().getPlotSize();
         List<Plot> result = new ArrayList<>();
 
         for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
@@ -118,21 +113,21 @@ public class PlotManager {
                     EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
                 }
 
-                PlotCoord plotCoord = new PlotCoord(gameID, startCountX, startCountZ, world.getName());
+                PlotCoord plotCoord = new PlotCoord(startCountX, startCountZ, world.getName());
 
                 try {
                     //If plot already exist skip it.
                     if (SAVED_PLOTS.get(plotCoord) == null) {
                         String name = plotCoord.toString();
-                        int currentX = startCountX * PLOT_SIZE + mapCenterX;
-                        int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
+                        int currentX = startCountX * plotSize + mapCenterX;
+                        int currentZ = startCountZ * plotSize + mapCenterZ;
 
                         Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
-                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
-                                                       currentZ + PLOT_SIZE - 1);
+                        Point highestPoint = new Point(currentX + plotSize - 1, HIGHEST_Y,
+                                                       currentZ + plotSize - 1);
                         BoundingBox boundingBox = new BoundingBox(lowerPoint, highestPoint);
 
-                        result.add(new Plot(name, plotCoord, boundingBox, PLOT_SIZE));
+                        result.add(new Plot(name, plotCoord, boundingBox, plotSize));
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);

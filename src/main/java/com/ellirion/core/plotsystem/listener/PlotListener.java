@@ -3,6 +3,7 @@ package com.ellirion.core.plotsystem.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -16,7 +17,9 @@ public class PlotListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
 
-        if (PlotManager.getPLOT_SIZE() != 0) {
+        GameManager gameManager = GameManager.getInstance();
+
+        if (gameManager.getPlotSize() != 0) {
             Plot from = PlotManager.getPlotFromLocation(event.getFrom());
             Plot to = PlotManager.getPlotFromLocation(event.getTo());
 
