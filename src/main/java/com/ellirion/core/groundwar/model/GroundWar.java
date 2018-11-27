@@ -139,6 +139,8 @@ public class GroundWar {
         }
 
         //Add playerDeath eventlistener
+
+        state = State.IN_PROGRESS;
     }
 
     private List<UUID> getParticipants() {

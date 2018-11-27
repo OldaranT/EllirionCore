@@ -27,6 +27,8 @@ public class MoveOffGroundWarListener implements Listener {
         if (war != null && !(war.getPlotB().equals(plotTo) || war.getPlotA().equals(plotTo))) {
             //Teleport the player back to the block they were standing on
             Location newLocation = player.getLocation().getBlock().getLocation();
+            newLocation.setYaw(player.getLocation().getYaw());
+            newLocation.setPitch(player.getLocation().getPitch());
             player.teleport(newLocation);
         }
     }
