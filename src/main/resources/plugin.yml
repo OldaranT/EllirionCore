@@ -60,4 +60,13 @@ commands:
   WagerPlot:
       Description: wager a plot in your ground war
       usage: /wagerplot [<plot-x> <plot-z>]
+  GetGroundwar:
+      Description: Get the details of a grouns war
+      usage: /getgroundwar
+  ConfirmGroundWar:
+      Description: confirm ground war
+      usage: /confirmgroundwar
+  JoinGroundWar:
+      Description: join a groundwar
+      usage: /joingroundwar
 depend: [EllirionUtil]

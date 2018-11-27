@@ -12,8 +12,12 @@ import com.ellirion.core.gamemanager.command.CancelSetupCommand;
 import com.ellirion.core.gamemanager.command.ConfirmGamemodeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
+import com.ellirion.core.groundwar.command.ConfirmGroundWarCommand;
 import com.ellirion.core.groundwar.command.CreateGroundwarCommand;
+import com.ellirion.core.groundwar.command.GetGroundWarCommand;
+import com.ellirion.core.groundwar.command.JoinGroundWarCommand;
 import com.ellirion.core.groundwar.command.WagerPlotCommand;
+import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.PlotManager;
@@ -67,7 +71,7 @@ public class EllirionCore extends JavaPlugin {
         createDBconnectionConfig();
         getLogger().info("Introduction is enabled.");
         dbManager = new DatabaseManager(dbConnectionConfig);
-        setup();
+        //setup();
     }
 
     private void registerCommands() {
@@ -94,6 +98,9 @@ public class EllirionCore extends JavaPlugin {
         //GroundWar
         getCommand("CreateGroundWar").setExecutor(new CreateGroundwarCommand());
         getCommand("WagerPlot").setExecutor(new WagerPlotCommand());
+        getCommand("GetGroundwar").setExecutor(new GetGroundWarCommand());
+        getCommand("ConfirmGroundWar").setExecutor(new ConfirmGroundWarCommand());
+        getCommand("JoinGroundWar").setExecutor(new JoinGroundWarCommand());
     }
 
     private void registerEvents() {
@@ -102,6 +109,7 @@ public class EllirionCore extends JavaPlugin {
         pluginManager.registerEvents(new OnPlayerQuit(), this);
         pluginManager.registerEvents(new PlotListener(), this);
         pluginManager.registerEvents(new OnFriendlyFire(), this);
+        pluginManager.registerEvents(new MoveOffGroundWarListener(), this);
     }
 
     public DatabaseManager getDbManager() {

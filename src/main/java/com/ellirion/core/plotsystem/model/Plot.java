@@ -7,6 +7,8 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.util.model.BoundingBox;
 
+import java.util.logging.Logger;
+
 public class Plot {
 
     @Getter private String name;
@@ -50,10 +52,14 @@ public class Plot {
      * @return Location of the teleport location.
      */
     public Location getCenterLocation(World world, float yaw, float pitch) {
+        Logger.getGlobal().info("Getting center of plot " + name + " with boundingbox ");
+        Logger.getGlobal().info(boundingBox.toString());
 
         double centerX = boundingBox.getX2() - ((boundingBox.getX2() - boundingBox.getX1()) / 2);
         double centerZ = boundingBox.getZ2() - ((boundingBox.getZ2() - boundingBox.getZ1()) / 2);
         double centerY = world.getHighestBlockYAt((int) centerX, (int) centerZ);
+
+        Logger.getGlobal().info("center found: " + centerX + ", " + centerY + ", " + centerZ);
 
         return new Location(world, centerX, centerY, centerZ, yaw, pitch);
     }
