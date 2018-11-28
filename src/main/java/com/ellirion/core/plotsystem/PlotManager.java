@@ -6,7 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -77,9 +77,9 @@ public class PlotManager {
      * @param plots plots to create.
      * @return returns true if the plots are created.
      */
-    public static boolean createPlotsFromDatabase(List<PlotDBModel> plots) {
-        for (PlotDBModel plotDBModel : plots) {
-            Plot plot = new Plot(plotDBModel);
+    public static boolean createPlotsFromDatabase(List<PlotCoordDBModel> plots) {
+        for (PlotCoordDBModel plotCoordDBModel : plots) {
+            Plot plot = new Plot(plotCoordDBModel);
             PlotCoord coord = plot.getPlotCoord();
 
             if (SAVED_PLOTS.get(coord) == null) {

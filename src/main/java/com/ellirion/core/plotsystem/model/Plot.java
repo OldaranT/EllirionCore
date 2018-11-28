@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
@@ -21,18 +21,18 @@ public class Plot {
 
     /**
      * convert a plotDBmodel to a plot.
-     * @param plotDBModel The plotDBmodel to convert.
+     * @param plotCoordDBModel The plotDBmodel to convert.
      */
-    public Plot(final PlotDBModel plotDBModel) {
+    public Plot(final PlotCoordDBModel plotCoordDBModel) {
 
-        plotCoord = plotDBModel.getPlotCoord();
+        plotCoord = plotCoordDBModel.getPlotCoord();
         name = plotCoord.toString();
 
         World worldToCheck = EllirionCore.getINSTANCE().getServer().getWorld(plotCoord.getWorldName());
 
         //Check if the world is loaded if not create a dummy and then load it.
         if (worldToCheck == null) {
-            World world = new WorldCreator(plotDBModel.getPlotCoord().getWorldName()).createWorld();
+            World world = new WorldCreator(plotCoordDBModel.getPlotCoord().getWorldName()).createWorld();
             EllirionCore.getINSTANCE().getServer().getWorlds().add(world);
         }
 

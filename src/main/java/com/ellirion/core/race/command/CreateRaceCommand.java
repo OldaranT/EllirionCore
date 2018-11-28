@@ -45,7 +45,7 @@ public class CreateRaceCommand implements CommandExecutor {
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
         if (!(plot.getOwner() instanceof Wilderness)) {
-            sendmsg(ChatColor.RED + "you can only create race on unowned plots!");
+            sendmsg(ChatColor.DARK_RED + "you can only create race on unowned plots!");
             return true;
         }
 

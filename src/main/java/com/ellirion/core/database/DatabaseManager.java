@@ -10,12 +10,12 @@ import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
 import com.ellirion.core.database.dao.GameDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
-import com.ellirion.core.database.dao.PlotDAO;
+import com.ellirion.core.database.dao.PlotCoordDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.dao.TradingCenterDAO;
 import com.ellirion.core.database.model.GameDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
-import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
@@ -59,7 +59,7 @@ public class DatabaseManager {
     private GameDAO gameDAO;
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
-    private PlotDAO plotDAO;
+    private PlotCoordDAO plotCoordDAO;
     private TradingCenterDAO tradingCenterDAO;
 
     /**
@@ -128,7 +128,7 @@ public class DatabaseManager {
         gameDAO = new GameDAO(GameDBModel.class, datastore);
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
-        plotDAO = new PlotDAO(PlotDBModel.class, datastore);
+        plotCoordDAO = new PlotCoordDAO(PlotCoordDBModel.class, datastore);
         tradingCenterDAO = new TradingCenterDAO(TradingCenterDBModel.class, datastore);
     }
 
@@ -299,34 +299,26 @@ public class DatabaseManager {
     //region ===== Plot =====
 
     /**
-     * This saves a plot from raw data and not a plot object to the database.
+     * This saves a plotcoord from raw data and not a plot object to the database.
+     * @param gameID the game id of the plot.
      * @param plotCoord The plot coords class.
      * @return Return the result of the operation.
      */
-    public boolean savePlot(PlotCoord plotCoord) {
-        return plotDAO.savePlot(plotCoord);
+    public boolean savePlotCoord(UUID gameID, PlotCoord plotCoord) {
+        return plotCoordDAO.savePlotCoord(gameID, plotCoord);
+    }
+
+    public List<PlotCoordDBModel> getAllPlotCoords() {
+        return plotCoordDAO.getAllPlotCoords();
     }
 
     /**
-     * Get the specified plot from the DB.
-     * @param plotCoord The plot coord corrisponding with the plot
-     * @return Return the found plot.
-     */
-    public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
-        return plotDAO.getSpecificPlot(plotCoord);
-    }
-
-    public List<PlotDBModel> getAllPlots() {
-        return plotDAO.getAllPlots();
-    }
-
-    /**
-     * Get all plots by gameID.
+     * Get all plotcoords by gameID.
      * @param gameID the gameID of the plots to fetch.
-     * @return return the found plots.
+     * @return return the found plotcoords.
      */
-    public List<PlotDBModel> getPlotsByGameID(UUID gameID) {
-        return plotDAO.getPlotsByGameID(gameID);
+    public List<PlotCoordDBModel> getPlotCoordsByGameID(UUID gameID) {
+        return plotCoordDAO.getPlotCoordsByGameID(gameID);
     }
 
     //endregion

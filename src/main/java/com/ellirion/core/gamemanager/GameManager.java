@@ -2,10 +2,11 @@ package com.ellirion.core.gamemanager;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.ChatColor;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.GameDBModel;
-import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.model.Game;
@@ -19,6 +20,8 @@ import com.ellirion.core.race.model.Race;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.database.util.GenericTryCatch.*;
 
 public class GameManager {
 
@@ -130,13 +133,14 @@ public class GameManager {
         DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
 
         //Save game
-        game = new Game(UUID.randomUUID(), uName, plotSize, xOffset, zOffset);
+        game = new Game(UUID.randomUUID(), uName, xOffset, zOffset, plotSize);
         GAMES.put(game.getGameID(), game);
         db.createGame(game);
 
         //save plots
-        for (PlotCoord plot : PlotManager.getSavedPlots().keySet()) {
-            db.savePlot(plot);
+        for (PlotCoord plotCoord : PlotManager.getSavedPlots().keySet()) {
+            EllirionCore.getINSTANCE().getLogger().info(plotCoord.toString());
+            db.savePlotCoord(game.getGameID(), plotCoord);
         }
 
         //save races
@@ -165,32 +169,33 @@ public class GameManager {
      * @return returns true if game has been loaded correctly.
      */
     public boolean loadGame(String uName) {
-        DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
+        return tryCatch(() -> {
+            state = GameState.LOADING;
 
-        //Load game
-        GameDBModel gameDBModel = db.getSpecificGameByName(uName);
-        Game game = new Game(gameDBModel);
-        this.game = game;
+            DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
+            //Load game
+            GameDBModel gameDBModel = db.getSpecificGameByName(uName);
+            Game game = new Game(gameDBModel);
+            this.game = game;
 
-        //Load plots
-        List<PlotDBModel> plotDBModelList = db.getPlotsByGameID(game.getGameID());
-        PlotManager.createPlotsFromDatabase(plotDBModelList);
-        plotSize = game.getPlotSize();
+            //Load plots
+            List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoordsByGameID(game.getGameID());
+            PlotManager.createPlotsFromDatabase(plotCoordDBModelList);
+            plotSize = game.getPlotSize();
 
-        //Load races
-        List<RaceDBModel> racesModel = db.getAllGameRaces(game.getGameID());
-        RaceManager.loadRaces(racesModel);
+            //Load races
+            List<RaceDBModel> racesModel = db.getAllGameRaces(game.getGameID());
+            RaceManager.loadRaces(racesModel);
 
-        //Load TradingCenter
-        TradingCenterDBModel tcModel = db.getTradingCenterFromGame(game.getGameID());
-        TradingCenter tc = TradingCenter.getInstance();
-        for (PlotCoord plot : tcModel.getOwnedPlots()) {
-            tc.addPlot(plot);
-        }
+            //Load TradingCenter
+            TradingCenterDBModel tcModel = db.getTradingCenterFromGame(game.getGameID());
+            TradingCenter tc = TradingCenter.getInstance();
+            for (PlotCoord plot : tcModel.getOwnedPlots()) {
+                tc.addPlot(plot);
+            }
 
-        state = GameState.IN_PROGRESS;
-
-        return true;
+            state = GameState.IN_PROGRESS;
+        });
     }
 
     /**
@@ -202,9 +207,44 @@ public class GameManager {
         StringBuilder sb = new StringBuilder(20);
         sb.append("Current game state: ").append(state.name());
         if (state == GameState.SETUP) {
+            if (currentStep == setupSteps.length - 1) {
+                sb.append(getReport());
+            }
             sb.append("\nCurrent step:\n-").append(currentStepMessage());
         }
         return sb.toString();
+    }
+
+    /**
+     * Returns a report of the game.
+     * @return string with the report of the game.
+     */
+    public String getReport() {
+        String newLine = "\n";
+        String spacer = "   ";
+        StringBuilder stringBuilder = new StringBuilder(175);
+        stringBuilder.append(newLine)
+                .append("===============GAME REPORT===============").append(newLine)
+                .append("Game: ").append(uName).append(newLine)
+                .append("Plot data:").append(newLine)
+                .append(spacer).append("X/Z offset: ").append(getXOffset()).append(" / ")
+                .append(getZOffset()).append(newLine)
+                .append(spacer).append("Plot size: ").append(getPlotSize()).append(newLine)
+                .append("Race data:").append(newLine);
+        for (Race race : RaceManager.getRaces()) {
+            stringBuilder.append(spacer).append(race.getTeamColor()).append(race.getName())
+                    .append(ChatColor.RESET).append(": ").append(newLine)
+                    .append(spacer).append(spacer).append("Homeplot: ")
+                    .append(race.getHomePlot().getName()).append(newLine);
+        }
+        stringBuilder.append("Trading center Data: ");
+        for (PlotCoord plotCoord : TradingCenter.getInstance().getPlotCoords()) {
+            stringBuilder.append(newLine).append(spacer).append("Name: ").append(plotCoord.toString());
+        }
+        stringBuilder.append(newLine)
+                .append("===================END===================")
+                .append(newLine);
+        return stringBuilder.toString();
     }
 
     public enum GameState {

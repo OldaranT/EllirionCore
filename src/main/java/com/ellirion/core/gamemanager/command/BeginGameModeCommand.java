@@ -24,11 +24,11 @@ public class BeginGameModeCommand implements CommandExecutor {
 
         if (args.length <= 0) {
             player.sendMessage(ChatColor.DARK_RED + "please give a unique name for the game.");
-            return false;
+            return true;
         }
 
-        String uName = args[0];
-        uName = "Game-" + uName.replaceAll("[^a-zA-Z0-9\\s]", "")
+        String uName = String.join(" ", args);
+        uName = uName.replaceAll("[^a-zA-Z0-9\\s]", "")
                 .toLowerCase()
                 .replaceFirst(uName.charAt(0) + "", Character.toUpperCase(uName.charAt(0)) + "");
 

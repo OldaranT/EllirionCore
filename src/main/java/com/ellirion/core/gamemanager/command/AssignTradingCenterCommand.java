@@ -20,7 +20,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
         }
         Player player = (Player) commandSender;
 
-        Plot plot = null;
+        Plot plot;
         if (strings.length >= 1) {
             //Coördinates of plot were entered
             try {

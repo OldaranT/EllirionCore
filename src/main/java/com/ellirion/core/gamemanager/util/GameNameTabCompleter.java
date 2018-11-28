@@ -15,7 +15,7 @@ public class GameNameTabCompleter implements TabCompleter {
         final List<String> completions = new ArrayList<>();
         List<String> allGameNames = new ArrayList<>();
 
-        if (args.length >= 1) {
+        if (args.length == 1) {
             GameManager.getGAMES().forEach(((uuid, game) -> allGameNames.add(game.getUName())));
             allGameNames.forEach(s -> {
                 if (s.startsWith(args[args.length - 1].toUpperCase())) {

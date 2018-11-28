@@ -18,21 +18,17 @@ public class LoadGameModeCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        String format = "Game-";
-        String uName;
-
         if (args.length <= 0) {
-            player.sendMessage(ChatColor.DARK_RED + "please give a race name and color");
-            return false;
+            player.sendMessage(ChatColor.DARK_RED + "Please give the name of the game you want to load.");
+            return true;
         }
 
-        uName = String.join(" ", args);
+        String uName = String.join(" ", args);
 
-        if (!args[0].startsWith(format)) {
-            uName = format + uName;
+        if (!GameManager.getInstance().loadGame(uName)) {
+            player.sendMessage(ChatColor.DARK_RED + "Could not load the game with name: " + uName);
+            return true;
         }
-
-        GameManager.getInstance().loadGame(uName);
 
         return true;
     }
