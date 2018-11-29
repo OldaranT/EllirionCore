@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ellirion.core.database.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class GameManager {
 
@@ -169,6 +169,8 @@ public class GameManager {
      * @return returns true if game has been loaded correctly.
      */
     public boolean loadGame(String uName) {
+        unloadGame(this.uName);
+
         return tryCatch(() -> {
             state = GameState.LOADING;
 
@@ -190,11 +192,36 @@ public class GameManager {
             //Load TradingCenter
             TradingCenterDBModel tcModel = db.getTradingCenterFromGame(game.getGameID());
             TradingCenter tc = TradingCenter.getInstance();
-            for (PlotCoord plot : tcModel.getOwnedPlots()) {
-                tc.addPlot(plot);
+            for (PlotCoord plotCoord : tcModel.getOwnedPlots()) {
+                tc.addPlot(plotCoord);
+                PlotManager.getPlotByCoordinate(plotCoord).setOwner(tc);
             }
 
             state = GameState.IN_PROGRESS;
+        });
+    }
+
+    /**
+     * Unload a gamemode from name.
+     * @param uName the unique name of the game.
+     * @return returns true if game has been loaded correctly.
+     */
+    public boolean unloadGame(String uName) {
+        return tryCatch(() -> {
+            state = GameState.UNLOADING;
+
+            game = null;
+            PlotManager.removeAllPlots();
+            RaceManager.removeAllRaces();
+
+            //Reset all game info in gamemanger.
+            gameID = null;
+            this.uName = "";
+            plotSize = 0;
+            xOffset = 0;
+            zOffset = 0;
+
+            state = GameState.NOT_STARTED;
         });
     }
 
@@ -253,6 +280,7 @@ public class GameManager {
         IN_PROGRESS,
         SAVING,
         LOADING,
+        UNLOADING,
         FINISHED
     }
 }

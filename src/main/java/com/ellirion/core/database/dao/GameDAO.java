@@ -3,12 +3,13 @@ package com.ellirion.core.database.dao;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.GameDBModel;
-import com.ellirion.core.database.util.GenericTryCatch;
 import com.ellirion.core.gamemanager.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
 
@@ -24,17 +25,8 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    //TODO check with chris.
     private boolean saveGame(GameDBModel game) {
-        return GenericTryCatch.tryCatch(() -> save(game));
-        //        try {
-        //            save(game);
-        //            return true;
-        //        } catch (Exception exception) {
-        //
-        //            Logging.printStackTrace(exception);
-        //            return false;
-        //        }
+        return tryCatch(() -> save(game));
     }
 
     /**
@@ -87,16 +79,8 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      * @param gameID The UUID of the game to delete.
      * @return Return the result of the operation.
      */
-    public boolean deleteGame(UUID gameID) { //TODO check this with chris.
-        return GenericTryCatch.tryCatch(() -> delete(findOne(id, gameID)));
-        //        try {
-        //            GameDBModel model = findOne(id, gameID);
-        //            delete(model);
-        //            return true;
-        //        } catch (Exception exception) {
-        //            Logging.printStackTrace(exception);
-        //            return false;
-        //        }
+    public boolean deleteGame(UUID gameID) {
+        return tryCatch(() -> delete(findOne(id, gameID)));
     }
 
     /**
@@ -105,7 +89,7 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      */
     public List<String> getAllGameNames() {
         List<String> result = new ArrayList<>();
-        find().asList().forEach(model -> result.add(model.getUName()));
+        tryCatch(() -> find().asList().forEach(model -> result.add(model.getUName())));
         return result;
     }
 }

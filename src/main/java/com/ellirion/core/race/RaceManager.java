@@ -12,7 +12,6 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.Logging;
 import com.ellirion.core.util.StringHelper;
 
 import java.util.ArrayList;
@@ -25,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class RaceManager {
 
@@ -86,18 +87,14 @@ public class RaceManager {
      * @return return true if the operation is successful.
      */
     public static boolean addRace(RaceDBModel databaseRace) {
-        try {
+        return tryCatch(() -> {
             Race race = new Race(databaseRace);
             RACES.putIfAbsent(race.getRaceUUID(), race);
             setColorToUsed(race.getTeamColor());
             Plot homePlot = race.getHomePlot();
             homePlot.setOwner(race);
             RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        });
     }
 
     private static boolean createRaceInDB(Race race) {
