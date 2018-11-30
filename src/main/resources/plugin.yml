@@ -72,4 +72,10 @@ commands:
   JoinGroundWar:
       Description: join a groundwar
       usage: /joingroundwar
+  LeaveGroundWar:
+      Description: Leave the ground war you're in.
+      usage: /leavegroundwar
+  CancelGroundWar:
+      Description: Cancel the ground war you created.
+      usage: /cancelgroundwar
 depend: [EllirionUtil]
