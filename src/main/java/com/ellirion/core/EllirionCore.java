@@ -21,10 +21,12 @@ import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.core.plotsystem.command.CancelGroundWarCommand;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotMapCommand;
+import com.ellirion.core.plotsystem.command.LeaveGroundWarCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
@@ -101,6 +103,8 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GetGroundwar").setExecutor(new GetGroundWarCommand());
         getCommand("ConfirmGroundWar").setExecutor(new ConfirmGroundWarCommand());
         getCommand("JoinGroundWar").setExecutor(new JoinGroundWarCommand());
+        getCommand("LeaveGroundWar").setExecutor(new LeaveGroundWarCommand());
+        getCommand("CancelGroundWar").setExecutor(new CancelGroundWarCommand());
     }
 
     private void registerEvents() {

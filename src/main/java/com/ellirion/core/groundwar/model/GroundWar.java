@@ -24,7 +24,7 @@ public class GroundWar {
     @Getter private Race raceA;
     @Getter private Race raceB;
     private Plot[] plots;
-    private UUID createdBy;
+    @Getter private UUID createdBy;
     private State state;
     private WarTeam[] teams;
 
@@ -102,6 +102,15 @@ public class GroundWar {
         } else if (race.equals(raceB)) {
             teams[1].addPlayer(player);
         }
+    }
+
+    /**
+     * Remove a participant from this GroundWar.
+     * @param player the player to remove
+     */
+    public void removeParticipant(UUID player) {
+        teams[0].getPlayers().remove(player);
+        teams[1].getPlayers().remove(player);
     }
 
     /**

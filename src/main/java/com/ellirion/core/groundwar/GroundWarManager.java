@@ -142,4 +142,12 @@ public class GroundWarManager {
         }
         return null;
     }
+
+    /**
+     * Remove a ground war.
+     * @param player the player whose ground war to remove
+     */
+    public static void removeGroundWar(UUID player) {
+        GROUND_WARS.remove(player);
+    }
 }
