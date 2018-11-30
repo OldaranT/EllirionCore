@@ -12,6 +12,9 @@ import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.util.StringHelper;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class CreateRaceCommand implements CommandExecutor {
 
@@ -37,20 +40,23 @@ public class CreateRaceCommand implements CommandExecutor {
             sendmsg("race already exists");
             return true;
         }
-        ChatColor color = ChatColor.valueOf(args[args.length - 1].toUpperCase());
-        if (color == null || RaceManager.isColerInUse(color)) {
+        AtomicReference<ChatColor> color = new AtomicReference<>();
+
+        tryCatch(() -> color.set(ChatColor.valueOf(args[args.length - 1].toUpperCase())));
+
+        if (color.get() == null || RaceManager.isColerInUse(color.get())) {
             sendmsg("you either miss spelled the color or the color is in use");
             return true;
         }
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
         if (!(plot.getOwner() instanceof Wilderness)) {
-            sendmsg(ChatColor.RED + "you can only create race on unowned plots!");
+            sendmsg(ChatColor.DARK_RED + "you can only create race on unowned plots!");
             return true;
         }
 
-        if (!RaceManager.addRace(raceName, color, plot)) {
-            sendmsg("something went wrong!");
+        if (!RaceManager.addRace(raceName, color.get(), plot)) {
+            sendmsg("something went wrong when creating a race.");
             return true;
         }
         sendmsg(raceName + " created");

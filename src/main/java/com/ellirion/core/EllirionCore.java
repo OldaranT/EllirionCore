@@ -6,11 +6,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.database.model.GameDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.gamemanager.command.AssignTradingCenterCommand;
 import com.ellirion.core.gamemanager.command.BeginGameModeCommand;
 import com.ellirion.core.gamemanager.command.CancelSetupCommand;
 import com.ellirion.core.gamemanager.command.ConfirmGamemodeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
+import com.ellirion.core.gamemanager.command.LoadGameModeCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
 import com.ellirion.core.groundwar.command.ConfirmGroundWarCommand;
 import com.ellirion.core.groundwar.command.CreateGroundwarCommand;
@@ -20,8 +23,8 @@ import com.ellirion.core.groundwar.command.WagerPlotCommand;
 import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
-import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.command.CancelGroundWarCommand;
+import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
@@ -39,6 +42,7 @@ import com.ellirion.core.util.Logging;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class EllirionCore extends JavaPlugin {
 
@@ -71,9 +75,11 @@ public class EllirionCore extends JavaPlugin {
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
-        getLogger().info("Introduction is enabled.");
+        getLogger().info("==========CREATING DATABASE MANAGER==========");
         dbManager = new DatabaseManager(dbConnectionConfig);
-        //setup();
+        getLogger().info("==========CREATED DATABASE MANAGER==========");
+        setup();
+        getLogger().info("Introduction is enabled.");
     }
 
     private void registerCommands() {
@@ -81,18 +87,19 @@ public class EllirionCore extends JavaPlugin {
         getCommand("createRace").setExecutor(new CreateRaceCommand());
         getCommand("joinRace").setExecutor(new JoinRaceCommand());
         getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
-        
+
         //Plots
         getCommand("CreatePlots").setExecutor(new CreatePlotCommand(this));
         getCommand("GetPlot").setExecutor(new GetPlotCommand());
         getCommand("TeleportToPlot").setExecutor(new TeleportToPlotCommand());
         getCommand("ClaimPlot").setExecutor(new ClaimPlotCommand());
         getCommand("PlotMap").setExecutor(new GetPlotMapCommand());
-        
+
         //Gamemode
         getCommand("BeginGamemode").setExecutor(new BeginGameModeCommand());
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
+        getCommand("LoadGame").setExecutor(new LoadGameModeCommand());
         getCommand("AssignTradingCenter").setExecutor(new AssignTradingCenterCommand());
         getCommand("ConfirmGamemode").setExecutor(new ConfirmGamemodeCommand());
         getCommand("CancelSetup").setExecutor(new CancelSetupCommand());
@@ -152,7 +159,11 @@ public class EllirionCore extends JavaPlugin {
 
     private void setup() {
         try {
-            PlotManager.createPlotsFromDatabase(dbManager.getAllPlots());
+            List<GameDBModel> gameDBModels = dbManager.getAllGames();
+
+            for (GameDBModel gameDbModel : gameDBModels) {
+                GameManager.addGame(gameDbModel);
+            }
         } catch (Exception exception) {
             Logging.printStackTrace(exception);
         }
@@ -162,6 +173,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
         getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("joinRace").setTabCompleter(new RaceNameTabCompleter());
+        getCommand("LoadGame").setTabCompleter(new GameNameTabCompleter());
     }
 }
 

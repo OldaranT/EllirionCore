@@ -20,7 +20,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
         }
         Player player = (Player) commandSender;
 
-        Plot plot = null;
+        Plot plot;
         if (strings.length >= 1) {
             //Coördinates of plot were entered
             try {
@@ -29,7 +29,8 @@ public class AssignTradingCenterCommand implements CommandExecutor {
                 PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
-                player.sendMessage(ChatColor.DARK_RED + "Something went wrong when trying to read the plot coordinates you entered.");
+                player.sendMessage(ChatColor.DARK_RED +
+                                   "Something went wrong when trying to read the plot coordinates you entered.");
                 return true;
             }
         } else {
@@ -40,9 +41,11 @@ public class AssignTradingCenterCommand implements CommandExecutor {
         try {
             plot.setOwner(TradingCenter.getInstance());
         } catch (Exception e) {
-            player.sendMessage(ChatColor.DARK_RED + "Something went wrong with setting the plot owner. Did you select the plot right?");
+            player.sendMessage(ChatColor.DARK_RED +
+                               "Something went wrong with setting the plot owner. Did you select the plot right?");
         }
 
+        player.sendMessage(ChatColor.GREEN + plot.getName() + " is now a trading center plot.");
         return true;
     }
 }

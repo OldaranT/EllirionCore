@@ -4,6 +4,7 @@ import lombok.Getter;
 import xyz.morphia.annotations.Embedded;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Embedded
 public class PlotCoord {
@@ -43,18 +44,19 @@ public class PlotCoord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, z);
+        return Objects.hash(x, z, worldName);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PlotCoord)) {
+            Logger.getGlobal().info("not comparing with PlotCoord");
             return false;
         }
 
         PlotCoord other = (PlotCoord) obj;
 
-        return (x == other.x && z == other.z);
+        return (x == other.x && z == other.z && worldName.equals(other.worldName));
     }
 
     @Override

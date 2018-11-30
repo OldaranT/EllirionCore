@@ -3,9 +3,14 @@ package com.ellirion.core.plotsystem.model;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.model.PlotCoordDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.util.model.BoundingBox;
+import com.ellirion.util.model.Point;
 
 import java.util.logging.Logger;
 
@@ -13,9 +18,38 @@ public class Plot {
 
     @Getter private String name;
     @Getter private PlotCoord plotCoord;
-    @Getter private int plotSize;
     @Getter private BoundingBox boundingBox;
     @Getter private PlotOwner owner;
+
+    /**
+     * convert a plotDBmodel to a plot.
+     * @param plotCoordDBModel The plotDBmodel to convert.
+     */
+    public Plot(final PlotCoordDBModel plotCoordDBModel) {
+
+        plotCoord = plotCoordDBModel.getPlotCoord();
+        name = plotCoord.toString();
+
+        World worldToCheck = EllirionCore.getINSTANCE().getServer().getWorld(plotCoord.getWorldName());
+
+        //Check if the world is loaded if not create a dummy and then load it.
+        if (worldToCheck == null) {
+            World world = new WorldCreator(plotCoordDBModel.getPlotCoord().getWorldName()).createWorld();
+            EllirionCore.getINSTANCE().getServer().getWorlds().add(world);
+        }
+
+        int plotSize = GameManager.getInstance().getGame().getPlotSize();
+        int minX = plotCoord.getX() * plotSize;
+        int minZ = plotCoord.getZ() * plotSize;
+        int maxX = minX + plotSize - 1;
+        int maxZ = minZ + plotSize - 1;
+
+        Point lowestCorner = new Point(minX, PlotManager.getLOWEST_Y(), minZ);
+        Point highestCorner = new Point(maxX, PlotManager.getHIGHEST_Y(), maxZ);
+
+        boundingBox = new BoundingBox(lowestCorner, highestCorner);
+        setOwner(Wilderness.getInstance());
+    }
 
     /**
      * Model that defines a piece of land in the map.
@@ -28,7 +62,6 @@ public class Plot {
         this.name = name;
         this.plotCoord = plotCoord;
         this.boundingBox = boundingBox;
-        this.plotSize = plotSize;
         setOwner(Wilderness.getInstance());
     }
 

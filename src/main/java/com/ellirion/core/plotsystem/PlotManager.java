@@ -1,14 +1,13 @@
 package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.server.v1_12_R1.Tuple;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.database.DatabaseManager;
-import com.ellirion.core.database.model.PlotDBModel;
+import com.ellirion.core.database.model.PlotCoordDBModel;
+import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -23,6 +22,7 @@ import com.ellirion.util.model.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlotManager {
 
@@ -30,11 +30,7 @@ public class PlotManager {
     @Getter private static final int LOWEST_Y = 0;
     @Getter private static final int HIGHEST_Y = 255;
     @Getter private static final int CHUNK_SIZE = 16;
-    @Setter @Getter private static int CENTER_OFFSET_X;
-    @Setter @Getter private static int CENTER_OFFSET_Z;
-    @Setter @Getter private static int PLOT_SIZE;
-
-    private static DatabaseManager DATABASE_MANAEGR = EllirionCore.getINSTANCE().getDbManager();
+    @Getter private GameManager gameManager = GameManager.getInstance();
 
     public static HashMap<PlotCoord, Plot> getSavedPlots() {
         return SAVED_PLOTS;
@@ -46,11 +42,13 @@ public class PlotManager {
      * @return The plot player is standing in.
      */
     public static Plot getPlotFromLocation(Location location) {
-        int x = location.getBlockX() - (CENTER_OFFSET_X * CHUNK_SIZE);
-        int z = location.getBlockZ() - (CENTER_OFFSET_Z * CHUNK_SIZE);
+        GameManager gameManager = GameManager.getInstance();
 
-        int plotCordX = Math.floorDiv(x, PLOT_SIZE);
-        int plotCordZ = Math.floorDiv(z, PLOT_SIZE);
+        int x = location.getBlockX() - (gameManager.getXOffset() * CHUNK_SIZE);
+        int z = location.getBlockZ() - (gameManager.getZOffset() * CHUNK_SIZE);
+
+        int plotCordX = Math.floorDiv(x, gameManager.getPlotSize());
+        int plotCordZ = Math.floorDiv(z, gameManager.getPlotSize());
 
         PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
 
@@ -63,6 +61,14 @@ public class PlotManager {
      * @return the plot that is requested.
      */
     public static Plot getPlotByCoordinate(PlotCoord plotCoord) {
+        //Not using SAVED_PLOTS.get because it wouldn't find the race homePlot after loading.
+        for (Map.Entry entry : SAVED_PLOTS.entrySet()) {
+            PlotCoord key = (PlotCoord) entry.getKey();
+            if (key.equals(plotCoord)) {
+                return (Plot) entry.getValue();
+            }
+        }
+
         return SAVED_PLOTS.get(plotCoord);
     }
 
@@ -71,13 +77,13 @@ public class PlotManager {
      * @param plots plots to create.
      * @return returns true if the plots are created.
      */
-    public static boolean createPlotsFromDatabase(List<PlotDBModel> plots) {
-        for (PlotDBModel plotDBModel : plots) {
-            Plot plot = plotDBModel.convertPlotFromDatabase();
+    public static boolean createPlotsFromDatabase(List<PlotCoordDBModel> plots) {
+        for (PlotCoordDBModel plotCoordDBModel : plots) {
+            Plot plot = new Plot(plotCoordDBModel);
+            PlotCoord coord = plot.getPlotCoord();
 
-            if (SAVED_PLOTS.get(plotDBModel.getPlotCoord()) == null) {
-                SAVED_PLOTS.put(plot.getPlotCoord(), plot);
-                EllirionCore.getINSTANCE().getLogger().info(plot.getName());
+            if (SAVED_PLOTS.get(coord) == null) {
+                SAVED_PLOTS.put(coord, plot);
             }
         }
         return true;
@@ -87,18 +93,17 @@ public class PlotManager {
      * Create a hashmap with plots.
      * @param world The world plots being created in.
      * @param mapRadius The radius of the map.
-     * @param centerX The center X of the map.
-     * @param centerZ The center Y of the map.
      * @return Returns true if the plots are successfully created.
      */
-    public static List<Plot> createPlots(World world, int mapRadius, int centerX, int centerZ) {
-        int mapCenterX = centerX * CHUNK_SIZE;
-        int mapCenterZ = centerZ * CHUNK_SIZE;
+    public static List<Plot> createPlots(World world, int mapRadius) {
+        GameManager gameManager = GameManager.getInstance();
+
+        int mapCenterX = gameManager.getXOffset() * CHUNK_SIZE;
+        int mapCenterZ = gameManager.getZOffset() * CHUNK_SIZE;
         int currentPlot = 0;
         int amountOfPlots = mapRadius * mapRadius * 4;
         int interval = 10;
-
-        PLOT_SIZE = GameManager.getInstance().getPlotSize();
+        int plotSize = GameManager.getInstance().getPlotSize();
         List<Plot> result = new ArrayList<>();
 
         for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
@@ -114,15 +119,15 @@ public class PlotManager {
                     //If plot already exist skip it.
                     if (SAVED_PLOTS.get(plotCoord) == null) {
                         String name = plotCoord.toString();
-                        int currentX = startCountX * PLOT_SIZE + mapCenterX;
-                        int currentZ = startCountZ * PLOT_SIZE + mapCenterZ;
+                        int currentX = startCountX * plotSize + mapCenterX;
+                        int currentZ = startCountZ * plotSize + mapCenterZ;
 
                         Point lowerPoint = new Point(currentX, LOWEST_Y, currentZ);
-                        Point highestPoint = new Point(currentX + PLOT_SIZE - 1, HIGHEST_Y,
-                                                       currentZ + PLOT_SIZE - 1);
+                        Point highestPoint = new Point(currentX + plotSize - 1, HIGHEST_Y,
+                                                       currentZ + plotSize - 1);
                         BoundingBox boundingBox = new BoundingBox(lowerPoint, highestPoint);
 
-                        result.add(new Plot(name, plotCoord, boundingBox, PLOT_SIZE));
+                        result.add(new Plot(name, plotCoord, boundingBox, plotSize));
                     }
                 } catch (Exception e) {
                     Logging.printStackTrace(e);
@@ -131,6 +136,15 @@ public class PlotManager {
             }
         }
         return result;
+    }
+
+    /**
+     * This method assigns the trading center plots that where saved in the database.
+     * @param tradingCenterDBModel The database model that stores the trading center owned plots.
+     */
+    public static void assignTradingCenterPlots(TradingCenterDBModel tradingCenterDBModel) {
+        tradingCenterDBModel.getOwnedPlots().forEach(
+                plotCoord -> PlotManager.getPlotByCoordinate(plotCoord).setOwner(TradingCenter.getInstance()));
     }
 
     /**

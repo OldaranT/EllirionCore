@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -15,6 +16,7 @@ import com.ellirion.core.util.StringHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class RaceManager {
 
@@ -73,8 +77,24 @@ public class RaceManager {
         RACES.putIfAbsent(race.getRaceUUID(), race);
         setColorToUsed(color);
         homePlot.setOwner(race);
-        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
-        return createRaceInDB(race);
+        // This should return null because if it returns a value then it has replaced something.
+        return RACE_ID_NAME.put(race.getRaceUUID(), race.getName()) == null;
+    }
+
+    /**
+     * Add a race from the database.
+     * @param databaseRace The database object to be converted into a race.
+     * @return return true if the operation is successful.
+     */
+    public static boolean addRace(RaceDBModel databaseRace) {
+        return tryCatch(() -> {
+            Race race = new Race(databaseRace);
+            RACES.putIfAbsent(race.getRaceUUID(), race);
+            setColorToUsed(race.getTeamColor());
+            Plot homePlot = race.getHomePlot();
+            homePlot.setOwner(race);
+            RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
+        });
     }
 
     private static boolean createRaceInDB(Race race) {
@@ -291,5 +311,19 @@ public class RaceManager {
         RACE_ID_NAME.clear();
         USED_COLORS.clear();
         AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
+    }
+
+    public static Collection<Race> getRaces() {
+        return RACES.values();
+    }
+
+    /**
+     * Load races from database models.
+     * @param races the database models of the races
+     */
+    public static void loadRaces(List<RaceDBModel> races) {
+        for (RaceDBModel race : races) {
+            addRace(race);
+        }
     }
 }

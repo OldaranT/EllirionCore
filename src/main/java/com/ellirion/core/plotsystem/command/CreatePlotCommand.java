@@ -37,9 +37,11 @@ public class CreatePlotCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        GameManager manager = GameManager.getInstance();
-        if (manager.getState() != GameManager.GameState.SETUP || !manager.currentStepMessage().equals("Create plots")) {
-            player.sendMessage(ChatColor.DARK_RED + "You can only create plots during the SETUP stage of the gamemode.");
+        GameManager gameManager = GameManager.getInstance();
+        if (gameManager.getState() != GameManager.GameState.SETUP ||
+            !gameManager.currentStepMessage().equals("Create plots")) {
+            player.sendMessage(
+                    ChatColor.DARK_RED + "You can only create plots during the SETUP stage of the gamemode.");
             return true;
         }
 
@@ -61,12 +63,12 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
-        GameManager.getInstance().setPlotSize(plotSize);
-        PlotManager.setCENTER_OFFSET_X(centerX);
-        PlotManager.setCENTER_OFFSET_Z(centerZ);
+        gameManager.setPlotSize(plotSize);
+        gameManager.setXOffset(centerX);
+        gameManager.setZOffset(centerZ);
 
         Promise<Boolean> createPlotsPromise = new Promise(f -> {
-            List<Plot> plots = PlotManager.createPlots(player.getWorld(), mapRadius, centerX, centerZ);
+            List<Plot> plots = PlotManager.createPlots(player.getWorld(), mapRadius);
             HashMap<PlotCoord, Plot> plotMap = PlotManager.getSavedPlots();
             for (Plot plot : plots) {
                 plotMap.put(plot.getPlotCoord(), plot);
