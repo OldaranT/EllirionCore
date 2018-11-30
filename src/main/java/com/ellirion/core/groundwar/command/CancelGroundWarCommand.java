@@ -1,4 +1,4 @@
-package com.ellirion.core.plotsystem.command;
+package com.ellirion.core.groundwar.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -11,12 +11,12 @@ import com.ellirion.core.groundwar.model.GroundWar;
 
 import java.util.UUID;
 
-public class LeaveGroundWarCommand implements CommandExecutor {
+public class CancelGroundWarCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("You cannot leave a GroundWar as a non-player.");
+            commandSender.sendMessage("You cannot cancel a GroundWar");
             return true;
         }
 
@@ -25,12 +25,17 @@ public class LeaveGroundWarCommand implements CommandExecutor {
         GroundWar war = GroundWarManager.getGroundWar(playerID);
 
         if (war == null) {
-            player.sendMessage("You were not in a groundwar.");
+            player.sendMessage("You are not in a ground war, therefore you cannot cancel it.");
             return true;
         }
 
-        war.removeParticipant(playerID);
-        player.sendMessage(ChatColor.GREEN + "You successfully left the ground war");
+        if (!war.getCreatedBy().equals(playerID)) {
+            player.sendMessage("Only the player that started this ground war can cancel it.");
+            return true;
+        }
+
+        GroundWarManager.removeGroundWar(playerID);
+        player.sendMessage(ChatColor.GREEN + "The ground war has been canceled.");
 
         return true;
     }

@@ -23,13 +23,13 @@ import com.ellirion.core.groundwar.command.WagerPlotCommand;
 import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
-import com.ellirion.core.plotsystem.command.CancelGroundWarCommand;
+import com.ellirion.core.groundwar.command.CancelGroundWarCommand;
 import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotMapCommand;
-import com.ellirion.core.plotsystem.command.LeaveGroundWarCommand;
+import com.ellirion.core.groundwar.command.LeaveGroundWarCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
@@ -75,9 +75,7 @@ public class EllirionCore extends JavaPlugin {
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
-        getLogger().info("==========CREATING DATABASE MANAGER==========");
         dbManager = new DatabaseManager(dbConnectionConfig);
-        getLogger().info("==========CREATED DATABASE MANAGER==========");
         setup();
         getLogger().info("Introduction is enabled.");
     }
