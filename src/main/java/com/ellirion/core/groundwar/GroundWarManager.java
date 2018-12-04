@@ -123,8 +123,10 @@ public class GroundWarManager {
         }, true);
 
         ((EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin("EllirionUtil")).schedulePromise(countdownPromise).then(f -> {
-            Logger.getGlobal().info("Staring GroundWar");
-            war.start();
+            EllirionCore.getINSTANCE().getServer().getScheduler().runTask(EllirionCore.getINSTANCE(), () -> {
+                Logger.getGlobal().info("Staring GroundWar");
+                war.start();
+            });
         });
 
     }

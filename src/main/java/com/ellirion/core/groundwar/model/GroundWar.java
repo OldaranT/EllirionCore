@@ -2,11 +2,14 @@ package com.ellirion.core.groundwar.model;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.util.EllirionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,17 +140,29 @@ public class GroundWar {
         List<UUID> participantsA = teams[0].getPlayers();
         List<UUID> participantsB = teams[1].getPlayers();
 
+        EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin("EllirionUtil");
+
         //Teleport players
         for (UUID playerID : participantsA) {
             Player player = plugin.getServer().getPlayer(playerID);
-            player.teleport(plots[0].getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch()));
+            Location loc = plots[0].getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+            ellirionUtil.loadChunk(loc);
+            player.teleport(loc);
         }
         for (UUID playerID : participantsB) {
             Player player = plugin.getServer().getPlayer(playerID);
-            player.teleport(plots[1].getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch()));
+            Location loc = plots[1].getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+            ellirionUtil.loadChunk(loc);
+            player.teleport(loc);
         }
 
-        //Add playerDeath eventlistener
+        //Calculate team lives
+        //less players = more lives so that 0.5 * the players = 1.5 * the lives
+        int livesBase = 3;
+        int livesTeamA = (int) ((1f / ((float) teams[0].getPlayers().size() / (float) teams[1].getPlayers().size())) * livesBase);
+        int livesTeamB = (int) ((1f / ((float) teams[1].getPlayers().size() / (float) teams[0].getPlayers().size())) * livesBase);
+        teams[0].setInitialLives(livesTeamA);
+        teams[1].setInitialLives(livesTeamB);
 
         state = State.IN_PROGRESS;
     }
@@ -160,29 +175,101 @@ public class GroundWar {
     }
 
     /**
+     * Register a player death.
+     * @param playerID the player that died
+     */
+    public void playerDied(UUID playerID) {
+        if (teams[0].getPlayers().contains(playerID)) {
+            teams[0].removeLife();
+        } else if (teams[1].getPlayers().contains(playerID)) {
+            teams[1].removeLife();
+        }
+
+        //Check for winner
+        //if one team won, teleport players back to where they were when they joined
+        //TODO use participant model to send players back
+
+        if (teams[0].getLives() <= 0 || teams[1].getLives() <= 0) {
+            finish();
+        }
+    }
+
+    /**
      * ToString.
      * @return string
      */
     public String toString() {
-        StringBuilder sb = new StringBuilder(147);
-        String undefined = "Undefined";
+        if (state != State.IN_PROGRESS) {
+            StringBuilder sb = new StringBuilder(147);
+            String undefined = "Undefined";
 
-        String raceAName = raceA != null ? raceA.getTeamColor() + raceA.getName() + ChatColor.RESET : undefined;
-        String raceBName = raceB != null ? raceB.getTeamColor() + raceB.getName() + ChatColor.RESET : undefined;
-        String plotA = plots[0] != null ? plots[0].getName() : undefined;
-        String plotB = plots[1] != null ? plots[1].getName() :  undefined;
-        String participantsA = teams[0] != null ? teams[0].getParticipants() : "No participants";
-        String participantsB = teams[1] != null ? teams[1].getParticipants() : "No participants";
+            String raceAName = raceA != null ? raceA.getTeamColor() + raceA.getName() + ChatColor.RESET : undefined;
+            String raceBName = raceB != null ? raceB.getTeamColor() + raceB.getName() + ChatColor.RESET : undefined;
+            String plotA = plots[0] != null ? plots[0].getName() : undefined;
+            String plotB = plots[1] != null ? plots[1].getName() : undefined;
+            String participantsA = teams[0] != null ? teams[0].getPlayerNames() : "No participants";
+            String participantsB = teams[1] != null ? teams[1].getPlayerNames() : "No participants";
 
-        sb.append("GroundWar between races ").append(raceAName)
-                .append(" and ").append(raceBName)
-                .append(" created by ").append(EllirionCore.getINSTANCE().getServer().getPlayer(createdBy).getDisplayName())
-                .append("\ncurrent state: ").append(state.name())
-                .append("\nPlots wagered in this ground war:\n")
-                .append(plotA).append('\n')
-                .append(plotB).append("\nWith participants:\n")
-                .append(raceAName).append('\n').append(participantsA).append("\n==========VS.==========\n")
-                .append(raceBName).append('\n').append(participantsB);
-        return sb.toString();
+            sb.append("GroundWar between races ").append(raceAName)
+                    .append(" and ").append(raceBName)
+                    .append(" created by ").append(
+                    EllirionCore.getINSTANCE().getServer().getPlayer(createdBy).getDisplayName())
+                    .append("\ncurrent state: ").append(state.name())
+                    .append("\nPlots wagered in this ground war:\n")
+                    .append(plotA).append('\n')
+                    .append(plotB).append("\nWith participants:\n")
+                    .append(raceAName).append('\n').append(participantsA).append("\n==========VS.==========\n")
+                    .append(raceBName).append('\n').append(participantsB);
+            return sb.toString();
+        } else {
+            StringBuilder sb = new StringBuilder();
+            //Show teams lives
+            sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": ").append(teams[0].getLives()).append('\n')
+                    .append(raceB.getTeamColor()).append(raceB.getName()).append(": ").append(teams[1].getLives());
+            return sb.toString();
+        }
+    }
+
+    /**
+     * Get the winner of the ground war.
+     * @return the team that had more lives
+     */
+    public Race getWinner() {
+        if (teams[0].getLives() < teams[1].getLives()) {
+            return raceB;
+        } else if (teams[1].getLives() < teams[0].getLives()) {
+            return raceA;
+        } else {
+            return null;
+        }
+    }
+
+    private void finish() {
+        //Finish the war
+        //Announce winner
+        Race winner = getWinner();
+        if (winner == null) {
+            return;
+        }
+        EllirionCore.getINSTANCE().getServer().broadcastMessage(winner.getName() + " has won the ground war!");
+
+        //Give plots to winner
+        for (Plot plot : plots) {
+            plot.setOwner(winner);
+        }
+
+        //Teleport players back
+        List<Participant> participants = new ArrayList<>();
+        participants.addAll(teams[0].getParticipants());
+        participants.addAll(teams[1].getParticipants());
+        for (Participant p : participants) {
+            Player player = EllirionCore.getINSTANCE().getServer().getPlayer(p.getPlayer());
+            Location loc = p.getRespawnLocationAfterGroundWar();
+            EllirionCore.getINSTANCE().getLogger().info("Teleporting player " + player.getDisplayName() + " back to " + loc.toString());
+            player.teleport(loc);
+        }
+
+        //Remove ground war
+        GroundWarManager.removeGroundWar(createdBy);
     }
 }

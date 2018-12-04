@@ -34,6 +34,7 @@ public class CancelGroundWarCommand implements CommandExecutor {
             return true;
         }
 
+        //Maybe notify participants the ground war has been canceled
         GroundWarManager.removeGroundWar(playerID);
         player.sendMessage(ChatColor.GREEN + "The ground war has been canceled.");
 
