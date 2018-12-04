@@ -27,5 +27,5 @@
               files="[/\\]test"
     />
 
-    <!--<suppress message="Missing raceA Javadoc comment"/>-->
+    <!--<suppress message="Missing a Javadoc comment"/>-->
 </suppressions>
