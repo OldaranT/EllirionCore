@@ -185,10 +185,6 @@ public class GroundWar {
             teams[1].removeLife();
         }
 
-        //Check for winner
-        //if one team won, teleport players back to where they were when they joined
-        //TODO use participant model to send players back
-
         if (teams[0].getLives() <= 0 || teams[1].getLives() <= 0) {
             finish();
         }
@@ -246,6 +242,8 @@ public class GroundWar {
 
     private void finish() {
         //Finish the war
+        state = State.FINISHED;
+
         //Announce winner
         Race winner = getWinner();
         if (winner == null) {
