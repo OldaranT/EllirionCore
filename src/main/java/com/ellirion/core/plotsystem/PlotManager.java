@@ -106,8 +106,8 @@ public class PlotManager {
         int plotSize = GameManager.getInstance().getPlotSize();
         List<Plot> result = new ArrayList<>();
 
-        for (int startCountX = -mapRadius; startCountX < mapRadius; startCountX++) {
-            for (int startCountZ = -mapRadius; startCountZ < mapRadius; startCountZ++) {
+        for (int startCountX = -mapRadius; startCountX <= mapRadius; startCountX++) {
+            for (int startCountZ = -mapRadius; startCountZ <= mapRadius; startCountZ++) {
                 currentPlot++;
                 if (amountOfPlots > interval && Math.floorMod(currentPlot, (amountOfPlots / interval)) == 0) {
                     EllirionCore.getINSTANCE().getLogger().info("Progress: " + currentPlot + " / " + amountOfPlots);
