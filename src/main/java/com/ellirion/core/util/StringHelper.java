@@ -1,5 +1,7 @@
 package com.ellirion.core.util;
 
+import org.bukkit.ChatColor;
+
 public class StringHelper {
 
     /**
@@ -54,5 +56,15 @@ public class StringHelper {
         }
 
         return result;
+    }
+
+    /**
+     * Highlighter method for a string.
+     * @param toHighlight the string to highlight with BOLD and WHITE.
+     * @param toContinue the color to continue the rest of the text with.
+     * @return return the highlited string.
+     */
+    public static String highlight(String toHighlight, ChatColor toContinue) {
+        return ChatColor.BOLD + "" + ChatColor.WHITE + toHighlight + ChatColor.RESET + toContinue;
     }
 }

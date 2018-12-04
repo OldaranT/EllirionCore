@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.gamemanager.GameManager;
 
+import static com.ellirion.core.util.StringHelper.*;
+
 public class LoadGameModeCommand implements CommandExecutor {
 
     @Override
@@ -26,9 +28,12 @@ public class LoadGameModeCommand implements CommandExecutor {
         String uName = String.join(" ", args);
 
         if (!GameManager.getInstance().loadGame(uName)) {
-            player.sendMessage(ChatColor.DARK_RED + "Could not load the game with name: " + uName);
+            player.sendMessage(ChatColor.DARK_RED + "Could not load the game with name: " +
+                               highlight(uName, ChatColor.RESET));
             return true;
         }
+
+        player.sendMessage(ChatColor.GREEN + "The game " + highlight(uName, ChatColor.GREEN) + " has been loaded.");
 
         return true;
     }

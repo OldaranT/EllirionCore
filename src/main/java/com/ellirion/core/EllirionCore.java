@@ -75,7 +75,7 @@ public class EllirionCore extends JavaPlugin {
     private void registerCommands() {
         //Race
         getCommand("createRace").setExecutor(new CreateRaceCommand());
-        getCommand("joinRace").setExecutor(new JoinRaceCommand());
+        getCommand("JoinRace").setExecutor(new JoinRaceCommand());
         getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
 
         //Plots

@@ -10,6 +10,8 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 
+import static com.ellirion.core.util.StringHelper.*;
+
 public class AssignTradingCenterCommand implements CommandExecutor {
 
     @Override
@@ -19,18 +21,20 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) commandSender;
-
         Plot plot;
-        if (strings.length >= 1) {
+        if (strings.length > 1) {
+
+            int x = Integer.parseInt(strings[0]);
+            int z = Integer.parseInt(strings[1]);
+
             //Coördinates of plot were entered
             try {
-                int x = Integer.parseInt(strings[0]);
-                int z = Integer.parseInt(strings[1]);
                 PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
-                player.sendMessage(ChatColor.DARK_RED +
-                                   "Something went wrong when trying to read the plot coordinates you entered.");
+                player.sendMessage(ChatColor.DARK_RED + "The plot with the coords " +
+                                   highlight(x + " " + z, ChatColor.DARK_RED) +
+                                   " Does not exist.");
                 return true;
             }
         } else {
@@ -41,11 +45,12 @@ public class AssignTradingCenterCommand implements CommandExecutor {
         try {
             plot.setOwner(TradingCenter.getInstance());
         } catch (Exception e) {
-            player.sendMessage(ChatColor.DARK_RED +
-                               "Something went wrong with setting the plot owner. Did you select the plot right?");
+            player.sendMessage(ChatColor.DARK_RED + "You are not located on a plot.");
+            return true;
         }
 
-        player.sendMessage(ChatColor.GREEN + plot.getName() + " is now a trading center plot.");
+        player.sendMessage(ChatColor.BOLD + plot.getName() + ChatColor.RESET +
+                           ChatColor.GREEN + " is now a trading center plot.");
         return true;
     }
 }

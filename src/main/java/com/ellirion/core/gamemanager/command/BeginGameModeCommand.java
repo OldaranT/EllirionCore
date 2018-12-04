@@ -6,8 +6,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.gamemanager.GameManager;
+import com.ellirion.core.gamemanager.model.Game;
 
 import java.util.UUID;
+
+import static com.ellirion.core.util.StringHelper.*;
 
 public class BeginGameModeCommand implements CommandExecutor {
 
@@ -31,6 +34,15 @@ public class BeginGameModeCommand implements CommandExecutor {
         uName = uName.replaceAll("[^a-zA-Z0-9\\s]", "")
                 .toLowerCase()
                 .replaceFirst(uName.charAt(0) + "", Character.toUpperCase(uName.charAt(0)) + "");
+
+        //Check if name already exist in database.
+        for (Game game : GameManager.getGAMES().values()) {
+            if (game.getUName().equals(uName)) {
+                player.sendMessage(ChatColor.DARK_RED + "The name " + highlight(uName, ChatColor.DARK_RED) +
+                                   " has already been taken.");
+                return true;
+            }
+        }
 
         if (gameManager.getState().ordinal() < GameManager.GameState.SETUP.ordinal()) {
 
