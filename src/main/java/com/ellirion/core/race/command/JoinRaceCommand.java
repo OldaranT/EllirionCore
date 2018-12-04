@@ -10,29 +10,23 @@ import com.ellirion.core.plotsystem.PlotManager;
 
 public class JoinRaceCommand implements CommandExecutor {
 
-    private CommandSender sender;
-
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        this.sender = sender;
-        if (!(sender instanceof Player)) {
-            sendmsg("only a player may join a team");
-            return false;
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("You need to be a player to use this command.");
+            return true;
         }
-        Player player = (Player) sender;
+
+        Player player = (Player) commandSender;
 
         Location loc = player.getLocation();
         if (!PlayerManager.setPlayerRace(player.getUniqueId(),
                                          PlotManager.getPlotFromLocation(loc).getOwner().getRaceUUID())) {
-            sendmsg("something went wrong when adding you to a race. please try again.");
+            player.sendMessage("something went wrong when adding you to a race. please try again.");
             return false;
         }
         String raceName = PlayerManager.getPlayerRace(player.getUniqueId()).getName();
-        sender.getServer().broadcastMessage(sender.getName() + " joined " + raceName);
+        player.getServer().broadcastMessage(player.getName() + " joined " + raceName);
         return true;
-    }
-
-    private void sendmsg(String msg) {
-        sender.sendMessage(msg);
     }
 }

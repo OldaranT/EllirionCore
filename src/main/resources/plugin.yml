@@ -8,11 +8,11 @@ commands:
   createRace:
       description: Create a race and usage the plot your standing on as homeplot.
       usage: /createRace <race name> <color>
-      aliases: [cr,race-CREATE]
+      aliases: [cr, race-CREATE]
   JoinRace:
       description: Join a race by standing on a race owned plot.
       usage: /joinRace, /jr
-      aliases: [jr,race-JOIN]
+      aliases: [jr, race-JOIN]
   AssignTradingCenter:
       description: Assign trading center to be the owner of a plot
       usage: /AssignTradingCenter [<X> <Z>]
@@ -20,23 +20,23 @@ commands:
   RemoveRace:
       description: Removes race by name.
       usage: /rr <raceName>
-      aliases: [rr,race-REMOVE]
+      aliases: [rr, race-REMOVE]
   CreatePlots:
       description: Create plots
       usage: /cps <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>
-      aliases: [cps,plot-CREATE]
+      aliases: [cps, plot-CREATE]
   GetPlot:
       description: Get plot from location
       usage: /GetPlot, /gp
-      aliases: [gp,plot-GET]
+      aliases: [gp, plot-GET]
   TeleportToPlot:
       description: Teleport player to selected plot.
       usage: /TeleportToPlot <X> <Z>, /ttp <X> <Z>
-      aliases: [ttp,plot-TELEPORT]
+      aliases: [ttp, plot-TELEPORT]
   ClaimPlot:
       description: Claim a plot for your race by coords or location of the player.
       usage: /cp <X> <Y> or /cp (Takes plot of player location)
-      aliases: [cp,plot-CLAIM]
+      aliases: [cp, plot-CLAIM]
   PlotMap:
       description: Get a map of surrounding plots.
       usage: /PlotMap

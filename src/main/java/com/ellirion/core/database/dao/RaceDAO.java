@@ -25,17 +25,8 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    //    @SuppressWarnings({"Duplicates", "CPD-START"})
-    //TODO validate the try and catch with chris. If approved then remove commented code.
     private boolean saveRace(RaceDBModel race) {
         return GenericTryCatch.tryCatch(() -> save(race));
-        //        try {
-        //            save(race);
-        //            return true;
-        //        } catch (Exception exception) {
-        //            Logging.printStackTrace(exception);
-        //            return false;
-        //        }
     }
 
     /**
@@ -53,11 +44,11 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param raceID The UUID of the race.
      * @return Return the found race.
      */
-    public RaceDBModel getSpecificRace(UUID raceID) {
+    public RaceDBModel getRace(UUID raceID) {
         return findOne(id, raceID);
     }
 
-    public List<RaceDBModel> getAllRaces() {
+    public List<RaceDBModel> getRaces() {
         return find().asList();
     }
 
@@ -79,7 +70,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race, UUID gameID) {
-        RaceDBModel model = getSpecificRace(race.getRaceUUID());
+        RaceDBModel model = getRace(race.getRaceUUID());
         if (model == null) {
             return createRace(race, gameID);
         }

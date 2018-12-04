@@ -18,7 +18,7 @@ public class ClaimPlotCommand implements CommandExecutor {
     private Player player;
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
@@ -29,14 +29,14 @@ public class ClaimPlotCommand implements CommandExecutor {
         Plot plotToCheck;
 
         // Check if coords where entered.
-        if (args.length == 2) {
-            int xCoord = Integer.parseInt(args[0]);
-            int zCoord = Integer.parseInt(args[1]);
+        if (strings.length == 2) {
+            int xCoord = Integer.parseInt(strings[0]);
+            int zCoord = Integer.parseInt(strings[1]);
 
             PlotCoord plotCoord = new PlotCoord(xCoord, zCoord, player.getWorld().getName());
 
             plotToCheck = PlotManager.getPlotByCoordinate(plotCoord);
-        } else if (args.length == 0) {
+        } else if (strings.length == 0) {
             plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
         } else {
             player.sendMessage(ChatColor.DARK_RED +

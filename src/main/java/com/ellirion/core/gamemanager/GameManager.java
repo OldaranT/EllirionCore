@@ -127,31 +127,39 @@ public class GameManager {
      * Confirm the gamemode.
      */
     public void confirmGamemode() {
-        //Validate gamemode?
-
         changeState(GameState.SAVING);
-        DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
-
-        //Save game
-        game = new Game(UUID.randomUUID(), uName, xOffset, zOffset, plotSize);
-        GAMES.put(game.getGameID(), game);
-        db.createGame(game);
-
-        //save plots
-        for (PlotCoord plotCoord : PlotManager.getSavedPlots().keySet()) {
-            EllirionCore.getINSTANCE().getLogger().info(plotCoord.toString());
-            db.savePlotCoord(game.getGameID(), plotCoord);
-        }
-
-        //save races
-        for (Race race : RaceManager.getRaces()) {
-            db.createRace(race);
-        }
-
-        //save tradingcenter
-        db.saveTradingCenter(TradingCenter.getInstance());
+        
+        DatabaseManager databaseManager = EllirionCore.getINSTANCE().getDbManager();
+        createGame(databaseManager);
 
         changeState(GameState.IN_PROGRESS);
+    }
+
+    private void createGame(DatabaseManager databaseManager) {
+        game = new Game(UUID.randomUUID(), uName, xOffset, zOffset, plotSize);
+        GAMES.put(game.getGameID(), game);
+        databaseManager.createGame(game);
+
+        createPlots(databaseManager);
+        createRaces(databaseManager);
+        createTradingCenter(databaseManager);
+    }
+
+    private void createPlots(DatabaseManager databaseManager) {
+        for (PlotCoord plotCoord : PlotManager.getSavedPlots().keySet()) {
+            EllirionCore.getINSTANCE().getLogger().info(plotCoord.toString());
+            databaseManager.createPlotCoord(game.getGameID(), plotCoord);
+        }
+    }
+
+    private void createRaces(DatabaseManager databaseManager) {
+        for (Race race : RaceManager.getRaces()) {
+            databaseManager.createRace(race);
+        }
+    }
+
+    private void createTradingCenter(DatabaseManager databaseManager) {
+        databaseManager.createTradingCenter(TradingCenter.getInstance());
     }
 
     /**
@@ -176,21 +184,21 @@ public class GameManager {
 
             DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
             //Load game
-            GameDBModel gameDBModel = db.getSpecificGameByName(uName);
+            GameDBModel gameDBModel = db.getGame(uName);
             Game game = new Game(gameDBModel);
             this.game = game;
 
             //Load plots
-            List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoordsByGameID(game.getGameID());
+            List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoords(game.getGameID());
             PlotManager.createPlotsFromDatabase(plotCoordDBModelList);
             plotSize = game.getPlotSize();
 
             //Load races
-            List<RaceDBModel> racesModel = db.getAllGameRaces(game.getGameID());
+            List<RaceDBModel> racesModel = db.getRaces(game.getGameID());
             RaceManager.loadRaces(racesModel);
 
             //Load TradingCenter
-            TradingCenterDBModel tcModel = db.getTradingCenterFromGame(game.getGameID());
+            TradingCenterDBModel tcModel = db.getTradingCenter(game.getGameID());
             TradingCenter tc = TradingCenter.getInstance();
             for (PlotCoord plotCoord : tcModel.getOwnedPlots()) {
                 tc.addPlot(plotCoord);

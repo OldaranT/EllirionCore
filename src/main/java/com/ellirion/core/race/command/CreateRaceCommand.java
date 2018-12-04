@@ -18,52 +18,50 @@ import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class CreateRaceCommand implements CommandExecutor {
 
-    private Player player;
-
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("this is the command for players.");
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("You need to be a player to use this command.");
+            return true;
         }
-        player = (Player) sender;
 
-        if (args.length <= 0) {
-            sendmsg("please give a race name and color");
-            return false;
+        Player player = (Player) commandSender;
+
+        if (strings.length <= 0) {
+            player.sendMessage(ChatColor.DARK_RED + "Please give a race name and color");
+            return true;
         }
-        if (args.length == 1) {
-            sendmsg("you forgot either the color or the name");
-            return false;
+        if (strings.length == 1) {
+            player.sendMessage(ChatColor.DARK_RED + "You forgot either the color or the name");
+            return true;
         }
-        String raceName = StringHelper.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
+        String raceName = StringHelper.normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 1)));
         if (RaceManager.raceExists(raceName)) {
-            sendmsg("race already exists");
+            player.sendMessage(ChatColor.DARK_RED + "Race already exists");
             return true;
         }
         AtomicReference<ChatColor> color = new AtomicReference<>();
 
-        tryCatch(() -> color.set(ChatColor.valueOf(args[args.length - 1].toUpperCase())));
+        tryCatch(() -> color.set(ChatColor.valueOf(strings[strings.length - 1].toUpperCase())));
 
         if (color.get() == null || RaceManager.isColerInUse(color.get())) {
-            sendmsg("you either miss spelled the color or the color is in use");
+            player.sendMessage(ChatColor.DARK_RED + "You either miss spelled the color or the color is in use");
             return true;
         }
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
         if (!(plot.getOwner() instanceof Wilderness)) {
-            sendmsg(ChatColor.DARK_RED + "you can only create race on unowned plots!");
+            player.sendMessage(ChatColor.DARK_RED + "You can only create race on unowned plots!");
             return true;
         }
 
         if (!RaceManager.addRace(raceName, color.get(), plot)) {
-            sendmsg("something went wrong when creating a race.");
+            player.sendMessage(ChatColor.DARK_RED + "Something went wrong when creating a race.");
             return true;
         }
-        sendmsg(raceName + " created");
-        return true;
-    }
 
-    private void sendmsg(String msg) {
-        player.sendMessage(msg);
+        player.sendMessage(ChatColor.GREEN + raceName + " created.");
+
+        return true;
     }
 }

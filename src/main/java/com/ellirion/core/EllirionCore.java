@@ -139,7 +139,7 @@ public class EllirionCore extends JavaPlugin {
 
     private void setup() {
         try {
-            List<GameDBModel> gameDBModels = dbManager.getAllGames();
+            List<GameDBModel> gameDBModels = dbManager.getGames();
 
             for (GameDBModel gameDbModel : gameDBModels) {
                 GameManager.addGame(gameDbModel);

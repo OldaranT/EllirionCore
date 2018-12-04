@@ -29,7 +29,7 @@ public class CreatePlotCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
@@ -46,15 +46,15 @@ public class CreatePlotCommand implements CommandExecutor {
         }
 
         // Check if a name was entered
-        if (args.length < 4 || args.length > 4) {
+        if (strings.length < 4 || strings.length > 4) {
             player.sendMessage(ChatColor.DARK_RED +
                                "Please give the template a name with the following arguments: <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>");
             return true;
         }
-        int plotSize = Integer.parseInt(args[0]);
-        int mapRadius = Integer.parseInt(args[1]);
-        int centerX = Integer.parseInt(args[2]);
-        int centerZ = Integer.parseInt(args[3]);
+        int plotSize = Integer.parseInt(strings[0]);
+        int mapRadius = Integer.parseInt(strings[1]);
+        int centerX = Integer.parseInt(strings[2]);
+        int centerZ = Integer.parseInt(strings[3]);
 
         //Check if plotsize is chunksize(16) friendly
         if (plotSize <= 0 || plotSize % 16 != 0) {

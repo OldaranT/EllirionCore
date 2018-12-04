@@ -12,7 +12,7 @@ import com.ellirion.core.plotsystem.model.Plot;
 public class GetPlotCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;

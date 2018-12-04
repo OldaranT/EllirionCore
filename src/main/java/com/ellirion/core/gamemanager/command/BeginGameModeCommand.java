@@ -15,22 +15,23 @@ import static com.ellirion.core.util.StringHelper.*;
 public class BeginGameModeCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("this is the command for players.");
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("You need to be a player to use this command.");
+            return true;
         }
 
-        Player player = (Player) sender;
+        Player player = (Player) commandSender;
 
         GameManager gameManager = GameManager.getInstance();
         UUID gameID = UUID.randomUUID();
 
-        if (args.length <= 0) {
+        if (strings.length <= 0) {
             player.sendMessage(ChatColor.DARK_RED + "please give a unique name for the game.");
             return true;
         }
 
-        String uName = String.join(" ", args);
+        String uName = String.join(" ", strings);
         uName = uName.replaceAll("[^a-zA-Z0-9\\s]", "")
                 .toLowerCase()
                 .replaceFirst(uName.charAt(0) + "", Character.toUpperCase(uName.charAt(0)) + "");
@@ -53,9 +54,9 @@ public class BeginGameModeCommand implements CommandExecutor {
             gameManager.setGameID(gameID);
             gameManager.setUName(uName);
 
-            sender.sendMessage("The GameMode is now in the SETUP stage.");
+            commandSender.sendMessage("The GameMode is now in the SETUP stage.");
         } else {
-            sender.sendMessage(
+            commandSender.sendMessage(
                     ChatColor.DARK_RED + "A game mode can only be created during the NOT_STARTED state.");
         }
 
