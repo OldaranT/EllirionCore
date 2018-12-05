@@ -6,9 +6,10 @@ import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.IndexOptions;
 import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.gamemanager.model.Game;
-import com.ellirion.core.util.Logging;
 
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 @Entity(value = "Game", noClassnameStored = true)
 public class GameDBModel {
@@ -61,12 +62,6 @@ public class GameDBModel {
      * @return Return true to signal that the operation succeeded.
      */
     public boolean update(Game game) {
-        try {
-            uName = game.getUName();
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return tryCatch(() -> uName = game.getUName());
     }
 }

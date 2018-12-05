@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+
 public class DatabaseManager {
 
     private final Morphia morphia;
@@ -236,12 +238,11 @@ public class DatabaseManager {
      * @return return the found list or an empty list but not a null to prevent NPE's.
      */
     public List<RaceDBModel> getRaces(UUID gameID) {
-        try {
-            return raceDAO.getGameRaces(gameID);
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
+        final List<RaceDBModel> result = new ArrayList<>();
+        if (!tryCatch(() -> result.addAll(raceDAO.getGameRaces(gameID)))) {
             return new ArrayList<>();
         }
+        return result;
     }
 
     //endregion

@@ -10,9 +10,12 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
 import static com.ellirion.core.util.StringHelper.*;
 
 public class AssignTradingCenterCommand implements CommandExecutor {
+
+    private Plot plot;
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
@@ -21,17 +24,14 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) commandSender;
-        Plot plot;
         if (strings.length > 1) {
 
             int x = Integer.parseInt(strings[0]);
             int z = Integer.parseInt(strings[1]);
 
             //Coördinates of plot were entered
-            try {
-                PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
-                plot = PlotManager.getPlotByCoordinate(coord);
-            } catch (Exception e) {
+            if (!tryCatch(
+                    () -> plot = PlotManager.getPlotByCoordinate(new PlotCoord(x, z, player.getWorld().getName())))) {
                 player.sendMessage(ChatColor.DARK_RED + "The plot with the coords " +
                                    highlight(x + " " + z, ChatColor.DARK_RED) +
                                    " Does not exist.");
@@ -42,9 +42,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             plot = PlotManager.getPlotFromLocation(player.getLocation());
         }
 
-        try {
-            plot.setOwner(TradingCenter.getInstance());
-        } catch (Exception e) {
+        if (!tryCatch(() -> plot.setOwner(TradingCenter.getInstance()))) {
             player.sendMessage(ChatColor.DARK_RED + "You are not located on a plot.");
             return true;
         }

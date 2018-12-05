@@ -4,12 +4,12 @@ import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.GenericTryCatch;
-import com.ellirion.core.util.Logging;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
@@ -26,7 +26,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
     }
 
     private boolean saveRace(RaceDBModel race) {
-        return GenericTryCatch.tryCatch(() -> save(race));
+        return tryCatch(() -> save(race));
     }
 
     /**
@@ -59,7 +59,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      */
     public List<RaceDBModel> getGameRaces(UUID gameID) {
         final List<RaceDBModel> result = new ArrayList<>();
-        if (!GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()))) {
+        if (!tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()))) {
             return new ArrayList<>();
         }
         return result;
@@ -86,13 +86,6 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean deleteRace(UUID raceID) {
-        try {
-            RaceDBModel model = findOne(id, raceID);
-            delete(model);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return tryCatch(() -> delete(findOne(id, raceID)));
     }
 }

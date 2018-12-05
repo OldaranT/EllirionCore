@@ -12,11 +12,12 @@ import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.util.StringHelper;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class CreateRaceCommand implements CommandExecutor {
+
+    private ChatColor color;
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
@@ -40,11 +41,13 @@ public class CreateRaceCommand implements CommandExecutor {
             player.sendMessage(ChatColor.DARK_RED + "Race already exists");
             return true;
         }
-        AtomicReference<ChatColor> color = new AtomicReference<>();
 
-        tryCatch(() -> color.set(ChatColor.valueOf(strings[strings.length - 1].toUpperCase())));
+        if (!tryCatch(() -> color = ChatColor.valueOf(strings[strings.length - 1].toUpperCase()))) {
+            player.sendMessage(ChatColor.DARK_RED + "The color you entered can not be found");
+            return true;
+        }
 
-        if (color.get() == null || RaceManager.isColerInUse(color.get())) {
+        if (color == null || RaceManager.isColerInUse(color)) {
             player.sendMessage(ChatColor.DARK_RED + "You either miss spelled the color or the color is in use");
             return true;
         }
@@ -55,7 +58,7 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (!RaceManager.addRace(raceName, color.get(), plot)) {
+        if (!RaceManager.addRace(raceName, color, plot)) {
             player.sendMessage(ChatColor.DARK_RED + "Something went wrong when creating a race.");
             return true;
         }
