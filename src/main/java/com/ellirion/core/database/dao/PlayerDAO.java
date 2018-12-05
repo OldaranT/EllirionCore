@@ -60,7 +60,9 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      */
     public List<PlayerDBModel> getPlayers(UUID raceID) {
         List<PlayerDBModel> result = new ArrayList<>();
-        GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()));
+        if (!GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()))) {
+            return new ArrayList<>();
+        }
         return result;
     }
 

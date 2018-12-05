@@ -59,7 +59,9 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      */
     public List<RaceDBModel> getGameRaces(UUID gameID) {
         final List<RaceDBModel> result = new ArrayList<>();
-        GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()));
+        if (!GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()))) {
+            return new ArrayList<>();
+        }
         return result;
     }
 
