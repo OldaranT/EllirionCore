@@ -5,16 +5,17 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.RaceManager;
-import com.ellirion.core.util.StringHelper;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.StringHelper.*;
 
 public class CreateRaceCommand implements CommandExecutor {
 
@@ -27,6 +28,16 @@ public class CreateRaceCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
+        GameManager gameManager = GameManager.getInstance();
+        if (gameManager.getState() != GameManager.GameState.SETUP ||
+            !gameManager.currentStepMessage().equals(GameManager.getCREATE_RACE())) {
+            player.sendMessage(ChatColor.DARK_RED +
+                               "You are either not in correct STATE or STEP. \ncurrent state: " +
+                               highlight(gameManager.getState().toString(), ChatColor.DARK_RED) + " \ncurrent step: " +
+                               highlight(gameManager.getCurrentStep().getMessage(), ChatColor.DARK_RED));
+            return true;
+        }
+
         if (strings.length <= 0) {
             player.sendMessage(ChatColor.DARK_RED + "Please give a race name and color");
             return true;
@@ -35,7 +46,7 @@ public class CreateRaceCommand implements CommandExecutor {
             player.sendMessage(ChatColor.DARK_RED + "You forgot either the color or the name");
             return true;
         }
-        String raceName = StringHelper.normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 1)));
+        String raceName = normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 1)));
         if (RaceManager.raceExists(raceName)) {
             player.sendMessage(ChatColor.DARK_RED + "Race already exists");
             return true;

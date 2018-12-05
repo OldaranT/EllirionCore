@@ -16,15 +16,9 @@ import java.util.UUID;
 @Entity(value = "TradingCenter", noClassnameStored = true)
 public class TradingCenterDBModel {
 
-    @Id
-    @Indexed
-    @Getter private UUID tradingCenterID;
-
-    @Indexed
-    @Getter private UUID gameID;
-
-    @Embedded
-    @Getter private List<PlotCoord> ownedPlots = new ArrayList<>();
+    @Id @Indexed @Getter private UUID tradingCenterID;
+    @Indexed @Getter private UUID gameID;
+    @Embedded @Getter private List<PlotCoord> ownedPlots = new ArrayList<>();
 
     /**
      * This is a default constructor used by morphia.

@@ -1,0 +1,68 @@
+name: EllirionCore
+main: com.ellirion.core.EllirionCore
+version: 0.0.1
+description: EllirionCore
+authors: [OldaranT, Nick Kronenberg]
+load: POSTWORLD
+commands:
+  CreateRace:
+      description: Create a race and usage the plot your standing on as homeplot.
+      usage: /createRace <race name> <color>
+      aliases: [cr, race-create]
+  JoinRace:
+      description: Join a race by standing on a race owned plot.
+      usage: /joinRace, /jr
+      aliases: [jr, race-join]
+  AssignTradingCenter:
+      description: Assign trading center to be the owner of a plot
+      usage: /AssignTradingCenter [<X> <Z>]
+      aliases: [race-atc]
+  RemoveRace:
+      description: Removes race by name.
+      usage: /rr <raceName>
+      aliases: [rr, race-remove]
+  CreatePlots:
+      description: Create plots
+      usage: /cps <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>
+      aliases: [cps, plot-create]
+  GetPlot:
+      description: Get plot from location
+      usage: /GetPlot, /gp
+      aliases: [gp, plot-get]
+  TeleportToPlot:
+      description: Teleport player to selected plot.
+      usage: /TeleportToPlot <X> <Z>, /ttp <X> <Z>
+      aliases: [ttp, plot-teleport]
+  ClaimPlot:
+      description: Claim a plot for your race by coords or location of the player.
+      usage: /cp <X> <Y> or /cp (Takes plot of player location)
+      aliases: [cp, plot-claim]
+  PlotMap:
+      description: Get a map of surrounding plots.
+      usage: /PlotMap
+      aliases: [plot-map]
+  BeginGamemode:
+      description: Begin creating a gamemode.
+      usage: /begingamemode <GameName>
+      aliases: [game-begin]
+  GameState:
+      description: Get the current game state.
+      usage: /gamestate
+      aliases: [game-state]
+  NextStep:
+      description: Advance the gamemode to the next setup step.
+      usage: /NextStep
+      aliases: [game-nextstep]
+  LoadGame:
+      description: Load the game from the database by name
+      usage: /LoadGame <GameName>
+      aliases: [game-load]
+  ConfirmGamemode:
+      description: Confirm the gamemode and start saving configuration.
+      usage: /confirmgamemode while on the last step of the setu
+      aliases: [game-confirm]
+  CancelSetup:
+      description: Cancel the gamemode setup.
+      usage: /cancelsetup during the gamemode setup phase
+      aliases: [game-cancel]
+depend: [EllirionUtil]

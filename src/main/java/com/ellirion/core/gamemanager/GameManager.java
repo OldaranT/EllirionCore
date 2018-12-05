@@ -30,6 +30,12 @@ public class GameManager {
     //Games
     @Getter private static HashMap<UUID, Game> GAMES = new HashMap<>();
 
+    //State message
+    @Getter private static String CREATE_PLOT = "CREATE_PLOTS";
+    @Getter private static String CONFIRM_SETUP = "CONFIRM_SETUP";
+    @Getter private static String CREATE_RACE = "CREATE_RACES";
+    @Getter private static String ASSIGN_TRADING_CENTER = "ASSIGN_TRADING_CENTER_PLOTS";
+
     //Setup
     private Step[] setupSteps;
     private int currentStep;
@@ -74,10 +80,10 @@ public class GameManager {
 
     private void createSteps() {
         setupSteps = new Step[4];
-        setupSteps[0] = new Step("Create plots", f -> PlotManager.getSavedPlots().size() > 0);
-        setupSteps[1] = new Step("Assign trading center plots");
-        setupSteps[2] = new Step("Create races", f -> RaceManager.getRaceCount() >= 2);
-        setupSteps[3] = new Step("Confirm setup");
+        setupSteps[0] = new Step(CREATE_PLOT, f -> PlotManager.getSavedPlots().size() > 0);
+        setupSteps[1] = new Step(ASSIGN_TRADING_CENTER);
+        setupSteps[2] = new Step(CREATE_RACE, f -> RaceManager.getRaceCount() >= 2);
+        setupSteps[3] = new Step(CONFIRM_SETUP);
         currentStep = 0;
     }
 
@@ -128,7 +134,7 @@ public class GameManager {
      */
     public void confirmGamemode() {
         changeState(GameState.SAVING);
-        
+
         DatabaseManager databaseManager = EllirionCore.getINSTANCE().getDbManager();
         createGame(databaseManager);
 
@@ -147,7 +153,6 @@ public class GameManager {
 
     private void createPlots(DatabaseManager databaseManager) {
         for (PlotCoord plotCoord : PlotManager.getSavedPlots().keySet()) {
-            EllirionCore.getINSTANCE().getLogger().info(plotCoord.toString());
             databaseManager.createPlotCoord(game.getGameID(), plotCoord);
         }
     }

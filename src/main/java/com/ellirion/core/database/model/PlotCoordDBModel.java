@@ -23,7 +23,7 @@ import java.util.UUID;
 })
 public class PlotCoordDBModel {
 
-    @Id private UUID databaseID = UUID.randomUUID(); // NEVER ASSIGN VALUE TO THIS.
+    @Id private final UUID databaseID = UUID.randomUUID();
     @Indexed @Getter private UUID gameID;
     @Indexed @Embedded @Getter private PlotCoord plotCoord;
 

@@ -6,12 +6,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
-import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.CommandHelper;
 
 public class ClaimPlotCommand implements CommandExecutor {
 
@@ -26,24 +25,7 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         player = (Player) commandSender;
 
-        Plot plotToCheck;
-
-        // Check if coords where entered.
-        if (strings.length == 2) {
-            int xCoord = Integer.parseInt(strings[0]);
-            int zCoord = Integer.parseInt(strings[1]);
-
-            PlotCoord plotCoord = new PlotCoord(xCoord, zCoord, player.getWorld().getName());
-
-            plotToCheck = PlotManager.getPlotByCoordinate(plotCoord);
-        } else if (strings.length == 0) {
-            plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
-        } else {
-            player.sendMessage(ChatColor.DARK_RED +
-                               "Please give the coordinates of the plot: <X> <Z>. \n " +
-                               "You can also give no coordinates to claim the plot you are standing in.");
-            return true;
-        }
+        Plot plotToCheck = CommandHelper.getPlot(strings, player);
 
         if (plotToCheck.getOwner() instanceof TradingCenter) {
             player.sendMessage(ChatColor.DARK_RED + "This plot is a game plot. you can't claim this plot.");

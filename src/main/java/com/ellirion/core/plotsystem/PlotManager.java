@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+
 public class PlotManager {
 
     private static final HashMap<PlotCoord, Plot> SAVED_PLOTS = new HashMap<>();
@@ -44,11 +46,13 @@ public class PlotManager {
     public static Plot getPlotFromLocation(Location location) {
         GameManager gameManager = GameManager.getInstance();
 
+        int plotSize = gameManager.getPlotSize();
+
         int x = location.getBlockX() - (gameManager.getXOffset() * CHUNK_SIZE);
         int z = location.getBlockZ() - (gameManager.getZOffset() * CHUNK_SIZE);
 
-        int plotCordX = Math.floorDiv(x, gameManager.getPlotSize());
-        int plotCordZ = Math.floorDiv(z, gameManager.getPlotSize());
+        int plotCordX = Math.floorDiv(x, plotSize);
+        int plotCordZ = Math.floorDiv(z, plotSize);
 
         PlotCoord plotCoord = new PlotCoord(plotCordX, plotCordZ, location.getWorld().getName());
 
@@ -78,15 +82,14 @@ public class PlotManager {
      * @return returns true if the plots are created.
      */
     public static boolean createPlotsFromDatabase(List<PlotCoordDBModel> plots) {
-        for (PlotCoordDBModel plotCoordDBModel : plots) {
-            Plot plot = new Plot(plotCoordDBModel);
-            PlotCoord coord = plot.getPlotCoord();
+        return tryCatch(() -> {
+            for (PlotCoordDBModel plotCoordDBModel : plots) {
+                Plot plot = new Plot(plotCoordDBModel);
+                PlotCoord coord = plot.getPlotCoord();
 
-            if (SAVED_PLOTS.get(coord) == null) {
-                SAVED_PLOTS.put(coord, plot);
+                SAVED_PLOTS.putIfAbsent(coord, plot);
             }
-        }
-        return true;
+        });
     }
 
     /**

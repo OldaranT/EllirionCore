@@ -25,8 +25,11 @@ public class ConfirmGamemodeCommand implements CommandExecutor {
         GameManager gameManager = GameManager.getInstance();
 
         if (gameManager.getState() != GameManager.GameState.SETUP ||
-            !gameManager.currentStepMessage().equals("Confirm setup")) {
-            player.sendMessage("You cannot confirm the gamemode at this time. Finish the setup phase first.");
+            !gameManager.currentStepMessage().equals(GameManager.getCONFIRM_SETUP())) {
+            player.sendMessage(ChatColor.DARK_RED +
+                               "You are either not in correct STATE or STEP. \ncurrent state: " +
+                               highlight(gameManager.getState().toString(), ChatColor.DARK_RED) + " \ncurrent step: " +
+                               highlight(gameManager.getCurrentStep().getMessage(), ChatColor.DARK_RED));
             return true;
         }
 
@@ -35,6 +38,7 @@ public class ConfirmGamemodeCommand implements CommandExecutor {
 
         Promise promise = new Promise(f -> {
             gameManager.confirmGamemode();
+            f.resolve(gameManager.getState() == GameManager.GameState.IN_PROGRESS);
         }, true);
         EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
                 "EllirionUtil");

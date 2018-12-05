@@ -28,7 +28,7 @@ public class GameDBModel {
 
     /**
      * An overloaded version of the constructor that can use a game instead of multiple variables.
-     * @param game The race that needs to be saved.
+     * @param game The game that needs to be saved.
      */
     public GameDBModel(final Game game) {
         gameID = game.getGameID();

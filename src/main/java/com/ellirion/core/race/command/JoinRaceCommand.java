@@ -1,12 +1,18 @@
 package com.ellirion.core.race.command;
 
-import org.bukkit.Location;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.race.RaceManager;
+
+import java.util.List;
+
+import static com.ellirion.core.util.StringHelper.*;
 
 public class JoinRaceCommand implements CommandExecutor {
 
@@ -18,15 +24,43 @@ public class JoinRaceCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
+        Plot plot;
+        String raceName;
 
-        Location loc = player.getLocation();
-        if (!PlayerManager.setPlayerRace(player.getUniqueId(),
-                                         PlotManager.getPlotFromLocation(loc).getOwner().getRaceUUID())) {
-            player.sendMessage("something went wrong when adding you to a race. please try again.");
-            return false;
+        if (strings.length <= 0) {
+            plot = PlotManager.getPlotFromLocation(player.getLocation());
+            if (plot == null) {
+                player.sendMessage(ChatColor.DARK_RED + "There is no plot on your location.");
+                return true;
+            }
+
+            raceName = plot.getOwner().getName();
+
+            if (!PlayerManager.setPlayerRace(player.getUniqueId(), plot.getOwner().getRaceUUID())) {
+                player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
+                                   highlight(raceName, ChatColor.RESET));
+                return true;
+            }
+        } else {
+            raceName = strings[0];
+            List<String> raceNames = RaceManager.getAllRaceNames();
+            if (!raceNames.contains(raceName)) {
+                player.sendMessage(
+                        ChatColor.DARK_RED + "The race " + highlight(raceName, ChatColor.DARK_RED) +
+                        " does not exist.");
+                return true;
+            }
+
+            if (!PlayerManager.setPlayerRace(player.getUniqueId(), RaceManager.getRaceUUID(raceName))) {
+                player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
+                                   highlight(raceName, ChatColor.RESET));
+                return true;
+            }
         }
-        String raceName = PlayerManager.getPlayerRace(player.getUniqueId()).getName();
-        player.getServer().broadcastMessage(player.getName() + " joined " + raceName);
+        player.sendMessage(
+                ChatColor.GREEN + "You have joined the race " + highlight(raceName, ChatColor.GREEN) +
+                "!");
+
         return true;
     }
 }
