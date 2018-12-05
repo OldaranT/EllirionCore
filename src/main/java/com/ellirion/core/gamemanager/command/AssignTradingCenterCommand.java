@@ -25,7 +25,6 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             return true;
         }
         Player player = (Player) commandSender;
-        Plot plot;
         GameManager gameManager = GameManager.getInstance();
 
         if (gameManager.getState() != GameManager.GameState.SETUP ||
