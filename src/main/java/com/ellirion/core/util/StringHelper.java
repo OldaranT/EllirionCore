@@ -43,7 +43,9 @@ public class StringHelper {
         string = stringCleaner(string, "[^a-zA-Z\\s]");
         string = string.toLowerCase();
         String[] words = string.split(" ");
-        for (String word : words) {
+        String word;
+        for (int i = 0; i < words.length; i++) {
+            word = words[i];
             if (word.equals(" ")) {
                 result += word;
                 continue;
@@ -52,7 +54,10 @@ public class StringHelper {
                 result += word + " ";
                 continue;
             }
-            result += word.replaceFirst(word.charAt(0) + "", Character.toUpperCase(word.charAt(0)) + "") + " ";
+            result += word.replaceFirst(word.charAt(0) + "", Character.toUpperCase(word.charAt(0)) + "");
+            if (i < words.length - 1) {
+                result += " ";
+            }
         }
 
         return result;

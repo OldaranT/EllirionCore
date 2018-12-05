@@ -9,6 +9,8 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 
+import static com.ellirion.core.util.StringHelper.*;
+
 public class GetPlotCommand implements CommandExecutor {
 
     @Override
@@ -19,6 +21,14 @@ public class GetPlotCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
+        GameManager gameManager = GameManager.getInstance();
+
+        if (gameManager.getState() != GameManager.GameState.IN_PROGRESS) {
+            player.sendMessage(
+                    ChatColor.DARK_RED + "The game needs to be in the " +
+                    highlight("IN_PROGRESS", ChatColor.DARK_RED) + " state to use this command.");
+            return true;
+        }
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
 

@@ -58,7 +58,7 @@ public class EllirionCore extends JavaPlugin {
     @Override
     public void onDisable() {
         dbManager.disconnectFromServer();
-        getLogger().info("Introduction is disabled.");
+        getLogger().info("EllirionCore is disabled.");
     }
 
     @Override
@@ -69,12 +69,12 @@ public class EllirionCore extends JavaPlugin {
         createDBconnectionConfig();
         dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
-        getLogger().info("Introduction is enabled.");
+        getLogger().info("EllirionCore is enabled.");
     }
 
     private void registerCommands() {
         //Race
-        getCommand("createRace").setExecutor(new CreateRaceCommand());
+        getCommand("CreateRace").setExecutor(new CreateRaceCommand());
         getCommand("JoinRace").setExecutor(new JoinRaceCommand());
         getCommand("RemoveRace").setExecutor(new DeleteRaceCommand());
 
@@ -150,9 +150,9 @@ public class EllirionCore extends JavaPlugin {
     }
 
     private void registerTabCompleters() {
-        getCommand("createRace").setTabCompleter(new CreateRaceTabCompleter());
+        getCommand("CreateRace").setTabCompleter(new CreateRaceTabCompleter());
         getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
-        getCommand("joinRace").setTabCompleter(new RaceNameTabCompleter());
+        getCommand("JoinRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("LoadGame").setTabCompleter(new GameNameTabCompleter());
     }
 }
