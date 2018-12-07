@@ -5,59 +5,75 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.RaceManager;
-import com.ellirion.core.util.StringHelper;
 
 import java.util.Arrays;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.StringHelper.*;
+
 public class CreateRaceCommand implements CommandExecutor {
 
-    private Player player;
+    private ChatColor color;
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("this is the command for players.");
-        }
-        player = (Player) sender;
-
-        if (args.length <= 0) {
-            sendmsg("please give a race name and color");
-            return false;
-        }
-        if (args.length == 1) {
-            sendmsg("you forgot either the color or the name");
-            return false;
-        }
-        String raceName = StringHelper.normalNameCasing(String.join(" ", Arrays.copyOf(args, args.length - 1)));
-        if (RaceManager.raceExists(raceName)) {
-            sendmsg("race already exists");
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("You need to be a player to use this command.");
             return true;
         }
-        ChatColor color = ChatColor.valueOf(args[args.length - 1].toUpperCase());
+
+        Player player = (Player) commandSender;
+
+        GameManager gameManager = GameManager.getInstance();
+        if (gameManager.getState() != GameManager.GameState.SETUP ||
+            !gameManager.currentStepMessage().equals(GameManager.getCREATE_RACE())) {
+            player.sendMessage(ChatColor.DARK_RED +
+                               "You are either not in correct STATE or STEP.\n" + gameManager.toString());
+            return true;
+        }
+
+        if (strings.length <= 0) {
+            player.sendMessage(ChatColor.DARK_RED + "Please give a race name and color");
+            return true;
+        }
+        if (strings.length == 1) {
+            player.sendMessage(ChatColor.DARK_RED + "You forgot either the color or the name");
+            return true;
+        }
+        String raceName = normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 1)));
+        if (RaceManager.raceExists(raceName)) {
+            player.sendMessage(ChatColor.DARK_RED + "Race already exists");
+            return true;
+        }
+
+        if (!tryCatch(() -> color = ChatColor.valueOf(strings[strings.length - 1].toUpperCase()))) {
+            player.sendMessage(ChatColor.DARK_RED + "The color you entered can not be found");
+            return true;
+        }
+
         if (color == null || RaceManager.isColerInUse(color)) {
-            sendmsg("you either miss spelled the color or the color is in use");
+            player.sendMessage(ChatColor.DARK_RED + "You either miss spelled the color or the color is in use");
             return true;
         }
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
         if (!(plot.getOwner() instanceof Wilderness)) {
-            sendmsg(ChatColor.RED + "you can only create race on unowned plots!");
+            player.sendMessage(ChatColor.DARK_RED + "You can only create race on unowned plots!");
             return true;
         }
 
         if (!RaceManager.addRace(raceName, color, plot)) {
-            sendmsg("something went wrong!");
+            player.sendMessage(ChatColor.DARK_RED + "Something went wrong when creating a race.");
             return true;
         }
-        sendmsg(raceName + " created");
-        return true;
-    }
 
-    private void sendmsg(String msg) {
-        player.sendMessage(msg);
+        player.sendMessage(ChatColor.GREEN + raceName + " created.");
+
+        return true;
     }
 }

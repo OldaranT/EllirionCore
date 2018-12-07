@@ -13,7 +13,8 @@ public class RaceNameTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         final List<String> completions = new ArrayList<>();
-        if (args.length >= 1) {
+
+        if (args.length == 1) {
             RaceManager.getAllRaceNames().forEach(name -> {
                 if (name.startsWith(args[args.length - 1])) {
                     completions.add(name);

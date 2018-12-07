@@ -13,7 +13,7 @@ import com.ellirion.core.plotsystem.model.PlotCoord;
 public class TeleportToPlotCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
@@ -24,8 +24,8 @@ public class TeleportToPlotCommand implements CommandExecutor {
         // Check if a name was entered
         int xCord, zCord;
         try {
-            xCord = Integer.parseInt(args[0]);
-            zCord = Integer.parseInt(args[1]);
+            xCord = Integer.parseInt(strings[0]);
+            zCord = Integer.parseInt(strings[1]);
         } catch (Exception e) {
             player.sendMessage(ChatColor.DARK_RED +
                                "Please give the coordinates of the plot: <X> <Z>");

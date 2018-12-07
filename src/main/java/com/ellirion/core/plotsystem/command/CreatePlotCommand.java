@@ -29,7 +29,7 @@ public class CreatePlotCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
@@ -37,22 +37,24 @@ public class CreatePlotCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        GameManager manager = GameManager.getInstance();
-        if (manager.getState() != GameManager.GameState.SETUP || !manager.currentStepMessage().equals("Create plots")) {
-            player.sendMessage(ChatColor.DARK_RED + "You can only create plots during the SETUP stage of the gamemode.");
+        GameManager gameManager = GameManager.getInstance();
+        if (gameManager.getState() != GameManager.GameState.SETUP ||
+            !gameManager.currentStepMessage().equals(GameManager.getCREATE_PLOT())) {
+            player.sendMessage(ChatColor.DARK_RED +
+                               "You are either not in correct STATE or STEP.\n" + gameManager.toString());
             return true;
         }
 
         // Check if a name was entered
-        if (args.length < 4 || args.length > 4) {
+        if (strings.length < 4 || strings.length > 4) {
             player.sendMessage(ChatColor.DARK_RED +
                                "Please give the template a name with the following arguments: <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>");
             return true;
         }
-        int plotSize = Integer.parseInt(args[0]);
-        int mapRadius = Integer.parseInt(args[1]);
-        int centerX = Integer.parseInt(args[2]);
-        int centerZ = Integer.parseInt(args[3]);
+        int plotSize = Integer.parseInt(strings[0]);
+        int mapRadius = Integer.parseInt(strings[1]);
+        int centerX = Integer.parseInt(strings[2]);
+        int centerZ = Integer.parseInt(strings[3]);
 
         //Check if plotsize is chunksize(16) friendly
         if (plotSize <= 0 || plotSize % 16 != 0) {
@@ -61,12 +63,12 @@ public class CreatePlotCommand implements CommandExecutor {
             return true;
         }
 
-        GameManager.getInstance().setPlotSize(plotSize);
-        PlotManager.setCENTER_OFFSET_X(centerX);
-        PlotManager.setCENTER_OFFSET_Z(centerZ);
+        gameManager.setPlotSize(plotSize);
+        gameManager.setXOffset(centerX);
+        gameManager.setZOffset(centerZ);
 
         Promise<Boolean> createPlotsPromise = new Promise(f -> {
-            List<Plot> plots = PlotManager.createPlots(player.getWorld(), mapRadius, centerX, centerZ);
+            List<Plot> plots = PlotManager.createPlots(player.getWorld(), mapRadius);
             HashMap<PlotCoord, Plot> plotMap = PlotManager.getSavedPlots();
             for (Plot plot : plots) {
                 plotMap.put(plot.getPlotCoord(), plot);

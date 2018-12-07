@@ -5,31 +5,46 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.StringHelper.*;
+
 public class AssignTradingCenterCommand implements CommandExecutor {
+
+    private Plot plot;
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("Only players can execute this command");
+            commandSender.sendMessage("You need to be a player to use this command.");
             return true;
         }
         Player player = (Player) commandSender;
+        GameManager gameManager = GameManager.getInstance();
 
-        Plot plot = null;
-        if (strings.length >= 1) {
+        if (gameManager.getState() != GameManager.GameState.SETUP ||
+            !gameManager.currentStepMessage().equals(GameManager.getASSIGN_TRADING_CENTER())) {
+            player.sendMessage(ChatColor.DARK_RED +
+                               "You are either not in correct STATE or STEP.\n" + gameManager.toString());
+            return true;
+        }
+
+        if (strings.length > 1) {
+
+            int x = Integer.parseInt(strings[0]);
+            int z = Integer.parseInt(strings[1]);
+
             //Coördinates of plot were entered
-            try {
-                int x = Integer.parseInt(strings[0]);
-                int z = Integer.parseInt(strings[1]);
-                PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
-                plot = PlotManager.getPlotByCoordinate(coord);
-            } catch (Exception e) {
-                player.sendMessage(ChatColor.DARK_RED + "Something went wrong when trying to read the plot coordinates you entered.");
+            if (!tryCatch(
+                    () -> plot = PlotManager.getPlotByCoordinate(new PlotCoord(x, z, player.getWorld().getName())))) {
+                player.sendMessage(ChatColor.DARK_RED + "The plot with the coords " +
+                                   highlight(x + " " + z, ChatColor.DARK_RED) +
+                                   " Does not exist.");
                 return true;
             }
         } else {
@@ -37,12 +52,13 @@ public class AssignTradingCenterCommand implements CommandExecutor {
             plot = PlotManager.getPlotFromLocation(player.getLocation());
         }
 
-        try {
-            plot.setOwner(TradingCenter.getInstance());
-        } catch (Exception e) {
-            player.sendMessage(ChatColor.DARK_RED + "Something went wrong with setting the plot owner. Did you select the plot right?");
+        if (!tryCatch(() -> plot.setOwner(TradingCenter.getInstance()))) {
+            player.sendMessage(ChatColor.DARK_RED + "You are not located on a plot.");
+            return true;
         }
 
+        player.sendMessage(ChatColor.BOLD + plot.getName() + ChatColor.RESET +
+                           ChatColor.GREEN + " is now a trading center plot.");
         return true;
     }
 }

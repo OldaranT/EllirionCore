@@ -43,7 +43,7 @@ public class PlotCoord {
 
     @Override
     public int hashCode() {
-        return Objects.hash(x, z);
+        return Objects.hash(x, z, worldName);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PlotCoord {
 
         PlotCoord other = (PlotCoord) obj;
 
-        return (x == other.x && z == other.z);
+        return (x == other.x && z == other.z && worldName.equals(other.worldName));
     }
 
     @Override

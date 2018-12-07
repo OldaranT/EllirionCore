@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
 import java.util.HashSet;
@@ -38,10 +40,12 @@ public class Race extends PlotOwner {
      * @param raceDBModel The database stored race.
      */
     public Race(final RaceDBModel raceDBModel) {
-        super(raceDBModel.getRaceID());
+        super(raceDBModel.getRaceID(), raceDBModel.getOwnedPlots());
         name = raceDBModel.getRaceName();
         players = raceDBModel.getPlayers();
         teamColor = ChatColor.valueOf(raceDBModel.getColor());
+        PlotCoord homePlotCoord = raceDBModel.getHomePlotCoord();
+        homePlot = PlotManager.getPlotByCoordinate(homePlotCoord);
     }
 
     public String getNameWithColor() {
