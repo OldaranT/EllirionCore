@@ -58,7 +58,7 @@ public class GameDBModel {
 
     /**
      * This updates the database game with the data from the game.
-     * @param game The game that should be copied to the DB.
+     * @param game The game that should be copied to the database.
      * @return Return true to signal that the operation succeeded.
      */
     public boolean update(Game game) {
