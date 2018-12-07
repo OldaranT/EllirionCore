@@ -7,24 +7,19 @@ import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
-import com.ellirion.core.util.Logging;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+
 @Entity(value = "TradingCenter", noClassnameStored = true)
 public class TradingCenterDBModel {
 
-    @Id
-    @Indexed
-    @Getter private UUID tradingCenterID;
-
-    @Indexed
-    @Getter private UUID gameID;
-
-    @Embedded
-    @Getter private List<PlotCoord> ownedPlots = new ArrayList<>();
+    @Id @Indexed @Getter private UUID tradingCenterID;
+    @Indexed @Getter private UUID gameID;
+    @Embedded @Getter private List<PlotCoord> ownedPlots = new ArrayList<>();
 
     /**
      * This is a default constructor used by morphia.
@@ -95,16 +90,13 @@ public class TradingCenterDBModel {
      * @return return a boolean that indicates success or failure.
      */
     public boolean update(TradingCenter tradingCenter) {
-        try {
+        return tryCatch(() -> {
             List<PlotCoord> newPlotCoords = new ArrayList<>(tradingCenter.getPlotCoords());
             if (ownedPlots.size() == newPlotCoords.size() && ownedPlots.containsAll(newPlotCoords)) {
-                return true;
+                return;
             }
             ownedPlots = newPlotCoords;
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+            return;
+        });
     }
 }

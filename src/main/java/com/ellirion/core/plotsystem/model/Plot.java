@@ -3,8 +3,6 @@ package com.ellirion.core.plotsystem.model;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
@@ -29,14 +27,6 @@ public class Plot {
 
         plotCoord = plotCoordDBModel.getPlotCoord();
         name = plotCoord.toString();
-
-        World worldToCheck = EllirionCore.getINSTANCE().getServer().getWorld(plotCoord.getWorldName());
-
-        //Check if the world is loaded if not create a dummy and then load it.
-        if (worldToCheck == null) {
-            World world = new WorldCreator(plotCoordDBModel.getPlotCoord().getWorldName()).createWorld();
-            EllirionCore.getINSTANCE().getServer().getWorlds().add(world);
-        }
 
         int plotSize = GameManager.getInstance().getGame().getPlotSize();
         int minX = plotCoord.getX() * plotSize;

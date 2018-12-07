@@ -4,7 +4,6 @@ import lombok.Getter;
 import xyz.morphia.annotations.Embedded;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 @Embedded
 public class PlotCoord {
@@ -50,7 +49,6 @@ public class PlotCoord {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PlotCoord)) {
-            Logger.getGlobal().info("not comparing with PlotCoord");
             return false;
         }
 

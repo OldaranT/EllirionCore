@@ -78,7 +78,7 @@ public class RaceManager {
         setColorToUsed(color);
         homePlot.setOwner(race);
         // This should return null because if it returns a value then it has replaced something.
-        return RACE_ID_NAME.put(race.getRaceUUID(), race.getName()) == null;
+        return RACE_ID_NAME.putIfAbsent(race.getRaceUUID(), race.getName()) == null;
     }
 
     /**
@@ -209,7 +209,12 @@ public class RaceManager {
         return USED_COLORS.contains(color);
     }
 
-    private static UUID getUUIDbyName(String name) {
+    /**
+     * Gets the UUID of a race by name.
+     * @param name name of the race to get UUID for.
+     * @return UUID of the race.
+     */
+    public static UUID getRaceUUID(String name) {
         for (final Iterator<Map.Entry<UUID, String>> iter = RACE_ID_NAME.entrySet().iterator(); iter.hasNext();/**/) {
             Map.Entry<UUID, String> entry = iter.next();
             if (entry.getValue().equals(name)) {
@@ -238,7 +243,7 @@ public class RaceManager {
      */
     public static boolean deleteRace(String raceName) {
         raceName = normalCasing(raceName);
-        UUID raceID = getUUIDbyName(raceName);
+        UUID raceID = getRaceUUID(raceName);
         return deleteRace(raceID);
     }
 
