@@ -29,7 +29,7 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         if (plotToCheck.getOwner() instanceof TradingCenter) {
             player.sendMessage(ChatColor.DARK_RED + "This plot is a game plot. you can't claim this plot.");
-            return false;
+            return true;
         }
 
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
