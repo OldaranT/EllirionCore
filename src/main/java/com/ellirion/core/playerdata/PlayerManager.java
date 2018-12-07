@@ -115,10 +115,10 @@ public class PlayerManager {
     }
 
     /**
-     * This method compares 2 player teams and returns true if they are the same.
+     * This method compares 2 player initialTeams and returns true if they are the same.
      * @param player1 The first player to get the race from.
      * @param player2 The second player to get the race from.
-     * @return Return true if the teams are the same.
+     * @return Return true if the initialTeams are the same.
      */
     public static boolean comparePlayerTeams(UUID player1, UUID player2) {
         UUID raceID1 = PLAYERS.get(player1).getRace().getRaceUUID();

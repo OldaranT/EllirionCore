@@ -64,4 +64,15 @@ public class WarTeam {
     public void removeLife() {
         lives--;
     }
+
+    public WarTeam copy() {
+        WarTeam other = new WarTeam();
+        for (UUID id : players) {
+            other.players.add(id);
+        }
+
+        other.lives = lives;
+
+        return other;
+    }
 }

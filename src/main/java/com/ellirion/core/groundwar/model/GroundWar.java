@@ -30,6 +30,7 @@ public class GroundWar {
     @Getter private UUID createdBy;
     private State state;
     private WarTeam[] teams;
+    private GroundWarResults results;
 
     /**
      * Create raceA ground war.
@@ -48,6 +49,8 @@ public class GroundWar {
         teams[1] = new WarTeam();
 
         teams[0].addPlayer(createdBy);
+
+        results = new GroundWarResults(createdBy);
     }
 
     /**
@@ -164,7 +167,16 @@ public class GroundWar {
         teams[0].setInitialLives(livesTeamA);
         teams[1].setInitialLives(livesTeamB);
 
+        results.setInitialTeams(copyTeams());
+
         state = State.IN_PROGRESS;
+    }
+
+    private WarTeam[] copyTeams() {
+        WarTeam[] copies = new WarTeam[2];
+        copies[0] = teams[0].copy();
+        copies[1] = teams[1].copy();
+        return copies;
     }
 
     private List<UUID> getParticipants() {
@@ -219,7 +231,7 @@ public class GroundWar {
             return sb.toString();
         } else {
             StringBuilder sb = new StringBuilder();
-            //Show teams lives
+            //Show initialTeams lives
             sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": ").append(teams[0].getLives()).append('\n')
                     .append(raceB.getTeamColor()).append(raceB.getName()).append(": ").append(teams[1].getLives());
             return sb.toString();
@@ -244,12 +256,20 @@ public class GroundWar {
         //Finish the war
         state = State.FINISHED;
 
+        results.setEnded();
+
         //Announce winner
         Race winner = getWinner();
         if (winner == null) {
             return;
         }
         EllirionCore.getINSTANCE().getServer().broadcastMessage(winner.getName() + " has won the ground war!");
+
+        if (teams[0].getLives() < teams[1].getLives()) {
+            results.setWinner(teams[1].copy());
+        } else if (teams[1].getLives() < teams[0].getLives()) {
+            results.setLoser(teams[0].copy());
+        }
 
         //Give plots to winner
         for (Plot plot : plots) {
@@ -266,6 +286,8 @@ public class GroundWar {
             EllirionCore.getINSTANCE().getLogger().info("Teleporting player " + player.getDisplayName() + " back to " + loc.toString());
             player.teleport(loc);
         }
+
+        //Save GroundWar to database
 
         //Remove ground war
         GroundWarManager.removeGroundWar(createdBy);
