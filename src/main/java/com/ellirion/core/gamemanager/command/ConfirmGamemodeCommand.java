@@ -27,9 +27,7 @@ public class ConfirmGamemodeCommand implements CommandExecutor {
         if (gameManager.getState() != GameManager.GameState.SETUP ||
             !gameManager.currentStepMessage().equals(GameManager.getCONFIRM_SETUP())) {
             player.sendMessage(ChatColor.DARK_RED +
-                               "You are either not in correct STATE or STEP. \ncurrent state: " +
-                               highlight(gameManager.getState().toString(), ChatColor.DARK_RED) + " \ncurrent step: " +
-                               highlight(gameManager.getCurrentStep().getMessage(), ChatColor.DARK_RED));
+                               "You are either not in correct STATE or STEP.\n" + gameManager.toString());
             return true;
         }
 

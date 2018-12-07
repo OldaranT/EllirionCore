@@ -30,9 +30,7 @@ public class AssignTradingCenterCommand implements CommandExecutor {
         if (gameManager.getState() != GameManager.GameState.SETUP ||
             !gameManager.currentStepMessage().equals(GameManager.getASSIGN_TRADING_CENTER())) {
             player.sendMessage(ChatColor.DARK_RED +
-                               "You are either not in correct STATE or STEP. \ncurrent state: " +
-                               highlight(gameManager.getState().toString(), ChatColor.DARK_RED) + " \ncurrent step: " +
-                               highlight(gameManager.getCurrentStep().getMessage(), ChatColor.DARK_RED));
+                               "You are either not in correct STATE or STEP.\n" + gameManager.toString());
             return true;
         }
 

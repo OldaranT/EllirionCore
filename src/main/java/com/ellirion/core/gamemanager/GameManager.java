@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.StringHelper.*;
 
 public class GameManager {
 
@@ -245,12 +246,12 @@ public class GameManager {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(20);
-        sb.append("Current game state: ").append(state.name());
+        sb.append(ChatColor.RESET).append("Current game state: ").append(highlight(state.name(), ChatColor.RESET));
         if (state == GameState.SETUP) {
             if (currentStep == setupSteps.length - 1) {
                 sb.append(getReport());
             }
-            sb.append("\nCurrent step:\n-").append(currentStepMessage());
+            sb.append("\nCurrent step: ").append(highlight(currentStepMessage(), ChatColor.RESET));
         }
         return sb.toString();
     }
