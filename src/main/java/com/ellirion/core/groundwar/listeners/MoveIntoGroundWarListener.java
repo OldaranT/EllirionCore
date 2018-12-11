@@ -7,7 +7,7 @@ import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
 
-public class MoveOffGroundWarListener extends TeleportBackEventListener {
+public class MoveIntoGroundWarListener extends TeleportBackEventListener {
 
     /**
      * Listener that is listening if a player is changing plot.
@@ -22,8 +22,9 @@ public class MoveOffGroundWarListener extends TeleportBackEventListener {
         Plot plotTo = event.getPlotTo();
         Plot plotFrom = event.getPlotFrom();
 
-        GroundWar groundWar = GroundWarManager.getGroundWar(player.getUniqueId());
-        if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS && !(groundWar.getPlotB().equals(plotTo) || groundWar.getPlotA().equals(plotTo))) {
+        //Check if plotTo is involved in a ground war
+        GroundWar groundWar = GroundWarManager.getGroundWar(plotTo);
+        if (groundWar != null) {
             teleportPlayerBack(plotFrom, plotTo, player);
         }
     }

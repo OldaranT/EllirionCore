@@ -99,6 +99,21 @@ public class GroundWarManager {
     }
 
     /**
+     * Get a GroundWar based on plot.
+     * @param plot the plot in the ground war
+     * @return the ground war the plot is in
+     */
+    public static GroundWar getGroundWar(Plot plot) {
+        for (GroundWar war : GROUND_WARS.values()) {
+            if (war.getPlotB().equals(plot) || war.getPlotA().equals(plot)) {
+                return war;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Confirm a ground war.
      * @param war the war to confirm
      */
