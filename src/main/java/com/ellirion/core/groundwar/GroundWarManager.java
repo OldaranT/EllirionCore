@@ -66,6 +66,9 @@ public class GroundWarManager {
 
         if (war != null) {
             Plot ownPlot = war.getPlotA();
+            if (ownPlot == null) {
+                return true;
+            }
             Plot[] neighbours = ownPlot.getNeighbours();
             for (Plot p : neighbours) {
                 if (p.equals(plot)) {
