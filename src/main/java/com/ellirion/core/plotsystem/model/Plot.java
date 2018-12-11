@@ -3,6 +3,8 @@ package com.ellirion.core.plotsystem.model;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
@@ -12,6 +14,7 @@ import com.ellirion.util.model.Point;
 
 public class Plot {
 
+    private static final DatabaseManager databaseManager = EllirionCore.getINSTANCE().getDbManager();
     @Getter private String name;
     @Getter private PlotCoord plotCoord;
     @Getter private BoundingBox boundingBox;
@@ -58,7 +61,9 @@ public class Plot {
      * @param owner The new owner of the plot.
      */
     public void setOwner(PlotOwner owner) {
+        PlotOwner prevOwner;
         if (this.owner != null) {
+            prevOwner = this.owner;
             this.owner.removePlot(plotCoord);
         }
         this.owner = owner;

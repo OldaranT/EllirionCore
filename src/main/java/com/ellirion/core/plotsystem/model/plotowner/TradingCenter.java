@@ -1,5 +1,6 @@
 package com.ellirion.core.plotsystem.model.plotowner;
 
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
 public class TradingCenter extends PlotOwner {
@@ -18,5 +19,13 @@ public class TradingCenter extends PlotOwner {
     @Override
     public String getName() {
         return "TradingCenter";
+    }
+
+    /**
+     * This method is used to update the database when something changes.
+     */
+    @Override
+    protected void updateDatabase() {
+//        DATABASE_MANAGER.
     }
 }

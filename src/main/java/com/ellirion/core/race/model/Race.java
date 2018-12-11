@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+
 public class Race extends PlotOwner {
 
     @Getter @Setter private String name;
@@ -57,7 +59,10 @@ public class Race extends PlotOwner {
      * @return return true if successful.
      */
     public boolean addPlayer(UUID playerID) {
-        return players.add(playerID);
+        return tryCatch(() -> {
+            players.add(playerID);
+            updateDatabase();
+        });
     }
 
     /**
@@ -73,6 +78,14 @@ public class Race extends PlotOwner {
      * @return Return true if successful.
      */
     public boolean removePlayer(UUID playerID) {
-        return players.remove(playerID);
+        return tryCatch(() -> {
+            players.remove(playerID);
+            updateDatabase();
+        });
+    }
+
+    @Override
+    protected void updateDatabase() {
+        PlotOwner.DATABASE_MANAGER.updateRace(this);
     }
 }
