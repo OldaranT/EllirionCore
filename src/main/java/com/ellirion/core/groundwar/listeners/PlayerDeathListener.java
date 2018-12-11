@@ -25,13 +25,13 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
         UUID playerID = player.getUniqueId();
-        GroundWar war = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
 
-        if (war == null) {
+        if (groundWar == null || groundWar.getState() != GroundWar.State.IN_PROGRESS) {
             return;
         }
 
-        war.playerDied(playerID);
+        groundWar.playerDied(playerID);
     }
 
     /**
@@ -43,19 +43,19 @@ public class PlayerDeathListener implements Listener {
 
         Player player = e.getPlayer();
         UUID playerID = player.getUniqueId();
-        GroundWar war = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
 
-        if (war == null) {
+        if (groundWar == null || groundWar.getState() != GroundWar.State.IN_PROGRESS) {
             return;
         }
 
         //make it so the player respawns in the desired plot
-        if (PlayerManager.getPlayerRace(playerID).equals(war.getRaceA())) {
-            Plot plot = war.getPlotA();
+        if (PlayerManager.getPlayerRace(playerID).equals(groundWar.getRaceA())) {
+            Plot plot = groundWar.getPlotA();
             World w = EllirionCore.getINSTANCE().getServer().getWorld(plot.getPlotCoord().getWorldName());
             e.setRespawnLocation(plot.getCenterLocation(w, player.getLocation().getYaw(), player.getLocation().getPitch()));
         } else {
-            Plot plot = war.getPlotB();
+            Plot plot = groundWar.getPlotB();
             World w = EllirionCore.getINSTANCE().getServer().getWorld(plot.getPlotCoord().getWorldName());
             e.setRespawnLocation(plot.getCenterLocation(w, player.getLocation().getYaw(), player.getLocation().getPitch()));
         }

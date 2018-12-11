@@ -23,8 +23,8 @@ public class MoveOffGroundWarListener implements Listener {
         //See if the player moved to a plot that isn't in the ground war
         Plot plotTo = event.getPlotTo();
 
-        GroundWar war = GroundWarManager.getGroundWar(player.getUniqueId());
-        if (war != null && !(war.getPlotB().equals(plotTo) || war.getPlotA().equals(plotTo))) {
+        GroundWar groundWar = GroundWarManager.getGroundWar(player.getUniqueId());
+        if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS && !(groundWar.getPlotB().equals(plotTo) || groundWar.getPlotA().equals(plotTo))) {
             //Teleport the player back to the block they were standing on
             Location newLocation = player.getLocation().getBlock().getLocation();
             newLocation.setYaw(player.getLocation().getYaw());

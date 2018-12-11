@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar.command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,19 +15,19 @@ public class GetGroundWarCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("Only players can see their groundwar");
+            commandSender.sendMessage("You need to be a player to use this command.");
             return true;
         }
         Player player = (Player) commandSender;
         UUID playerId = player.getUniqueId();
 
-        GroundWar war = GroundWarManager.getGroundWar(playerId);
-        if (war == null) {
-            player.sendMessage("You are not currently in a ground war.");
+        GroundWar groundWar = GroundWarManager.getGroundWar(playerId);
+        if (groundWar == null) {
+            player.sendMessage(ChatColor.DARK_RED + "You are not currently in a ground war.");
             return true;
         }
 
-        player.sendMessage(war.toString());
+        player.sendMessage(groundWar.toString());
 
         return true;
     }

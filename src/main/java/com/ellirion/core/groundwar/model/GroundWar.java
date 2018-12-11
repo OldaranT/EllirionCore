@@ -28,7 +28,7 @@ public class GroundWar {
     @Getter private Race raceB;
     private Plot[] plots;
     @Getter private UUID createdBy;
-    private State state;
+    @Getter private State state;
     private WarTeam[] teams;
 
     /**
@@ -203,8 +203,8 @@ public class GroundWar {
             String raceBName = raceB != null ? raceB.getTeamColor() + raceB.getName() + ChatColor.RESET : undefined;
             String plotA = plots[0] != null ? plots[0].getName() : undefined;
             String plotB = plots[1] != null ? plots[1].getName() : undefined;
-            String participantsA = teams[0] != null ? teams[0].getPlayerNames() : "No participants";
-            String participantsB = teams[1] != null ? teams[1].getPlayerNames() : "No participants";
+            String participantsA = teams[0] != null ? raceA.getTeamColor() + teams[0].getPlayerNames() : "No participants";
+            String participantsB = teams[1] != null ? raceB.getTeamColor() + teams[1].getPlayerNames() : "No participants";
 
             sb.append("GroundWar between races ").append(raceAName)
                     .append(" and ").append(raceBName)

@@ -19,7 +19,7 @@ public class JoinGroundWarCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("Only players can join ground wars");
+            commandSender.sendMessage("You need to be a player to use this command.");
             return true;
         }
 
@@ -28,12 +28,12 @@ public class JoinGroundWarCommand implements CommandExecutor {
 
         try {
             Race race = PlayerManager.getPlayerRace(playerID);
-            GroundWar war = GroundWarManager.findGroundWarFromRace(race);
-            war.addPlayer(race, playerID);
+            GroundWar groundWar = GroundWarManager.findGroundWarFromRace(race);
+            groundWar.addPlayer(race, playerID);
             player.sendMessage(ChatColor.GREEN + "Successfully joined ground war");
         } catch (Exception ex) {
             Logging.printStackTrace(ex);
-            player.sendMessage("Could not find a ground war for you to join");
+            player.sendMessage(ChatColor.DARK_RED + "Could not find a ground war for you to join");
         }
 
 

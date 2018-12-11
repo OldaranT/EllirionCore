@@ -17,6 +17,7 @@ public class WagerPlotCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("You cannot leave a GroundWar as a non-player.");
             return true;
         }
 
@@ -33,7 +34,7 @@ public class WagerPlotCommand implements CommandExecutor {
                 PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
-                player.sendMessage("Could not get plot. Please try again, entering the correct coordinates or standing in the plot you want to add.");
+                player.sendMessage(ChatColor.DARK_RED + "Could not get plot. Please try again, entering the correct coordinates or standing in the plot you want to add.");
                 return true;
             }
         } else {

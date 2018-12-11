@@ -9,6 +9,7 @@ import com.ellirion.core.util.Logging;
 import com.ellirion.util.EllirionUtil;
 import com.ellirion.util.async.Promise;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -53,16 +54,18 @@ public class GroundWarManager {
         //It can be added if
         //a) your race owns the plot, or
         //b) the plot neighbours your plot
+        GroundWar war = GROUND_WARS.get(player);
         Race race = PlayerManager.getPlayerRace(player);
         if (plot.getOwner().equals(race)) {
+            Plot opponentsPlot = war.getPlotB();
+            if (opponentsPlot != null) {
+                return Arrays.asList(opponentsPlot.getNeighbours()).contains(plot);
+            }
             return true;
         }
 
-        GroundWar war = GROUND_WARS.get(player);
         if (war != null) {
-            Logger.getGlobal().info("Can the current plot be added to the ground war?");
             Plot ownPlot = war.getPlotA();
-            Logger.getGlobal().info("Own plot: " + ownPlot.getName());
             Plot[] neighbours = ownPlot.getNeighbours();
             for (Plot p : neighbours) {
                 if (p.equals(plot)) {
@@ -113,8 +116,8 @@ public class GroundWarManager {
                     }
                     Thread.sleep(totalWaitTime / 10);
                 }
-            } catch (Exception ex) {
-                Logging.printStackTrace(ex);
+            } catch (Exception exception) {
+                Logging.printStackTrace(exception);
             }
             for (UUID id : players) {
                 EllirionCore.getINSTANCE().getServer().getPlayer(id).sendMessage("The ground war is now starting");

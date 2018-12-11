@@ -68,22 +68,29 @@ commands:
   CreateGroundWar:
       Description: create a ground war
       usage: /creategroundwar
+      aliases: [war-create]
   WagerPlot:
       Description: wager a plot in your ground war
       usage: /wagerplot [<plot-x> <plot-z>]
+      aliases: [war-wagerplot]
   GetGroundwar:
       Description: Get the details of a grouns war
       usage: /getgroundwar
+      aliases: [war-get]
   ConfirmGroundWar:
       Description: confirm ground war
       usage: /confirmgroundwar
+      aliases: [war-confirm]
   JoinGroundWar:
       Description: join a groundwar
       usage: /joingroundwar
+      aliases: [war-join]
   LeaveGroundWar:
       Description: Leave the ground war you're in.
       usage: /leavegroundwar
+      aliases: [war-leave]
   CancelGroundWar:
       Description: Cancel the ground war you created.
       usage: /cancelgroundwar
+      aliases: [war-cancel]
 depend: [EllirionUtil]
