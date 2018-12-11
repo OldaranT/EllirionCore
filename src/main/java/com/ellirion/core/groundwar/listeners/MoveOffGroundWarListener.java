@@ -8,6 +8,7 @@ import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 
 public class MoveOffGroundWarListener implements Listener {
 
@@ -22,11 +23,17 @@ public class MoveOffGroundWarListener implements Listener {
 
         //See if the player moved to a plot that isn't in the ground war
         Plot plotTo = event.getPlotTo();
+        Plot plotFrom = event.getPlotFrom();
 
         GroundWar groundWar = GroundWarManager.getGroundWar(player.getUniqueId());
         if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS && !(groundWar.getPlotB().equals(plotTo) || groundWar.getPlotA().equals(plotTo))) {
-            //Teleport the player back to the block they were standing on
-            Location newLocation = player.getLocation().getBlock().getLocation();
+            //Teleport the player a few blocks back into the plot
+            //check which way the player was going
+            PlotCoord direction = plotTo.getPlotCoord().subtract(plotFrom.getPlotCoord());
+            int deltaX = -5 * direction.getX();
+            int deltaZ = -5 * direction.getZ();
+
+            Location newLocation = player.getLocation().getBlock().getLocation().add(deltaX, 0, deltaZ);
             newLocation.setYaw(player.getLocation().getYaw());
             newLocation.setPitch(player.getLocation().getPitch());
             player.teleport(newLocation);
