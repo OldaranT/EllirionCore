@@ -287,7 +287,7 @@ public class GroundWar {
             player.teleport(loc);
         }
 
-        //Save GroundWar to database
+        //TODO Save GroundWar to database
 
         //Remove ground war
         GroundWarManager.removeGroundWar(createdBy);
