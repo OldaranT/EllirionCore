@@ -65,6 +65,10 @@ public class WarTeam {
         lives--;
     }
 
+    /**
+     * Make a copy of this WarTeam.
+     * @return a copy of this WarTeam
+     */
     public WarTeam copy() {
         WarTeam other = new WarTeam();
         for (UUID id : players) {

@@ -14,12 +14,18 @@ public class GroundWarResults {
     @Setter private WarTeam winner;
     @Setter private WarTeam loser;
 
-
-    public GroundWarResults(UUID createdBy){
+    /**
+     * Constructor for Ground War Results.
+     * @param createdBy whoever created the GroundWar
+     */
+    public GroundWarResults(final UUID createdBy) {
         started = Date.from(Instant.now());
         this.createdBy = createdBy;
     }
 
+    /**
+     * Set the end time of the Results to the current time.
+     */
     public void setEnded() {
         ended = Date.from(Instant.now());
     }
