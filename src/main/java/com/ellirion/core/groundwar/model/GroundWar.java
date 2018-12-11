@@ -201,10 +201,10 @@ public class GroundWar {
 
             String raceAName = raceA != null ? raceA.getTeamColor() + raceA.getName() + ChatColor.RESET : undefined;
             String raceBName = raceB != null ? raceB.getTeamColor() + raceB.getName() + ChatColor.RESET : undefined;
-            String plotA = plots[0] != null ? plots[0].getName() : undefined;
-            String plotB = plots[1] != null ? plots[1].getName() : undefined;
-            String participantsA = teams[0] != null ? raceA.getTeamColor() + teams[0].getPlayerNames() : "No participants";
-            String participantsB = teams[1] != null ? raceB.getTeamColor() + teams[1].getPlayerNames() : "No participants";
+            String plotA = plots[0] != null ? raceA.getTeamColor() + plots[0].getName() : undefined;
+            String plotB = plots[1] != null ? raceB.getTeamColor() + plots[1].getName() : undefined;
+            String participantsA = teams[0] != null ? teams[0].getPlayerNames() : "No participants";
+            String participantsB = teams[1] != null ? teams[1].getPlayerNames() : "No participants";
 
             sb.append("GroundWar between races ").append(raceAName)
                     .append(" and ").append(raceBName)
@@ -213,7 +213,8 @@ public class GroundWar {
                     .append("\ncurrent state: ").append(state.name())
                     .append("\nPlots wagered in this ground war:\n")
                     .append(plotA).append('\n')
-                    .append(plotB).append("\nWith participants:\n")
+                    .append(plotB).append(ChatColor.RESET)
+                    .append("\nWith participants:\n")
                     .append(raceAName).append('\n').append(participantsA).append("\n==========VS.==========\n")
                     .append(raceBName).append('\n').append(participantsB);
             return sb.toString();

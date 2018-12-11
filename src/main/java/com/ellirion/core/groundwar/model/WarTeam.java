@@ -1,8 +1,10 @@
 package com.ellirion.core.groundwar.model;
 
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.playerdata.PlayerManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +43,9 @@ public class WarTeam {
             return "";
         }
         StringBuilder builder = new StringBuilder();
+        ChatColor raceColor = PlayerManager.getPlayerRace(players.get(0)).getTeamColor();
         for (UUID player : players) {
-            builder.append('-').append(EllirionCore.getINSTANCE().getServer().getPlayer(player).getDisplayName()).append('\n');
+            builder.append('-').append(raceColor).append(EllirionCore.getINSTANCE().getServer().getPlayer(player).getDisplayName()).append(ChatColor.RESET).append('\n');
         }
         builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
