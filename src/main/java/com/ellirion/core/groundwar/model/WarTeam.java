@@ -67,4 +67,19 @@ public class WarTeam {
     public void removeLife() {
         lives--;
     }
+
+    /**
+     * Make a copy of this WarTeam.
+     * @return a copy of this WarTeam
+     */
+    public WarTeam copy() {
+        WarTeam other = new WarTeam();
+        for (UUID id : players) {
+            other.players.add(id);
+        }
+
+        other.lives = lives;
+
+        return other;
+    }
 }
