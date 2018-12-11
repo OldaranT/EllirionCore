@@ -14,7 +14,7 @@ public class WarTeam {
     @Getter private List<UUID> players;
     @Getter private List<Participant> participants;
     @Getter private int lives;
-    private UUID captain;
+    @Getter private UUID captain;
 
     /**
      * constructor.
@@ -66,7 +66,9 @@ public class WarTeam {
      * Remove a life from the total.
      */
     public void removeLife() {
-        lives--;
+        if (lives >= 0) {
+            lives--;
+        }
     }
 
     /**
@@ -85,7 +87,7 @@ public class WarTeam {
     }
 
     /**
-     * Choose a captain from the list of players.
+     * Choose a random captain from the list of players.
      */
     public void chooseCaptain() {
         captain = players.get((int) Math.random() * players.size());

@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar.listeners;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,12 +11,19 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
+import com.ellirion.core.groundwar.model.Participant;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class PlayerDeathListener implements Listener {
+
+    private static Map<UUID, Location> PLAYERS_TO_RESPAWN = new HashMap<>();
 
     /**
      * Listen for player deaths for GroundWars.
@@ -31,6 +39,25 @@ public class PlayerDeathListener implements Listener {
             return;
         }
 
+        //Check if there are lives left
+        if (groundWar.getTeam(playerID).getLives() <= 0) {
+            //Save the player's respawn location in the map
+            List<Participant> participants = groundWar.getTeam(playerID).getParticipants();
+            Participant participant = null;
+            for (Participant p : participants) {
+                if (p.getPlayer().equals(playerID)) {
+                    participant = p;
+                }
+            }
+            if (participant != null) {
+                Logger.getGlobal().info("Player " + playerID + " should respawn at " + participant.getRespawnLocationAfterGroundWar());
+                PLAYERS_TO_RESPAWN.put(playerID, participant.getRespawnLocationAfterGroundWar());
+            }
+
+            //Player cannot respawn and is removed from the GroundWar
+            groundWar.removeParticipant(playerID);
+        }
+
         groundWar.playerDied(playerID);
     }
 
@@ -44,6 +71,11 @@ public class PlayerDeathListener implements Listener {
         Player player = e.getPlayer();
         UUID playerID = player.getUniqueId();
         GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+
+        if (PLAYERS_TO_RESPAWN.containsKey(playerID)) {
+            e.setRespawnLocation(PLAYERS_TO_RESPAWN.remove(playerID));
+            return;
+        }
 
         if (groundWar == null || groundWar.getState() != GroundWar.State.IN_PROGRESS) {
             return;

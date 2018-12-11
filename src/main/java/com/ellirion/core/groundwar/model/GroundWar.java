@@ -3,6 +3,7 @@ package com.ellirion.core.groundwar.model;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
@@ -115,6 +116,15 @@ public class GroundWar {
      * @param player the player to remove
      */
     public void removeParticipant(UUID player) {
+        List<Participant> participants = getTeam(player).getParticipants();
+        Participant toRemove = null;
+        for (Participant p : participants) {
+            if (p.getPlayer().equals(player)) {
+                toRemove = p;
+            }
+        }
+        participants.remove(toRemove);
+
         teams[0].getPlayers().remove(player);
         teams[1].getPlayers().remove(player);
     }
@@ -166,6 +176,8 @@ public class GroundWar {
         int livesTeamB = (int) ((1f / ((float) teams[1].getPlayers().size() / (float) teams[0].getPlayers().size())) * livesBase);
         teams[0].setInitialLives(livesTeamA);
         teams[1].setInitialLives(livesTeamB);
+        teams[0].chooseCaptain();
+        teams[1].chooseCaptain();
 
         results.setInitialTeams(copyTeams());
 
@@ -197,7 +209,7 @@ public class GroundWar {
             teams[1].removeLife();
         }
 
-        if (teams[0].getLives() <= 0 || teams[1].getLives() <= 0) {
+        if (teams[0].getParticipants().size() <= 0 || teams[1].getParticipants().size() <= 0) {
             finish();
         }
     }
@@ -207,6 +219,7 @@ public class GroundWar {
      * @return string
      */
     public String toString() {
+        Server server = EllirionCore.getINSTANCE().getServer();
         if (state != State.IN_PROGRESS) {
             StringBuilder sb = new StringBuilder(147);
             String undefined = "Undefined";
@@ -220,8 +233,7 @@ public class GroundWar {
 
             sb.append("GroundWar between races ").append(raceAName)
                     .append(" and ").append(raceBName)
-                    .append(" created by ").append(
-                    EllirionCore.getINSTANCE().getServer().getPlayer(createdBy).getDisplayName())
+                    .append(" created by ").append(server.getPlayer(createdBy).getDisplayName())
                     .append("\ncurrent state: ").append(state.name())
                     .append("\nPlots wagered in this ground war:\n")
                     .append(plotA).append('\n')
@@ -232,9 +244,13 @@ public class GroundWar {
             return sb.toString();
         } else {
             StringBuilder sb = new StringBuilder();
-            //Show initialTeams lives
-            sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": ").append(teams[0].getLives()).append('\n')
-                    .append(raceB.getTeamColor()).append(raceB.getName()).append(": ").append(teams[1].getLives());
+            //Show teams' captain and lives
+            sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": \n")
+                    .append(raceA.getTeamColor()).append("Captain: ").append(server.getPlayer(teams[0].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
+                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(" lives remaining").append(ChatColor.RESET).append('\n')
+                    .append(raceB.getTeamColor()).append(raceB.getName()).append(": \n")
+                    .append(raceB.getTeamColor()).append("Captain: ").append(server.getPlayer(teams[1].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
+                    .append(teams[1].getLives()).append(" lives remaining").append(ChatColor.RESET);
             return sb.toString();
         }
     }
@@ -292,5 +308,19 @@ public class GroundWar {
 
         //Remove ground war
         GroundWarManager.removeGroundWar(createdBy);
+    }
+
+    /**
+     * Get the team a player is in.
+     * @param playerID the player to check the team of
+     * @return the team the player is in, or null if the player is not in this groundwar
+     */
+    public WarTeam getTeam(UUID playerID) {
+        if (teams[0].getPlayers().contains(playerID)) {
+            return teams[0];
+        } else if (teams[1].getPlayers().contains(playerID)) {
+            return teams[1];
+        }
+        return null;
     }
 }
