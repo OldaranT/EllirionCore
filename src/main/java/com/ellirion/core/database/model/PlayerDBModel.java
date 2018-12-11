@@ -57,7 +57,6 @@ public class PlayerDBModel {
         Race race = data.getRace();
         setRaceID(race);
         ipHistory.add(ip);
-        //TODO add game ID here.
     }
 
     public Set<String> getIpHistory() {

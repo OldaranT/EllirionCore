@@ -45,11 +45,11 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @param playerID The UUID of the player to fetch.
      * @return Return the found player.
      */
-    public PlayerDBModel getSpecificPlayer(UUID playerID) {
+    public PlayerDBModel getPlayer(UUID playerID) {
         return findOne(id, playerID);
     }
 
-    public List<PlayerDBModel> getAllPlayers() {
+    public List<PlayerDBModel> getPlayers() {
         return find().asList();
     }
 
@@ -58,19 +58,12 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @param raceID The race ID of the players their race.
      * @return Return the list of players in that race.
      */
-    //    @SuppressWarnings("Duplicates")
-    public List<PlayerDBModel> getAllPlayersFromRace(UUID raceID) {
-        List<PlayerDBModel> result = new ArrayList<>();//TODO validate with chris.
-        //        Query query = createQuery().filter(raceIDColumn, raceID);
-        GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()));
+    public List<PlayerDBModel> getPlayers(UUID raceID) {
+        List<PlayerDBModel> result = new ArrayList<>();
+        if (!GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()))) {
+            return new ArrayList<>();
+        }
         return result;
-        //        try {
-        //            Query query = createQuery().filter(raceIDColumn, raceID);
-        //            return find(query).asList();
-        //        } catch (Exception exception) {
-        //            Logging.printStackTrace(exception);
-        //            return new ArrayList<>();
-        //        }
     }
 
     /**

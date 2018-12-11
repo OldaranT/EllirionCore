@@ -8,13 +8,14 @@ import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.Logging;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 @Entity(value = "Race", noClassnameStored = true)
 public class RaceDBModel {
@@ -109,16 +110,12 @@ public class RaceDBModel {
      * @return Return true to signal that the operation succeeded.
      */
     public boolean update(Race race) {
-        try {
+        return tryCatch(() -> {
             raceName = race.getName();
             players = race.getPlayers();
             color = race.getTeamColor().toString();
             homePlotCoord = race.getHomePlot().getPlotCoord();
             ownedPlots = new ArrayList<>(race.getPlotCoords());
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        });
     }
 }

@@ -43,7 +43,7 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      * @param gameID The UUID of the game.
      * @return Return the found game.
      */
-    public GameDBModel getSpecificGame(UUID gameID) {
+    public GameDBModel getGame(UUID gameID) {
         return findOne(id, gameID);
     }
 
@@ -52,11 +52,11 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      * @param uName The unique name of the game.
      * @return Return the found game.
      */
-    public GameDBModel getSpecificGameByName(String uName) {
+    public GameDBModel getGame(String uName) {
         return findOne(uNameColumn, uName);
     }
 
-    public List<GameDBModel> getAllGames() {
+    public List<GameDBModel> getGames() {
         return find().asList();
     }
 
@@ -65,8 +65,8 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      * @param game The game that should be updated in the DB.
      * @return Return the result of the operation.
      */
-    public boolean updateRace(Game game) {
-        GameDBModel model = getSpecificGame(game.getGameID());
+    public boolean updateGame(Game game) {
+        GameDBModel model = getGame(game.getGameID());
         if (model == null) {
             return createGame(game);
         }
@@ -87,7 +87,7 @@ public class GameDAO extends BasicDAO<GameDBModel, Datastore> {
      * Get all the game names from the database.
      * @return return the string
      */
-    public List<String> getAllGameNames() {
+    public List<String> getGameNames() {
         List<String> result = new ArrayList<>();
         tryCatch(() -> find().asList().forEach(model -> result.add(model.getUName())));
         return result;

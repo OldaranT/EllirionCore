@@ -6,9 +6,10 @@ import xyz.morphia.annotations.Id;
 import xyz.morphia.annotations.IndexOptions;
 import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.gamemanager.model.Game;
-import com.ellirion.core.util.Logging;
 
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 @Entity(value = "Game", noClassnameStored = true)
 public class GameDBModel {
@@ -28,7 +29,7 @@ public class GameDBModel {
 
     /**
      * An overloaded version of the constructor that can use a game instead of multiple variables.
-     * @param game The race that needs to be saved.
+     * @param game The game that needs to be saved.
      */
     public GameDBModel(final Game game) {
         gameID = game.getGameID();
@@ -57,16 +58,10 @@ public class GameDBModel {
 
     /**
      * This updates the database game with the data from the game.
-     * @param game The game that should be copied to the DB.
+     * @param game The game that should be copied to the database.
      * @return Return true to signal that the operation succeeded.
      */
     public boolean update(Game game) {
-        try {
-            uName = game.getUName();
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return tryCatch(() -> uName = game.getUName());
     }
 }

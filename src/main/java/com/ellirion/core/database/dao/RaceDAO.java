@@ -4,12 +4,12 @@ import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.GenericTryCatch;
-import com.ellirion.core.util.Logging;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
@@ -25,17 +25,8 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         super(entityClass, datastore);
     }
 
-    //    @SuppressWarnings({"Duplicates", "CPD-START"})
-    //TODO validate the try and catch with chris. If approved then remove commented code.
     private boolean saveRace(RaceDBModel race) {
-        return GenericTryCatch.tryCatch(() -> save(race));
-        //        try {
-        //            save(race);
-        //            return true;
-        //        } catch (Exception exception) {
-        //            Logging.printStackTrace(exception);
-        //            return false;
-        //        }
+        return tryCatch(() -> save(race));
     }
 
     /**
@@ -53,11 +44,11 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param raceID The UUID of the race.
      * @return Return the found race.
      */
-    public RaceDBModel getSpecificRace(UUID raceID) {
+    public RaceDBModel getRace(UUID raceID) {
         return findOne(id, raceID);
     }
 
-    public List<RaceDBModel> getAllRaces() {
+    public List<RaceDBModel> getRaces() {
         return find().asList();
     }
 
@@ -68,7 +59,9 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      */
     public List<RaceDBModel> getGameRaces(UUID gameID) {
         final List<RaceDBModel> result = new ArrayList<>();
-        GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()));
+        if (!tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()))) {
+            return new ArrayList<>();
+        }
         return result;
     }
 
@@ -79,7 +72,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race, UUID gameID) {
-        RaceDBModel model = getSpecificRace(race.getRaceUUID());
+        RaceDBModel model = getRace(race.getRaceUUID());
         if (model == null) {
             return createRace(race, gameID);
         }
@@ -93,13 +86,6 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean deleteRace(UUID raceID) {
-        try {
-            RaceDBModel model = findOne(id, raceID);
-            delete(model);
-            return true;
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
-            return false;
-        }
+        return tryCatch(() -> delete(findOne(id, raceID)));
     }
 }

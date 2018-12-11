@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.StringHelper.*;
 
 public class GameManager {
 
@@ -29,6 +30,12 @@ public class GameManager {
 
     //Games
     @Getter private static HashMap<UUID, Game> GAMES = new HashMap<>();
+
+    //State message
+    @Getter private static String CREATE_PLOT = "CREATE_PLOTS";
+    @Getter private static String CONFIRM_SETUP = "CONFIRM_SETUP";
+    @Getter private static String CREATE_RACE = "CREATE_RACES";
+    @Getter private static String ASSIGN_TRADING_CENTER = "ASSIGN_TRADING_CENTER_PLOTS";
 
     //Setup
     private Step[] setupSteps;
@@ -74,10 +81,10 @@ public class GameManager {
 
     private void createSteps() {
         setupSteps = new Step[4];
-        setupSteps[0] = new Step("Create plots", f -> PlotManager.getSavedPlots().size() > 0);
-        setupSteps[1] = new Step("Assign trading center plots");
-        setupSteps[2] = new Step("Create races", f -> RaceManager.getRaceCount() >= 2);
-        setupSteps[3] = new Step("Confirm setup");
+        setupSteps[0] = new Step(CREATE_PLOT, f -> PlotManager.getSavedPlots().size() > 0);
+        setupSteps[1] = new Step(ASSIGN_TRADING_CENTER);
+        setupSteps[2] = new Step(CREATE_RACE, f -> RaceManager.getRaceCount() >= 2);
+        setupSteps[3] = new Step(CONFIRM_SETUP);
         currentStep = 0;
     }
 
@@ -127,31 +134,38 @@ public class GameManager {
      * Confirm the gamemode.
      */
     public void confirmGamemode() {
-        //Validate gamemode?
-
         changeState(GameState.SAVING);
-        DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
 
-        //Save game
-        game = new Game(UUID.randomUUID(), uName, xOffset, zOffset, plotSize);
-        GAMES.put(game.getGameID(), game);
-        db.createGame(game);
-
-        //save plots
-        for (PlotCoord plotCoord : PlotManager.getSavedPlots().keySet()) {
-            EllirionCore.getINSTANCE().getLogger().info(plotCoord.toString());
-            db.savePlotCoord(game.getGameID(), plotCoord);
-        }
-
-        //save races
-        for (Race race : RaceManager.getRaces()) {
-            db.createRace(race);
-        }
-
-        //save tradingcenter
-        db.saveTradingCenter(TradingCenter.getInstance());
+        DatabaseManager databaseManager = EllirionCore.getINSTANCE().getDbManager();
+        createGame(databaseManager);
 
         changeState(GameState.IN_PROGRESS);
+    }
+
+    private void createGame(DatabaseManager databaseManager) {
+        game = new Game(UUID.randomUUID(), uName, xOffset, zOffset, plotSize);
+        GAMES.put(game.getGameID(), game);
+        databaseManager.createGame(game);
+
+        createPlots(databaseManager);
+        createRaces(databaseManager);
+        createTradingCenter(databaseManager);
+    }
+
+    private void createPlots(DatabaseManager databaseManager) {
+        for (PlotCoord plotCoord : PlotManager.getSavedPlots().keySet()) {
+            databaseManager.createPlotCoord(game.getGameID(), plotCoord);
+        }
+    }
+
+    private void createRaces(DatabaseManager databaseManager) {
+        for (Race race : RaceManager.getRaces()) {
+            databaseManager.createRace(race);
+        }
+    }
+
+    private void createTradingCenter(DatabaseManager databaseManager) {
+        databaseManager.createTradingCenter(TradingCenter.getInstance());
     }
 
     /**
@@ -176,21 +190,21 @@ public class GameManager {
 
             DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
             //Load game
-            GameDBModel gameDBModel = db.getSpecificGameByName(uName);
+            GameDBModel gameDBModel = db.getGame(uName);
             Game game = new Game(gameDBModel);
             this.game = game;
 
             //Load plots
-            List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoordsByGameID(game.getGameID());
+            List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoords(game.getGameID());
             PlotManager.createPlotsFromDatabase(plotCoordDBModelList);
             plotSize = game.getPlotSize();
 
             //Load races
-            List<RaceDBModel> racesModel = db.getAllGameRaces(game.getGameID());
+            List<RaceDBModel> racesModel = db.getRaces(game.getGameID());
             RaceManager.loadRaces(racesModel);
 
             //Load TradingCenter
-            TradingCenterDBModel tcModel = db.getTradingCenterFromGame(game.getGameID());
+            TradingCenterDBModel tcModel = db.getTradingCenter(game.getGameID());
             TradingCenter tc = TradingCenter.getInstance();
             for (PlotCoord plotCoord : tcModel.getOwnedPlots()) {
                 tc.addPlot(plotCoord);
@@ -232,12 +246,12 @@ public class GameManager {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(20);
-        sb.append("Current game state: ").append(state.name());
+        sb.append(ChatColor.RESET).append("Current game state: ").append(highlight(state.name(), ChatColor.RESET));
         if (state == GameState.SETUP) {
             if (currentStep == setupSteps.length - 1) {
                 sb.append(getReport());
             }
-            sb.append("\nCurrent step:\n-").append(currentStepMessage());
+            sb.append("\nCurrent step: ").append(highlight(currentStepMessage(), ChatColor.RESET));
         }
         return sb.toString();
     }

@@ -33,7 +33,7 @@ public class PlotCoordDAO extends BasicDAO<PlotCoordDBModel, Datastore> {
      * @param plotCoord The plot coords class.
      * @return Return the result of the operation.
      */
-    public boolean savePlotCoord(UUID gameID, PlotCoord plotCoord) {
+    public boolean createPlotCoord(UUID gameID, PlotCoord plotCoord) {
         return savePlotCoord(new PlotCoordDBModel(gameID, plotCoord));
     }
 
@@ -42,11 +42,11 @@ public class PlotCoordDAO extends BasicDAO<PlotCoordDBModel, Datastore> {
      * @param plotCoord The plotCoord of the plot to fetch.
      * @return return the found plotcoord.
      */
-    public PlotCoordDBModel getSpecificPlotCoord(PlotCoord plotCoord) {
+    public PlotCoordDBModel getPlotCoord(PlotCoord plotCoord) {
         return findOne(id, plotCoord);
     }
 
-    public List<PlotCoordDBModel> getAllPlotCoords() {
+    public List<PlotCoordDBModel> getPlotCoords() {
         return find().asList();
     }
 
@@ -55,7 +55,7 @@ public class PlotCoordDAO extends BasicDAO<PlotCoordDBModel, Datastore> {
      * @param gameID the gameID of the plots to fetch.
      * @return return the found plotcoords.
      */
-    public List<PlotCoordDBModel> getPlotCoordsByGameID(UUID gameID) {
+    public List<PlotCoordDBModel> getPlotCoords(UUID gameID) {
         return createQuery().filter(gameIDColumn, gameID).asList();
     }
 }

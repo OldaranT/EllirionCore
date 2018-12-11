@@ -6,19 +6,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.playerdata.PlayerManager;
-import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.CommandHelper;
 
 public class ClaimPlotCommand implements CommandExecutor {
 
     private Player player;
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
             commandSender.sendMessage("You need to be a player to use this command.");
             return true;
@@ -26,28 +25,11 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         player = (Player) commandSender;
 
-        Plot plotToCheck;
-
-        // Check if coords where entered.
-        if (args.length == 2) {
-            int xCoord = Integer.parseInt(args[0]);
-            int zCoord = Integer.parseInt(args[1]);
-
-            PlotCoord plotCoord = new PlotCoord(xCoord, zCoord, player.getWorld().getName());
-
-            plotToCheck = PlotManager.getPlotByCoordinate(plotCoord);
-        } else if (args.length == 0) {
-            plotToCheck = PlotManager.getPlotFromLocation(player.getLocation());
-        } else {
-            player.sendMessage(ChatColor.DARK_RED +
-                               "Please give the coordinates of the plot: <X> <Z>. \n " +
-                               "You can also give no coordinates to claim the plot you are standing in.");
-            return true;
-        }
+        Plot plotToCheck = CommandHelper.getPlot(strings, player);
 
         if (plotToCheck.getOwner() instanceof TradingCenter) {
             player.sendMessage(ChatColor.DARK_RED + "This plot is a game plot. you can't claim this plot.");
-            return false;
+            return true;
         }
 
         Plot[] neighbourPlots = plotToCheck.getNeighbours();

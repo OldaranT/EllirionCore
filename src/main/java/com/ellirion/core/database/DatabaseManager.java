@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+
 public class DatabaseManager {
 
     private final Morphia morphia;
@@ -160,8 +162,8 @@ public class DatabaseManager {
      * @param gameID The UUID of the game to fetch.
      * @return return the found gameDBModel.
      */
-    public GameDBModel getSpecificGame(UUID gameID) {
-        return gameDAO.getSpecificGame(gameID);
+    public GameDBModel getGame(UUID gameID) {
+        return gameDAO.getGame(gameID);
     }
 
     /**
@@ -169,12 +171,12 @@ public class DatabaseManager {
      * @param uName The unique name of the game.
      * @return Return the found game.
      */
-    public GameDBModel getSpecificGameByName(String uName) {
-        return gameDAO.getSpecificGameByName(uName);
+    public GameDBModel getGame(String uName) {
+        return gameDAO.getGame(uName);
     }
 
-    public List<GameDBModel> getAllGames() {
-        return gameDAO.getAllGames();
+    public List<GameDBModel> getGames() {
+        return gameDAO.getGames();
     }
 
     /**
@@ -183,7 +185,7 @@ public class DatabaseManager {
      * @return Return the result of the operation.
      */
     public boolean updateGame(Game game) {
-        return gameDAO.updateRace(game);
+        return gameDAO.updateGame(game);
     }
 
     /**
@@ -208,8 +210,8 @@ public class DatabaseManager {
         return raceDAO.createRace(race, GameManager.getInstance().getGame().getGameID());
     }
 
-    public List<RaceDBModel> getAllRaces() {
-        return raceDAO.getAllRaces();
+    public List<RaceDBModel> getRaces() {
+        return raceDAO.getRaces();
     }
 
     /**
@@ -217,8 +219,8 @@ public class DatabaseManager {
      * @param raceID The UUID of the race to fetch.
      * @return return the found raceModel.
      */
-    public RaceDBModel getSpecificRace(UUID raceID) {
-        return raceDAO.getSpecificRace(raceID);
+    public RaceDBModel getRace(UUID raceID) {
+        return raceDAO.getRace(raceID);
     }
 
     /**
@@ -235,13 +237,12 @@ public class DatabaseManager {
      * @param gameID The ID of the game to get the races from.
      * @return return the found list or an empty list but not a null to prevent NPE's.
      */
-    public List<RaceDBModel> getAllGameRaces(UUID gameID) {
-        try {
-            return raceDAO.getGameRaces(gameID);
-        } catch (Exception exception) {
-            Logging.printStackTrace(exception);
+    public List<RaceDBModel> getRaces(UUID gameID) {
+        final List<RaceDBModel> result = new ArrayList<>();
+        if (!tryCatch(() -> result.addAll(raceDAO.getGameRaces(gameID)))) {
             return new ArrayList<>();
         }
+        return result;
     }
 
     //endregion
@@ -271,8 +272,8 @@ public class DatabaseManager {
      * Get all players from the database.
      * @return return all the users.
      */
-    public List<PlayerDBModel> getAllPlayers() {
-        return playerDAO.getAllPlayers();
+    public List<PlayerDBModel> getPlayers() {
+        return playerDAO.getPlayers();
     }
 
     /**
@@ -280,8 +281,8 @@ public class DatabaseManager {
      * @param uuid the id of the player
      * @return the player model
      */
-    public PlayerDBModel getOnePlayer(UUID uuid) {
-        return playerDAO.getSpecificPlayer(uuid);
+    public PlayerDBModel getPlayer(UUID uuid) {
+        return playerDAO.getPlayer(uuid);
     }
 
     /**
@@ -304,12 +305,12 @@ public class DatabaseManager {
      * @param plotCoord The plot coords class.
      * @return Return the result of the operation.
      */
-    public boolean savePlotCoord(UUID gameID, PlotCoord plotCoord) {
-        return plotCoordDAO.savePlotCoord(gameID, plotCoord);
+    public boolean createPlotCoord(UUID gameID, PlotCoord plotCoord) {
+        return plotCoordDAO.createPlotCoord(gameID, plotCoord);
     }
 
-    public List<PlotCoordDBModel> getAllPlotCoords() {
-        return plotCoordDAO.getAllPlotCoords();
+    public List<PlotCoordDBModel> getPlotCoords() {
+        return plotCoordDAO.getPlotCoords();
     }
 
     /**
@@ -317,8 +318,8 @@ public class DatabaseManager {
      * @param gameID the gameID of the plots to fetch.
      * @return return the found plotcoords.
      */
-    public List<PlotCoordDBModel> getPlotCoordsByGameID(UUID gameID) {
-        return plotCoordDAO.getPlotCoordsByGameID(gameID);
+    public List<PlotCoordDBModel> getPlotCoords(UUID gameID) {
+        return plotCoordDAO.getPlotCoords(gameID);
     }
 
     //endregion
@@ -330,8 +331,8 @@ public class DatabaseManager {
      * @param tradingCenter The trading center to save.
      * @return return the result of the operation.
      */
-    public boolean saveTradingCenter(TradingCenter tradingCenter) {
-        return tradingCenterDAO.saveTradingCenter(tradingCenter, GameManager.getInstance().getGame().getGameID());
+    public boolean createTradingCenter(TradingCenter tradingCenter) {
+        return tradingCenterDAO.createTradingCenter(tradingCenter, GameManager.getInstance().getGame().getGameID());
     }
 
     /**
@@ -339,8 +340,8 @@ public class DatabaseManager {
      * @param game the game whose trading center model to retrieve
      * @return a model of a trading center
      */
-    public TradingCenterDBModel getTradingCenterFromGame(UUID game) {
-        return tradingCenterDAO.getTradingCenterFromGame(game);
+    public TradingCenterDBModel getTradingCenter(UUID game) {
+        return tradingCenterDAO.getTradingCenter(game);
     }
 
     //endregion
