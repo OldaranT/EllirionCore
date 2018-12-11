@@ -1,6 +1,5 @@
 package com.ellirion.core.plotsystem.model.plotowner;
 
-import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
 public class TradingCenter extends PlotOwner {
@@ -26,6 +25,6 @@ public class TradingCenter extends PlotOwner {
      */
     @Override
     protected void updateDatabase() {
-//        DATABASE_MANAGER.
+        PlotOwner.DATABASE_MANAGER.updateTradingCenter(this);
     }
 }

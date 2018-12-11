@@ -71,5 +71,7 @@ public abstract class PlotOwner {
     /**
      * This method is used to update the database when something changes.
      */
-    protected abstract void updateDatabase();
+    protected void updateDatabase() {
+        // empty on purpose;
+    }
 }

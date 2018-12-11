@@ -56,4 +56,15 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
         Query query = createQuery().filter(gameIDColumn, gameID);
         return findOne(query);
     }
+
+    /**
+     * This updates the tradingCenter in the database.
+     * @param tradingCenter The tradingCenter to update.
+     * @return return the result of the operation.
+     */
+    public boolean updateTradingCenter(TradingCenter tradingCenter) {
+        TradingCenterDBModel dbTradingCenter = findOne(id, tradingCenter.getRaceUUID());
+        dbTradingCenter.update(tradingCenter);
+        return saveTradingCenter(dbTradingCenter);
+    }
 }
