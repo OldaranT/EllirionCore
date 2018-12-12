@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
@@ -29,13 +28,16 @@ public class JoinGroundWarCommand implements CommandExecutor {
         try {
             Race race = PlayerManager.getPlayerRace(playerID);
             GroundWar groundWar = GroundWarManager.findGroundWarFromRace(race);
+            if (groundWar.containsParticipant(playerID)) {
+                player.sendMessage(ChatColor.DARK_RED + "You are already in a ground war!");
+                return true;
+            }
             groundWar.addPlayer(race, playerID);
             player.sendMessage(ChatColor.GREEN + "Successfully joined ground war");
         } catch (Exception ex) {
             Logging.printStackTrace(ex);
             player.sendMessage(ChatColor.DARK_RED + "Could not find a ground war for you to join");
         }
-
 
         return true;
     }

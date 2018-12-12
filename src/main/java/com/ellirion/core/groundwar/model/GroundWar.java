@@ -18,13 +18,6 @@ import java.util.UUID;
 
 public class GroundWar {
 
-    public enum State {
-        SETUP,
-        CONFIRMED,
-        IN_PROGRESS,
-        FINISHED
-    }
-
     @Getter private Race raceA;
     @Getter private Race raceB;
     private Plot[] plots;
@@ -55,22 +48,6 @@ public class GroundWar {
     }
 
     /**
-     * Set race raceA's plot in this groundwar.
-     * @param plot race raceA's plot.
-     */
-    public void setPlotA(Plot plot) {
-        plots[0] = plot;
-    }
-
-    /**
-     * Set race raceB's plot in the groundwar.
-     * @param plot race raceB's plot
-     */
-    public void setPlotB(Plot plot) {
-        plots[1] = plot;
-    }
-
-    /**
      * Set the opponent Race.
      * @param race the opponent race
      */
@@ -87,11 +64,27 @@ public class GroundWar {
     }
 
     /**
+     * Set race raceA's plot in this groundwar.
+     * @param plot race raceA's plot.
+     */
+    public void setPlotA(Plot plot) {
+        plots[0] = plot;
+    }
+
+    /**
      * Get race raceB's plot.
      * @return race raceB's plot
      */
     public Plot getPlotB() {
         return plots[1];
+    }
+
+    /**
+     * Set race raceB's plot in the groundwar.
+     * @param plot race raceB's plot
+     */
+    public void setPlotB(Plot plot) {
+        plots[1] = plot;
     }
 
     public void setState(State state) {
@@ -153,18 +146,21 @@ public class GroundWar {
         List<UUID> participantsA = teams[0].getPlayers();
         List<UUID> participantsB = teams[1].getPlayers();
 
-        EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin("EllirionUtil");
+        EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
+                "EllirionUtil");
 
         //Teleport players
         for (UUID playerID : participantsA) {
             Player player = plugin.getServer().getPlayer(playerID);
-            Location loc = plots[0].getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+            Location loc = plots[0].getCenterLocation(world, player.getLocation().getYaw(),
+                                                      player.getLocation().getPitch());
             ellirionUtil.loadChunk(loc);
             player.teleport(loc);
         }
         for (UUID playerID : participantsB) {
             Player player = plugin.getServer().getPlayer(playerID);
-            Location loc = plots[1].getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+            Location loc = plots[1].getCenterLocation(world, player.getLocation().getYaw(),
+                                                      player.getLocation().getPitch());
             ellirionUtil.loadChunk(loc);
             player.teleport(loc);
         }
@@ -172,8 +168,10 @@ public class GroundWar {
         //Calculate team lives
         //less players = more lives so that 0.5 * the players = 1.5 * the lives
         int livesBase = 3;
-        int livesTeamA = (int) ((1f / ((float) teams[0].getPlayers().size() / (float) teams[1].getPlayers().size())) * livesBase);
-        int livesTeamB = (int) ((1f / ((float) teams[1].getPlayers().size() / (float) teams[0].getPlayers().size())) * livesBase);
+        int livesTeamA = (int) ((1f / ((float) teams[0].getPlayers().size() / (float) teams[1].getPlayers().size())) *
+                                livesBase);
+        int livesTeamB = (int) ((1f / ((float) teams[1].getPlayers().size() / (float) teams[0].getPlayers().size())) *
+                                livesBase);
         teams[0].setInitialLives(livesTeamA);
         teams[1].setInitialLives(livesTeamB);
         teams[0].chooseCaptain();
@@ -204,8 +202,17 @@ public class GroundWar {
      */
     public void playerDied(UUID playerID) {
         if (teams[0].getPlayers().contains(playerID)) {
-            teams[0].removeLife();
+            if (teams[0].getCaptain().equals(playerID)) {
+                teams[0].removeAllLives();
+            } else {
+                teams[0].removeLife();
+            }
         } else if (teams[1].getPlayers().contains(playerID)) {
+            if (teams[1].getCaptain().equals(playerID)) {
+                teams[1].removeAllLives();
+            } else {
+                teams[1].removeLife();
+            }
             teams[1].removeLife();
         }
 
@@ -218,6 +225,7 @@ public class GroundWar {
      * ToString.
      * @return string
      */
+    @Override
     public String toString() {
         Server server = EllirionCore.getINSTANCE().getServer();
         if (state != State.IN_PROGRESS) {
@@ -246,10 +254,13 @@ public class GroundWar {
             StringBuilder sb = new StringBuilder();
             //Show teams' captain and lives
             sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": \n")
-                    .append(raceA.getTeamColor()).append("Captain: ").append(server.getPlayer(teams[0].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
-                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(" lives remaining").append(ChatColor.RESET).append('\n')
+                    .append(raceA.getTeamColor()).append("Captain: ").append(
+                    server.getPlayer(teams[0].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
+                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(" lives remaining").append(
+                    ChatColor.RESET).append('\n')
                     .append(raceB.getTeamColor()).append(raceB.getName()).append(": \n")
-                    .append(raceB.getTeamColor()).append("Captain: ").append(server.getPlayer(teams[1].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
+                    .append(raceB.getTeamColor()).append("Captain: ").append(
+                    server.getPlayer(teams[1].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
                     .append(teams[1].getLives()).append(" lives remaining").append(ChatColor.RESET);
             return sb.toString();
         }
@@ -300,11 +311,16 @@ public class GroundWar {
         for (Participant p : participants) {
             Player player = EllirionCore.getINSTANCE().getServer().getPlayer(p.getPlayer());
             Location loc = p.getRespawnLocationAfterGroundWar();
-            EllirionCore.getINSTANCE().getLogger().info("Teleporting player " + player.getDisplayName() + " back to " + loc.toString());
+            EllirionCore.getINSTANCE().getLogger().info(
+                    "Teleporting player " + player.getDisplayName() + " back to " + loc.toString());
             player.teleport(loc);
         }
 
         //TODO Save GroundWar to database
+
+        String warResult = results.toString();
+        //Broadcast a report of the results.
+        EllirionCore.getINSTANCE().getServer().broadcastMessage(warResult);
 
         //Remove ground war
         GroundWarManager.removeGroundWar(createdBy);
@@ -322,5 +338,12 @@ public class GroundWar {
             return teams[1];
         }
         return null;
+    }
+
+    public enum State {
+        SETUP,
+        CONFIRMED,
+        IN_PROGRESS,
+        FINISHED
     }
 }

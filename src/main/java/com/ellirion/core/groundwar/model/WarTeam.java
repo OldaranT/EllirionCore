@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class WarTeam {
+
     @Getter private List<UUID> players;
     @Getter private List<Participant> participants;
     @Getter private int lives;
@@ -46,7 +47,9 @@ public class WarTeam {
         StringBuilder builder = new StringBuilder();
         ChatColor raceColor = PlayerManager.getPlayerRace(players.get(0)).getTeamColor();
         for (UUID player : players) {
-            builder.append('-').append(raceColor).append(EllirionCore.getINSTANCE().getServer().getPlayer(player).getDisplayName()).append(ChatColor.RESET).append('\n');
+            builder.append('-').append(raceColor).append(
+                    EllirionCore.getINSTANCE().getServer().getPlayer(player).getDisplayName()).append(
+                    ChatColor.RESET).append('\n');
         }
         builder.deleteCharAt(builder.length() - 1);
         return builder.toString();
@@ -72,6 +75,13 @@ public class WarTeam {
     }
 
     /**
+     * Removes all lives of a team.
+     */
+    public void removeAllLives() {
+        lives = 0;
+    }
+
+    /**
      * Make a copy of this WarTeam.
      * @return a copy of this WarTeam
      */
@@ -90,6 +100,6 @@ public class WarTeam {
      * Choose a random captain from the list of players.
      */
     public void chooseCaptain() {
-        captain = players.get((int) Math.random() * players.size());
+        captain = players.get((int) (Math.random() * players.size()));
     }
 }
