@@ -66,31 +66,45 @@ commands:
       usage: /cancelsetup during the gamemode setup phase
       aliases: [game-cancel]
   CreateGroundWar:
-      Description: create a ground war
+      description: create a ground war
       usage: /creategroundwar
       aliases: [war-create]
+      permission: ellirion.core.war.creategroundwar
+      permission-message: §4You do not have permission for this command!§r
   WagerPlot:
-      Description: wager a plot in your ground war
+      description: wager a plot in your ground war
       usage: /wagerplot [<plot-x> <plot-z>]
       aliases: [war-wagerplot]
+      permission: ellirion.core.war.wagerplot
+      permission-message: §4You do not have permission for this command!§r
   GetGroundwar:
-      Description: Get the details of a grouns war
+      description: Get the details of a grouns war
       usage: /getgroundwar
       aliases: [war-get]
+      permission: ellirion.core.war.getgroundwar
+      permission-message: §4You do not have permission for this command!§r
   ConfirmGroundWar:
-      Description: confirm ground war
+      description: confirm ground war
       usage: /confirmgroundwar
       aliases: [war-confirm]
+      permission: ellirion.core.war.confirmgroundwar
+      permission-message: §4You do not have permission for this command!§r
   JoinGroundWar:
-      Description: join a groundwar
+      description: join a groundwar
       usage: /joingroundwar
       aliases: [war-join]
+      permission: ellirion.core.war.joingroundwar
+      permission-message: §4You do not have permission for this command!§r
   LeaveGroundWar:
-      Description: Leave the ground war you're in.
+      description: Leave the ground war you're in.
       usage: /leavegroundwar
       aliases: [war-leave]
+      permission: ellirion.core.war.leavegroundwar
+      permission-message: §4You do not have permission for this command!§r
   CancelGroundWar:
-      Description: Cancel the ground war you created.
+      description: Cancel the ground war you created.
       usage: /cancelgroundwar
       aliases: [war-cancel]
+      permission: ellirion.core.war.cancelgroundwar
+      permission-message: §4You do not have permission for this command!§r
 depend: [EllirionUtil]
