@@ -158,4 +158,13 @@ public class PlayerManager {
         PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayer(playerID));
         PLAYERS.putIfAbsent(playerID, data);
     }
+
+    /**
+     * This removes the player from the PLAYERS list.
+     * @param playerID The ID of the player to remove.
+     */
+    public static void setPlayerOffline(UUID playerID) {
+        updatePlayer(playerID);
+        PLAYERS.remove(playerID);
+    }
 }
