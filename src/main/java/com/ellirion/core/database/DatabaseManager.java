@@ -229,7 +229,7 @@ public class DatabaseManager {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race) {
-        if (!tryCatch(() -> GameManager.getInstance().getGame().getGameID())) {
+        if (GameManager.getInstance().getGame() == null) {
             return true; // return true because the game hasn't started yet so there is nothing to save.
         }
         return raceDAO.updateRace(race, GameManager.getInstance().getGame().getGameID());
