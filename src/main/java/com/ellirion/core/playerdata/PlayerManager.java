@@ -4,7 +4,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
-import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
@@ -137,8 +136,7 @@ public class PlayerManager {
      * @return true if player exists.
      */
     public static boolean playerExistsInDatabase(UUID playerID) {
-        PlayerDBModel p = DATABASE_MANAGER.getPlayer(playerID);
-        return p != null;
+        return DATABASE_MANAGER.getPlayer(playerID) != null;
     }
 
     /**

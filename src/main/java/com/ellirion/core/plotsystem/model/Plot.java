@@ -61,9 +61,7 @@ public class Plot {
      * @param owner The new owner of the plot.
      */
     public void setOwner(PlotOwner owner) {
-        PlotOwner prevOwner;
         if (this.owner != null) {
-            prevOwner = this.owner;
             this.owner.removePlot(plotCoord);
         }
         this.owner = owner;
