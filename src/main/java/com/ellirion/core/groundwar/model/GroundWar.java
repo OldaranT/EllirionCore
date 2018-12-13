@@ -213,7 +213,6 @@ public class GroundWar {
             } else {
                 teams[1].removeLife();
             }
-            teams[1].removeLife();
         }
 
         if (teams[0].getParticipants().size() <= 0 || teams[1].getParticipants().size() <= 0) {

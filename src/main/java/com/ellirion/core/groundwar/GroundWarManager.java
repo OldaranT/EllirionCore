@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 public class GroundWarManager {
+
     private static Map<UUID, GroundWar> GROUND_WARS = new HashMap();
 
     /**
@@ -109,8 +110,28 @@ public class GroundWarManager {
                 return war;
             }
         }
-
         return null;
+    }
+
+    /**
+     * Check if a plot has a ground war.
+     * @param plot the plot to check.
+     * @return result if a plot is in a ground war or not.
+     */
+    public static boolean checkPlotForGoundWar(Plot plot) {
+        if (GROUND_WARS.values().isEmpty()) {
+            return false;
+        }
+        for (GroundWar war : GROUND_WARS.values()) {
+            if (war.getPlotA() == null || war.getPlotB() == null) {
+                return false;
+            }
+            if (war.getPlotB().equals(plot) || war.getPlotA().equals(plot)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -143,13 +164,13 @@ public class GroundWarManager {
             f.resolve(true);
         }, true);
 
-        ((EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin("EllirionUtil")).schedulePromise(countdownPromise).then(f -> {
+        ((EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
+                "EllirionUtil")).schedulePromise(countdownPromise).then(f -> {
             EllirionCore.getINSTANCE().getServer().getScheduler().runTask(EllirionCore.getINSTANCE(), () -> {
                 Logger.getGlobal().info("Staring GroundWar");
                 war.start();
             });
         });
-
     }
 
     /**
