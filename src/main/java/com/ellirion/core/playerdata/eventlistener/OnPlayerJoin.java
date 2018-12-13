@@ -4,9 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import com.ellirion.core.playerdata.PlayerManager;
 
 import java.util.UUID;
+
+import static com.ellirion.core.playerdata.PlayerManager.*;
 
 public class OnPlayerJoin implements Listener {
 
@@ -17,12 +18,12 @@ public class OnPlayerJoin implements Listener {
     public void onPlayerJoinEventListener(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
-        if (PlayerManager.playerexists(playerID)) {
+        if (playerexists(playerID) || playerExistsInDatabase(playerID)) {
             event.setJoinMessage("Welcome back!");
-            PlayerManager.updatePlayer(playerID);
+            addPlayerFromDatabase(playerID);
         } else {
             event.setJoinMessage("Welcome!");
-            PlayerManager.newPlayer(player, null);
+            newPlayer(player, null);
         }
     }
 }

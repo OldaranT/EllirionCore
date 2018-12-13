@@ -4,6 +4,7 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
@@ -25,8 +26,11 @@ public class PlayerManager {
      * @return Return a boolean that indicates if creating the new player was a success.
      */
     public static boolean newPlayer(Player player, UUID raceID) {
-        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
-        if (raceID != null) {
+        PlayerData data;
+        if (raceID == null) {
+            data = new PlayerData(player.getUniqueId());
+        } else {
+            data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
             RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
         }
         UUID id = player.getUniqueId();
@@ -128,11 +132,30 @@ public class PlayerManager {
     }
 
     /**
+     * this checks if the player is in the database.
+     * @param playerID The id of the player to check.
+     * @return true if player exists.
+     */
+    public static boolean playerExistsInDatabase(UUID playerID) {
+        PlayerDBModel p = DATABASE_MANAGER.getPlayer(playerID);
+        return p != null;
+    }
+
+    /**
      * This function gets the specified player from the server.
      * @param playerID The UUID of the player.
      * @return Return the found player.
      */
     private static Player getPlayerByUUIDFromServer(UUID playerID) {
         return SERVER.getPlayer(playerID);
+    }
+
+    /**
+     * This function retrieves a player from the database and adds it to the player list.
+     * @param playerID The ID of the player to add.
+     */
+    public static void addPlayerFromDatabase(UUID playerID) {
+        PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayer(playerID));
+        PLAYERS.putIfAbsent(playerID, data);
     }
 }
