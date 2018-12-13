@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -86,6 +87,9 @@ public class Race extends PlotOwner {
 
     @Override
     protected void updateDatabase() {
+        if (GameManager.getInstance().getGame() == null) {
+            return; // return because the game hasn't started yet so there is nothing to save.
+        }
         PlotOwner.DATABASE_MANAGER.updateRace(this);
     }
 }

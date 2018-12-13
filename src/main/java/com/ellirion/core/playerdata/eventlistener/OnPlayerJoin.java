@@ -19,10 +19,10 @@ public class OnPlayerJoin implements Listener {
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
         if (playerexists(playerID) || playerExistsInDatabase(playerID)) {
-            event.setJoinMessage("Welcome back!");
+            event.setJoinMessage("Welcome back " + player.getName() + "!");
             addPlayerFromDatabase(playerID);
         } else {
-            event.setJoinMessage("Welcome!");
+            event.setJoinMessage("Welcome " + player.getName() + "!");
             newPlayer(player, null);
         }
     }
