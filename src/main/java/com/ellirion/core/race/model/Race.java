@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -12,6 +13,8 @@ import com.ellirion.core.plotsystem.model.PlotOwner;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class Race extends PlotOwner {
 
@@ -57,7 +60,10 @@ public class Race extends PlotOwner {
      * @return return true if successful.
      */
     public boolean addPlayer(UUID playerID) {
-        return players.add(playerID);
+        return tryCatch(() -> {
+            players.add(playerID);
+            updateDatabase();
+        });
     }
 
     /**
@@ -73,6 +79,17 @@ public class Race extends PlotOwner {
      * @return Return true if successful.
      */
     public boolean removePlayer(UUID playerID) {
-        return players.remove(playerID);
+        return tryCatch(() -> {
+            players.remove(playerID);
+            updateDatabase();
+        });
+    }
+
+    @Override
+    protected void updateDatabase() {
+        if (GameManager.getInstance().getGame() == null) {
+            return; // return because the game hasn't started yet so there is nothing to save.
+        }
+        PlotOwner.DATABASE_MANAGER.updateRace(this);
     }
 }

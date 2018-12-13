@@ -344,5 +344,14 @@ public class DatabaseManager {
         return tradingCenterDAO.getTradingCenter(game);
     }
 
+    /**
+     * This method calls the update method in the DAO.
+     * @param tradingCenter The tradingCenter to update.
+     * @return The result of the operation.
+     */
+    public boolean updateTradingCenter(TradingCenter tradingCenter) {
+        return tradingCenterDAO.updateTradingCenter(tradingCenter);
+    }
+
     //endregion
 }
