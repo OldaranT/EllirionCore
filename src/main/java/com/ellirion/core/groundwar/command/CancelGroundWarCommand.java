@@ -29,7 +29,8 @@ public class CancelGroundWarCommand implements CommandExecutor {
         }
 
         if (!(groundWar.getState() == GroundWar.State.SETUP)) {
-            player.sendMessage(ChatColor.DARK_RED + "You can only cancel when you are in the SETUP state.");
+            player.sendMessage(
+                    ChatColor.DARK_RED + "You can only cancel a ground war when you are in the SETUP state.");
             return true;
         }
 

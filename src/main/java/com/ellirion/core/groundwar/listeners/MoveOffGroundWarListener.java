@@ -22,13 +22,9 @@ public class MoveOffGroundWarListener extends TeleportBackEventListener {
         Plot plotTo = event.getPlotTo();
         Plot plotFrom = event.getPlotFrom();
 
-        if (!GroundWarManager.checkPlotForGoundWar(plotFrom)) {
-            return;
-        }
-
         GroundWar groundWar = GroundWarManager.getGroundWar(plotFrom);
 
-        if (groundWar.getState() == GroundWar.State.IN_PROGRESS &&
+        if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS &&
             groundWar.containsParticipant(player.getUniqueId()) &&
             ((groundWar.getPlotB().equals(plotFrom) && !groundWar.getPlotA().equals(plotTo)) ||
              (groundWar.getPlotA().equals(plotFrom) && !groundWar.getPlotB().equals(plotTo)))) {

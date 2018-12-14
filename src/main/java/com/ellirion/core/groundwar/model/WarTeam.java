@@ -88,8 +88,11 @@ public class WarTeam {
     public WarTeam copy() {
         WarTeam other = new WarTeam();
 
+        for (Participant participant : participants) {
+            other.participants.add(
+                    new Participant(participant.getPlayer(), participant.getRespawnLocationAfterGroundWar().clone()));
+        }
         other.players.addAll(players);
-        other.participants.addAll(participants);
         other.captain = captain;
         other.lives = lives;
 

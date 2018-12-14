@@ -27,12 +27,12 @@ public class WagerPlotCommand implements CommandExecutor {
         GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
 
         if (groundWar == null) {
-            player.sendMessage(ChatColor.DARK_RED + "You are not in a ground war, therefore you cannot cancel it.");
+            player.sendMessage(ChatColor.DARK_RED + "You are not in a ground war, therefore you cannot wager a plot.");
             return true;
         }
 
         if (!(groundWar.getState() == GroundWar.State.SETUP)) {
-            player.sendMessage(ChatColor.DARK_RED + "You can only cancel when you are in the SETUP state.");
+            player.sendMessage(ChatColor.DARK_RED + "You can only wager a plot when you are in the SETUP state.");
             return true;
         }
 

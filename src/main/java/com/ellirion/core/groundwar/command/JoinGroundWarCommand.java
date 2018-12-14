@@ -9,7 +9,6 @@ import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.Logging;
 
 import java.util.UUID;
 
@@ -24,20 +23,31 @@ public class JoinGroundWarCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
         UUID playerID = player.getUniqueId();
+        Race race = PlayerManager.getPlayerRace(playerID);
+        GroundWar groundWar = GroundWarManager.findGroundWarFromRace(race);
 
-        try {
-            Race race = PlayerManager.getPlayerRace(playerID);
-            GroundWar groundWar = GroundWarManager.findGroundWarFromRace(race);
-            if (groundWar.containsParticipant(playerID)) {
-                player.sendMessage(ChatColor.DARK_RED + "You are already in a ground war!");
-                return true;
-            }
-            groundWar.addPlayer(race, playerID);
-            player.sendMessage(ChatColor.GREEN + "Successfully joined ground war");
-        } catch (Exception ex) {
-            Logging.printStackTrace(ex);
-            player.sendMessage(ChatColor.DARK_RED + "Could not find a ground war for you to join");
+        if (race == null) {
+            player.sendMessage(ChatColor.DARK_RED + "You need to be in a race to join a ground war.");
+            return true;
         }
+
+        if (groundWar == null) {
+            player.sendMessage(ChatColor.DARK_RED + "Your race is not in a ground war.");
+            return true;
+        }
+
+        if (groundWar.getState() != GroundWar.State.CONFIRMED) {
+            player.sendMessage(ChatColor.DARK_RED + "You can only join a ground war that is been confirmed");
+            return true;
+        }
+
+        if (GroundWarManager.getGroundWar(playerID) != null) {
+            player.sendMessage(ChatColor.DARK_RED + "You are already in a ground war!");
+            return true;
+        }
+
+        groundWar.addPlayer(race, playerID);
+        player.sendMessage(ChatColor.GREEN + "Successfully joined ground war");
 
         return true;
     }

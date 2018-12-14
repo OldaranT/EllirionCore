@@ -2,13 +2,17 @@ package com.ellirion.core.groundwar.model;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
@@ -18,6 +22,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import static com.ellirion.core.util.MinecraftHelper.*;
 
 public class GroundWar {
 
@@ -44,8 +50,6 @@ public class GroundWar {
         teams = new WarTeam[2];
         teams[0] = new WarTeam();
         teams[1] = new WarTeam();
-
-        teams[0].addPlayer(createdBy);
 
         results = new GroundWarResults(createdBy);
     }
@@ -182,7 +186,28 @@ public class GroundWar {
 
         results.setInitialTeams(copyTeams());
 
+        //Give Glowing effect to captain.
+        addGlowingToCaptains();
+
         state = State.IN_PROGRESS;
+    }
+
+    private void addGlowingToCaptains() {
+        for (WarTeam warTeam : teams) {
+
+            Player player = EllirionCore.getINSTANCE().getServer().getPlayer(warTeam.getCaptain());
+            Race race = PlayerManager.getPlayerRace(warTeam.getCaptain());
+            Color color = translateChatColorToColor(race.getTeamColor());
+            player.addPotionEffect(
+                    new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1, false, false, color));
+        }
+    }
+
+    private void removeGlowingToCaptains() {
+        for (WarTeam warTeam : teams) {
+            Player player = EllirionCore.getINSTANCE().getServer().getPlayer(warTeam.getCaptain());
+            player.removePotionEffect(PotionEffectType.GLOWING);
+        }
     }
 
     private void teleportPlayersToGroundWar() {
@@ -338,10 +363,19 @@ public class GroundWar {
      * @return the team that had more lives
      */
     public Race getWinner() {
-        if (teams[0].getParticipants().isEmpty()) {
+        if (teams[0].getParticipants().isEmpty() && !teams[1].getParticipants().isEmpty()) {
             return raceB;
-        } else {
+        } else if (teams[1].getParticipants().isEmpty() && !teams[0].getParticipants().isEmpty()) {
             return raceA;
+        } else {
+            if (teams[0].getLives() < teams[1].getLives()) {
+                return raceB;
+            } else if (teams[1].getLives() > teams[0].getLives()) {
+                return raceA;
+            } else {
+                // Its a draw return null.
+                return null;
+            }
         }
     }
 
@@ -380,7 +414,10 @@ public class GroundWar {
         }
 
         //TODO Save GroundWar to database
-        
+
+        //Remove glowing effect for Captain.
+        removeGlowingToCaptains();
+
         //Broadcast a report of the results.
         EllirionCore.getINSTANCE().getServer().broadcastMessage(results.toString());
 

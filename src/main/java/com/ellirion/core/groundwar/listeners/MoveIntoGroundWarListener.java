@@ -22,13 +22,9 @@ public class MoveIntoGroundWarListener extends TeleportBackEventListener {
         Plot plotTo = event.getPlotTo();
         Plot plotFrom = event.getPlotFrom();
 
-        if (!GroundWarManager.checkPlotForGoundWar(plotTo)) {
-            return;
-        }
-
         //Check if plotTo is involved in a ground war
         GroundWar groundWar = GroundWarManager.getGroundWar(plotTo);
-        if (groundWar.getState() == GroundWar.State.IN_PROGRESS &&
+        if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS &&
             !groundWar.containsParticipant(player.getUniqueId())) {
             teleportPlayerBack(plotFrom, plotTo, player);
         }

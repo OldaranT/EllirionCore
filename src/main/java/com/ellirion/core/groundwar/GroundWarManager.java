@@ -4,8 +4,6 @@ import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
-import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 import com.ellirion.util.EllirionUtil;
@@ -54,9 +52,10 @@ public class GroundWarManager {
      * @return whether the plot can be added to the ground war
      */
     public static boolean canAddPlot(UUID player, Plot plot) {
-        if (plot.getOwner() instanceof Wilderness || plot.getOwner() instanceof TradingCenter) {
+        if (!(plot.getOwner() instanceof Race)) {
             return false;
         }
+
         //It can be added if
         //a) your race owns the plot, or
         //b) the plot neighbours your plot
@@ -116,27 +115,6 @@ public class GroundWarManager {
             }
         }
         return null;
-    }
-
-    /**
-     * Check if a plot has a ground war.
-     * @param plot the plot to check.
-     * @return result if a plot is in a ground war or not.
-     */
-    public static boolean checkPlotForGoundWar(Plot plot) {
-        if (GROUND_WARS.values().isEmpty()) {
-            return false;
-        }
-        for (GroundWar war : GROUND_WARS.values()) {
-            if (war.getPlotA() == null || war.getPlotB() == null) {
-                return false;
-            }
-            if (war.getPlotB().equals(plot) || war.getPlotA().equals(plot)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
