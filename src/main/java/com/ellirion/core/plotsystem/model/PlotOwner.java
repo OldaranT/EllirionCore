@@ -11,7 +11,10 @@ import java.util.UUID;
 
 public abstract class PlotOwner {
 
-    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
+    /**
+     * This is the database manager that is used by the update method.
+     */
+    protected static final DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
     @Getter private final UUID raceUUID;
     @Getter private Set<PlotCoord> plotCoords = new HashSet<>();
 
@@ -47,6 +50,7 @@ public abstract class PlotOwner {
      */
     public void addPlot(PlotCoord plot) {
         plotCoords.add(plot);
+        updateDatabase();
     }
 
     /**
@@ -55,6 +59,7 @@ public abstract class PlotOwner {
      */
     public void removePlot(PlotCoord plot) {
         plotCoords.remove(plot);
+        updateDatabase();
     }
 
     /**
@@ -62,4 +67,11 @@ public abstract class PlotOwner {
      * @return the name of the plot owner.
      */
     public abstract String getName();
+
+    /**
+     * This method is used to update the database when something changes.
+     */
+    protected void updateDatabase() {
+        // empty on purpose;
+    }
 }

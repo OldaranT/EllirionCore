@@ -1,5 +1,6 @@
 package com.ellirion.core.plotsystem.model.plotowner;
 
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
 public class TradingCenter extends PlotOwner {
@@ -18,5 +19,16 @@ public class TradingCenter extends PlotOwner {
     @Override
     public String getName() {
         return "TradingCenter";
+    }
+
+    /**
+     * This method is used to update the database when something changes.
+     */
+    @Override
+    protected void updateDatabase() {
+        if (GameManager.getInstance().getGame() == null) {
+            return; // return because the game hasn't started yet so there is nothing to save.
+        }
+        PlotOwner.DATABASE_MANAGER.updateTradingCenter(this);
     }
 }
