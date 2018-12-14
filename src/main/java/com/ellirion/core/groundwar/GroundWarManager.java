@@ -111,7 +111,7 @@ public class GroundWarManager {
      */
     public static GroundWar getGroundWar(Plot plot) {
         for (GroundWar war : GROUND_WARS.values()) {
-            if (war.getPlotB().equals(plot) || war.getPlotA().equals(plot)) {
+            if (plot.equals(war.getPlotB()) || plot.equals(war.getPlotA())) {
                 return war;
             }
         }
