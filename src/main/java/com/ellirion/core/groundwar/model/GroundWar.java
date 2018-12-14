@@ -312,11 +312,10 @@ public class GroundWar {
         }
 
         //TODO Save GroundWar to database
-
-        //String warResult = results.toString();
+        
         //Broadcast a report of the results.
         EllirionCore.getINSTANCE().getServer().broadcastMessage(results.toString());
-        
+
         //Remove ground war
         GroundWarManager.removeGroundWar(createdBy);
     }
