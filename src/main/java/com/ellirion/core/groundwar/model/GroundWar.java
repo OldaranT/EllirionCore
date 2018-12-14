@@ -286,8 +286,6 @@ public class GroundWar {
         //Announce winner
         Race winner = getWinner();
 
-        EllirionCore.getINSTANCE().getServer().broadcastMessage(winner.getName() + " has won the ground war!");
-
         if (teams[0].getParticipants().isEmpty()) {
             results.setWinner(teams[1].copy());
             results.setLoser(teams[0].copy());

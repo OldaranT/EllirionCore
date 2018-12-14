@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.StringHelper;
 
 import java.time.Instant;
 import java.util.Date;
@@ -45,7 +46,10 @@ public class GroundWarResults {
         Race warWinner = PlayerManager.getPlayerRace(winner.getCaptain());
         Race warLoser = PlayerManager.getPlayerRace(loser.getCaptain());
         stringBuilder.append(newLine)
-                .append("===============GROUND-WAR REPORT===============").append(newLine)
+                .append(ChatColor.GREEN)
+                .append("============== ")
+                .append(StringHelper.highlight("GROUND - WAR REPORT", ChatColor.GREEN))
+                .append(" ==============").append(newLine)
                 .append("Start Date: ").append(started).append(newLine)
                 .append("Ended date: ").append(ended).append(newLine)
                 .append("CreatedBy: ").append(creator.getDisplayName()).append(newLine)
@@ -63,7 +67,10 @@ public class GroundWarResults {
             }
         }
         stringBuilder.append(newLine)
-                .append("======================END======================").append(newLine);
+                .append(ChatColor.GREEN)
+                .append("================= ")
+                .append(StringHelper.highlight("END REPORT", ChatColor.GREEN))
+                .append(" ==================").append(newLine);
         return stringBuilder.toString();
     }
 }
