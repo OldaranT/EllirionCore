@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 
@@ -25,12 +24,17 @@ public class CancelGroundWarCommand implements CommandExecutor {
         GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
 
         if (groundWar == null) {
-            player.sendMessage("You are not in a ground war, therefore you cannot cancel it.");
+            player.sendMessage(ChatColor.DARK_RED + "You are not in a ground war, therefore you cannot cancel it.");
+            return true;
+        }
+
+        if (!(groundWar.getState() == GroundWar.State.SETUP)) {
+            player.sendMessage(ChatColor.DARK_RED + "You can only cancel when you are in the SETUP state.");
             return true;
         }
 
         if (!groundWar.getCreatedBy().equals(playerID)) {
-            player.sendMessage("Only the player that started this ground war can cancel it.");
+            player.sendMessage(ChatColor.DARK_RED + "Only the player that started this ground war can cancel it.");
             return true;
         }
 

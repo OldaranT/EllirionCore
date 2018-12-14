@@ -1,8 +1,10 @@
 package com.ellirion.core.groundwar.model;
 
 import lombok.Setter;
+import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.race.model.Race;
 
 import java.time.Instant;
 import java.util.Date;
@@ -38,13 +40,16 @@ public class GroundWarResults {
         String newLine = "\n";
         String spacer = "   ";
         StringBuilder stringBuilder = new StringBuilder(175);
+        Player creator = EllirionCore.getINSTANCE().getServer().getPlayer(createdBy);
+        Race warWinner = PlayerManager.getPlayerRace(winner.getPlayers().get(0));
+        Race warLoser = PlayerManager.getPlayerRace(loser.getPlayers().get(0));
         stringBuilder.append(newLine)
                 .append("===============GROUND-WAR REPORT===============").append(newLine)
                 .append("Start Date: ").append(started).append(newLine)
                 .append("Ended date: ").append(ended).append(newLine)
-                .append("CreatedBy: ").append(createdBy).append(newLine)
-                .append("Winneer: ").append(winner).append(newLine)
-                .append("Loser: ").append(loser).append(newLine)
+                .append("CreatedBy: ").append(creator).append(newLine)
+                .append("Winneer: ").append(warWinner.getName()).append(newLine)
+                .append("Loser: ").append(warLoser.getName()).append(newLine)
                 .append("Teams:").append(newLine);
         for (WarTeam warTeam : initialTeams) {
             stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);

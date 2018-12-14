@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -22,7 +23,18 @@ public class WagerPlotCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
-        UUID playerId = player.getUniqueId();
+        UUID playerID = player.getUniqueId();
+        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+
+        if (groundWar == null) {
+            player.sendMessage(ChatColor.DARK_RED + "You are not in a ground war, therefore you cannot cancel it.");
+            return true;
+        }
+
+        if (!(groundWar.getState() == GroundWar.State.SETUP)) {
+            player.sendMessage(ChatColor.DARK_RED + "You can only cancel when you are in the SETUP state.");
+            return true;
+        }
 
         //Get plot
         Plot plot = null;
@@ -34,7 +46,8 @@ public class WagerPlotCommand implements CommandExecutor {
                 PlotCoord coord = new PlotCoord(x, z, player.getWorld().getName());
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
-                player.sendMessage(ChatColor.DARK_RED + "Could not get plot. Please try again, entering the correct coordinates or standing in the plot you want to add.");
+                player.sendMessage(ChatColor.DARK_RED +
+                                   "Could not get plot. Please try again, entering the correct coordinates or standing in the plot you want to add.");
                 return true;
             }
         } else {
@@ -43,8 +56,8 @@ public class WagerPlotCommand implements CommandExecutor {
         }
 
         //Check if plot can be added to ground war
-        if (GroundWarManager.canAddPlot(playerId, plot)) {
-            GroundWarManager.addPlotToGroundWar(playerId, plot);
+        if (GroundWarManager.canAddPlot(playerID, plot)) {
+            GroundWarManager.addPlotToGroundWar(playerID, plot);
             player.sendMessage(ChatColor.GREEN + "The plot was added to the ground war.");
         } else {
             player.sendMessage(ChatColor.DARK_RED + "The plot could not be added to the ground war.");

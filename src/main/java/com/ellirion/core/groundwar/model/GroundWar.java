@@ -270,12 +270,10 @@ public class GroundWar {
      * @return the team that had more lives
      */
     public Race getWinner() {
-        if (teams[0].getLives() < teams[1].getLives()) {
+        if (teams[0].getParticipants().isEmpty()) {
             return raceB;
-        } else if (teams[1].getLives() < teams[0].getLives()) {
-            return raceA;
         } else {
-            return null;
+            return raceA;
         }
     }
 
@@ -287,15 +285,15 @@ public class GroundWar {
 
         //Announce winner
         Race winner = getWinner();
-        if (winner == null) {
-            return;
-        }
+
         EllirionCore.getINSTANCE().getServer().broadcastMessage(winner.getName() + " has won the ground war!");
 
-        if (teams[0].getLives() < teams[1].getLives()) {
+        if (teams[0].getParticipants().isEmpty()) {
             results.setWinner(teams[1].copy());
-        } else if (teams[1].getLives() < teams[0].getLives()) {
             results.setLoser(teams[0].copy());
+        } else if (teams[1].getParticipants().isEmpty()) {
+            results.setWinner(teams[0].copy());
+            results.setLoser(teams[1].copy());
         }
 
         //Give plots to winner
@@ -317,10 +315,10 @@ public class GroundWar {
 
         //TODO Save GroundWar to database
 
-        String warResult = results.toString();
+        //String warResult = results.toString();
         //Broadcast a report of the results.
-        EllirionCore.getINSTANCE().getServer().broadcastMessage(warResult);
-
+        EllirionCore.getINSTANCE().getServer().broadcastMessage(results.toString());
+        
         //Remove ground war
         GroundWarManager.removeGroundWar(createdBy);
     }

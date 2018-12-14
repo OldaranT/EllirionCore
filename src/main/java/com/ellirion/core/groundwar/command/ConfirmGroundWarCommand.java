@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar.command;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,10 +20,20 @@ public class ConfirmGroundWarCommand implements CommandExecutor {
         }
         Player player = (Player) commandSender;
         UUID playerId = player.getUniqueId();
-        GroundWar war = GroundWarManager.getGroundWar(playerId);
+        GroundWar groundWar = GroundWarManager.getGroundWar(playerId);
 
-        if (war.getPlotA() != null && war.getPlotB() != null) {
-            GroundWarManager.confirmGroundWar(war);
+        if (groundWar == null) {
+            player.sendMessage(ChatColor.DARK_RED + "You are not in a ground war, therefore you cannot cancel it.");
+            return true;
+        }
+
+        if (!(groundWar.getState() == GroundWar.State.SETUP)) {
+            player.sendMessage(ChatColor.DARK_RED + "You can only cancel when you are in the SETUP state.");
+            return true;
+        }
+
+        if (groundWar.getPlotA() != null && groundWar.getPlotB() != null) {
+            GroundWarManager.confirmGroundWar(groundWar);
         }
 
         return false;

@@ -69,7 +69,7 @@ public class WarTeam {
      * Remove a life from the total.
      */
     public void removeLife() {
-        if (lives >= 0) {
+        if (lives > 0) {
             lives--;
         }
     }
@@ -87,10 +87,10 @@ public class WarTeam {
      */
     public WarTeam copy() {
         WarTeam other = new WarTeam();
-        for (UUID id : players) {
-            other.players.add(id);
-        }
 
+        other.players.addAll(players);
+        other.participants.addAll(participants);
+        other.captain = captain;
         other.lives = lives;
 
         return other;

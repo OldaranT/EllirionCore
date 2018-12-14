@@ -4,6 +4,8 @@ import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
+import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 import com.ellirion.util.EllirionUtil;
@@ -52,6 +54,9 @@ public class GroundWarManager {
      * @return whether the plot can be added to the ground war
      */
     public static boolean canAddPlot(UUID player, Plot plot) {
+        if (plot.getOwner() instanceof Wilderness || plot.getOwner() instanceof TradingCenter) {
+            return false;
+        }
         //It can be added if
         //a) your race owns the plot, or
         //b) the plot neighbours your plot
@@ -143,7 +148,7 @@ public class GroundWarManager {
         Promise countdownPromise = new Promise<Boolean>(f -> {
             Set<UUID> players = war.getRaceA().getPlayers();
             players.addAll(war.getRaceB().getPlayers());
-            int totalWaitTime = 60000;
+            int totalWaitTime = 20000;
 
             try {
                 for (int i = 0; i < 10; i++) {
