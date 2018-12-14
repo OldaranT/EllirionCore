@@ -1,6 +1,7 @@
 package com.ellirion.core.groundwar.model;
 
 import lombok.Setter;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.playerdata.PlayerManager;
@@ -37,24 +38,26 @@ public class GroundWarResults {
 
     @Override
     public String toString() {
-        String newLine = "\n";
+        String newLine = ChatColor.RESET + "\n";
         String spacer = "   ";
         StringBuilder stringBuilder = new StringBuilder(175);
         Player creator = EllirionCore.getINSTANCE().getServer().getPlayer(createdBy);
-        Race warWinner = PlayerManager.getPlayerRace(winner.getPlayers().get(0));
-        Race warLoser = PlayerManager.getPlayerRace(loser.getPlayers().get(0));
+        Race warWinner = PlayerManager.getPlayerRace(winner.getCaptain());
+        Race warLoser = PlayerManager.getPlayerRace(loser.getCaptain());
         stringBuilder.append(newLine)
                 .append("===============GROUND-WAR REPORT===============").append(newLine)
                 .append("Start Date: ").append(started).append(newLine)
                 .append("Ended date: ").append(ended).append(newLine)
-                .append("CreatedBy: ").append(creator).append(newLine)
-                .append("Winneer: ").append(warWinner.getName()).append(newLine)
-                .append("Loser: ").append(warLoser.getName()).append(newLine)
+                .append("CreatedBy: ").append(creator.getDisplayName()).append(newLine)
+                .append("Winner: ").append(warWinner.getTeamColor()).append(warWinner.getName()).append(newLine)
+                .append("Loser: ").append(warLoser.getTeamColor()).append(warLoser.getName()).append(newLine)
                 .append("Teams:").append(newLine);
         for (WarTeam warTeam : initialTeams) {
-            stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);
+            stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor())
+                    .append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);
             for (Participant participant : warTeam.getParticipants()) {
                 stringBuilder.append(spacer).append("- ").append(
+                        PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
                         EllirionCore.getINSTANCE().getServer().getPlayer(participant.getPlayer()).getDisplayName())
                         .append(newLine);
             }
