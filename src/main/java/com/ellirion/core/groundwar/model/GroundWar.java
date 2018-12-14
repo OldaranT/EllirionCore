@@ -7,14 +7,17 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.util.EllirionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class GroundWar {
 
@@ -141,29 +144,29 @@ public class GroundWar {
      * Teleports the players.
      */
     public void start() {
-        EllirionCore plugin = EllirionCore.getINSTANCE();
-        World world = plugin.getServer().getWorld(plots[0].getPlotCoord().getWorldName());
-        List<UUID> participantsA = teams[0].getPlayers();
-        List<UUID> participantsB = teams[1].getPlayers();
-
-        EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
-                "EllirionUtil");
+//        EllirionCore plugin = EllirionCore.getINSTANCE();
+//        World world = plugin.getServer().getWorld(plots[0].getPlotCoord().getWorldName());
+//        List<UUID> participantsA = teams[0].getPlayers();
+//        List<UUID> participantsB = teams[1].getPlayers();
+//        EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
+//                "EllirionUtil");
 
         //Teleport players
-        for (UUID playerID : participantsA) {
-            Player player = plugin.getServer().getPlayer(playerID);
-            Location loc = plots[0].getCenterLocation(world, player.getLocation().getYaw(),
-                                                      player.getLocation().getPitch());
-            ellirionUtil.loadChunk(loc);
-            player.teleport(loc);
-        }
-        for (UUID playerID : participantsB) {
-            Player player = plugin.getServer().getPlayer(playerID);
-            Location loc = plots[1].getCenterLocation(world, player.getLocation().getYaw(),
-                                                      player.getLocation().getPitch());
-            ellirionUtil.loadChunk(loc);
-            player.teleport(loc);
-        }
+//        for (UUID playerID : participantsA) {
+//            Player player = plugin.getServer().getPlayer(playerID);
+//            Location loc = plots[0].getCenterLocation(world, player.getLocation().getYaw(),
+//                                                      player.getLocation().getPitch());
+//            ellirionUtil.loadChunk(loc);
+//            player.teleport(loc);
+//        }
+//        for (UUID playerID : participantsB) {
+//            Player player = plugin.getServer().getPlayer(playerID);
+//            Location loc = plots[1].getCenterLocation(world, player.getLocation().getYaw(),
+//                                                      player.getLocation().getPitch());
+//            ellirionUtil.loadChunk(loc);
+//            player.teleport(loc);
+//        }
+        teleportPlayersToGroundWar();
 
         //Calculate team lives
         //less players = more lives so that 0.5 * the players = 1.5 * the lives
@@ -180,6 +183,71 @@ public class GroundWar {
         results.setInitialTeams(copyTeams());
 
         state = State.IN_PROGRESS;
+    }
+
+    private void teleportPlayersToGroundWar() {
+        List<UUID> participantsA = teams[0].getPlayers();
+        List<UUID> participantsB = teams[1].getPlayers();
+
+        EllirionCore plugin = EllirionCore.getINSTANCE();
+        World world = plugin.getServer().getWorld(getPlotA().getPlotCoord().getWorldName());
+        Random random = new Random();
+
+        int plotSize = GameManager.getInstance().getPlotSize();
+
+        for (UUID playerID : participantsA) {
+            Location teleportLocation = getTeleportLocation(world, plotSize, random, getPlotA(), getPlotB(), playerID);
+            Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
+            player.teleport(teleportLocation);
+        }
+        for (UUID playerID : participantsB) {
+            Location teleportLocation = getTeleportLocation(world, plotSize, random, getPlotB(), getPlotA(), playerID);
+            Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
+            player.teleport(teleportLocation);
+        }
+    }
+
+    /**
+     * Get a player's teleport location in the ground war.
+     * @param world the world the ground war is held in
+     * @param plotSize the size of the plots
+     * @param random a random instance
+     * @param plotA the player's own plot
+     * @param plotB the opponent's plot
+     * @param playerID the playerID
+     * @return A random location within an area of the player's own plot
+     */
+    public Location getTeleportLocation(World world, int plotSize, Random random, Plot plotA, Plot plotB, UUID playerID) {
+        PlotCoord direction = plotA.getPlotCoord().subtract(plotB.getPlotCoord());
+        Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
+
+        Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+        int outerBoundX = (int) centerLocation.getX() + (direction.getX() * plotSize / 2);
+        int outerBoundZ = (int) centerLocation.getZ() + (direction.getZ() * plotSize / 2);
+        int innerBoundX = (int) centerLocation.getX() + (direction.getX() * plotSize / 4);
+        int innerBoundZ = (int) centerLocation.getZ() + (direction.getZ() * plotSize / 4);
+
+        if (innerBoundX == outerBoundX) {
+            innerBoundX -= plotSize / 2;
+            outerBoundX += plotSize / 2;
+        }
+        if (innerBoundZ == outerBoundZ) {
+            innerBoundZ -= plotSize / 2;
+            outerBoundZ += plotSize / 2;
+        }
+
+        //Pick a random x between outer and innerbound and pick a random z between outer and innerbound
+        int maxX = Math.max(innerBoundX, outerBoundX);
+        int minX = Math.min(innerBoundX, outerBoundX);
+        int maxZ = Math.max(innerBoundZ, outerBoundZ);
+        int minZ = Math.min(innerBoundZ, outerBoundZ);
+
+        Logger.getGlobal().info("Teleportation bounds: \nX: " + minX + "-" + maxX + "\nZ: " + minZ + "-" + maxZ);
+
+        int x = random.nextInt(maxX - minX) + minX;
+        int z = random.nextInt(maxZ - minZ) + minZ;
+
+        return world.getHighestBlockAt(x, z).getLocation();
     }
 
     private WarTeam[] copyTeams() {

@@ -9,6 +9,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.groundwar.model.Participant;
@@ -18,6 +19,7 @@ import com.ellirion.core.plotsystem.model.Plot;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -82,14 +84,19 @@ public class PlayerDeathListener implements Listener {
         }
 
         //make it so the player respawns in the desired plot
+        int plotSize = GameManager.getInstance().getPlotSize();
         if (PlayerManager.getPlayerRace(playerID).equals(groundWar.getRaceA())) {
             Plot plot = groundWar.getPlotA();
             World w = EllirionCore.getINSTANCE().getServer().getWorld(plot.getPlotCoord().getWorldName());
-            e.setRespawnLocation(plot.getCenterLocation(w, player.getLocation().getYaw(), player.getLocation().getPitch()));
+            Location respawnLoc = groundWar.getTeleportLocation(w, plotSize, new Random(), groundWar.getPlotA(), groundWar.getPlotB(), playerID);
+
+            e.setRespawnLocation(respawnLoc);
         } else {
             Plot plot = groundWar.getPlotB();
             World w = EllirionCore.getINSTANCE().getServer().getWorld(plot.getPlotCoord().getWorldName());
-            e.setRespawnLocation(plot.getCenterLocation(w, player.getLocation().getYaw(), player.getLocation().getPitch()));
+            Location respawnLoc = groundWar.getTeleportLocation(w, plotSize, new Random(), groundWar.getPlotB(), groundWar.getPlotA(), playerID);
+
+            e.setRespawnLocation(respawnLoc);
         }
     }
 }
