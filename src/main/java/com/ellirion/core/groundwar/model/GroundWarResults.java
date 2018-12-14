@@ -48,7 +48,7 @@ public class GroundWarResults {
         stringBuilder.append(newLine)
                 .append(ChatColor.GREEN)
                 .append("============== ")
-                .append(StringHelper.highlight("GROUND - WAR REPORT", ChatColor.GREEN))
+                .append(StringHelper.highlight("GROUNDWAR REPORT", ChatColor.GREEN))
                 .append(" ==============").append(newLine)
                 .append("Start Date: ").append(started).append(newLine)
                 .append("Ended date: ").append(ended).append(newLine)
@@ -70,7 +70,7 @@ public class GroundWarResults {
                 .append(ChatColor.GREEN)
                 .append("================= ")
                 .append(StringHelper.highlight("END REPORT", ChatColor.GREEN))
-                .append(" ==================").append(newLine);
+                .append(" =================").append(newLine);
         return stringBuilder.toString();
     }
 }
