@@ -73,7 +73,13 @@ public abstract class PlotOwner {
      * This method is used to update the database when something changes.
      * @return return true if you are allowed to update the database.
      */
-    protected boolean updateDatabase() {
+    protected abstract boolean updateDatabase();
+
+    /**
+     * This method checks if it is allowed to update in the database at the current moment.
+     * @return return true if allowed to update.
+     */
+    protected boolean canUpdateInDatabase() {
         GameManager.GameState state = GameManager.getInstance().getState();
         return state == GameManager.GameState.IN_PROGRESS || state == GameManager.GameState.SAVING;
     }

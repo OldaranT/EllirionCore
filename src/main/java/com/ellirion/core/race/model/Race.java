@@ -86,7 +86,7 @@ public class Race extends PlotOwner {
 
     @Override
     protected boolean updateDatabase() {
-        if (super.updateDatabase()) {
+        if (canUpdateInDatabase()) {
             return PlotOwner.DATABASE_MANAGER.updateRace(this);
         }
         return true; // return true because there was no error. The game just hasn't been started yet.

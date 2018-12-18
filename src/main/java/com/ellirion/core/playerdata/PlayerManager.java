@@ -61,7 +61,8 @@ public class PlayerManager {
      * @return Return the result of the operation.
      */
     public static boolean updatePlayer(UUID playerID) {
-        if (GameManager.getInstance().getState() == GameManager.GameState.IN_PROGRESS) {
+        GameManager.GameState state = GameManager.getInstance().getState();
+        if (state == GameManager.GameState.IN_PROGRESS || state == GameManager.GameState.SAVING) {
             PlayerData data = PLAYERS.get(playerID);
             Player player = getPlayerByUUIDFromServer(playerID);
             return DATABASE_MANAGER.updatePlayer(data, player);

@@ -20,12 +20,9 @@ public class TradingCenter extends PlotOwner {
         return "TradingCenter";
     }
 
-    /**
-     * This method is used to update the database when something changes.
-     */
     @Override
     protected boolean updateDatabase() {
-        if (super.updateDatabase()) {
+        if (canUpdateInDatabase()) {
             return PlotOwner.DATABASE_MANAGER.updateTradingCenter(this);
         }
         return true; // return true because there was no error. The game just hasn't been started.
