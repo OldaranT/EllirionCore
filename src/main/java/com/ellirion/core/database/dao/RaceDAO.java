@@ -2,6 +2,8 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
+import xyz.morphia.query.UpdateOperations;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
 
@@ -76,8 +78,14 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         if (model == null) {
             return createRace(race, gameID);
         }
+        Query query = createQuery().filter(id, race.getRaceUUID());
         model.update(race);
-        return saveRace(model);
+        UpdateOperations ops = createUpdateOperations().set("raceName", race.getName())
+                .set("players", race.getPlayers())
+                .set("color", race.getTeamColor())
+                .set("homePlotCoord", race.getHomePlot().getPlotCoord())
+                .set("ownedPlots", race.getPlotCoords());
+        return tryCatch(() -> updateFirst(query, ops));
     }
 
     /**

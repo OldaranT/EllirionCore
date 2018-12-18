@@ -4,6 +4,7 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
@@ -60,9 +61,12 @@ public class PlayerManager {
      * @return Return the result of the operation.
      */
     public static boolean updatePlayer(UUID playerID) {
-        PlayerData data = PLAYERS.get(playerID);
-        Player player = getPlayerByUUIDFromServer(playerID);
-        return DATABASE_MANAGER.updatePlayer(data, player);
+        if (GameManager.getInstance().getState() == GameManager.GameState.IN_PROGRESS) {
+            PlayerData data = PLAYERS.get(playerID);
+            Player player = getPlayerByUUIDFromServer(playerID);
+            return DATABASE_MANAGER.updatePlayer(data, player);
+        }
+        return true;
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
@@ -164,5 +168,9 @@ public class PlayerManager {
     public static void setPlayerOffline(UUID playerID) {
         updatePlayer(playerID);
         PLAYERS.remove(playerID);
+    }
+
+    public static HashMap<UUID, PlayerData> getPlayers() {
+        return (HashMap<UUID, PlayerData>) PLAYERS.clone();
     }
 }

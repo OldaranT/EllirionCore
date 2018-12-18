@@ -3,18 +3,24 @@ package com.ellirion.core.database.dao;
 import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
+import xyz.morphia.query.UpdateOperations;
 import com.ellirion.core.database.model.PlayerDBModel;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
-import com.ellirion.core.util.GenericTryCatch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.util.GenericTryCatch.*;
+
 public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
 
     private String id = "_id";
     private String raceIDColumn = "raceID";
+    private String keyPlayerIDField = ".playerID";
+    private String keyGameIDField = ".gameID";
 
     /**
      * Create a new PlayerDAO.
@@ -26,7 +32,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
     }
 
     private boolean savePlayer(PlayerDBModel player) {
-        return GenericTryCatch.tryCatch(() -> save(player));
+        return tryCatch(() -> save(player));
     }
 
     /**
@@ -46,7 +52,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @return Return the found player.
      */
     public PlayerDBModel getPlayer(UUID playerID) {
-        return findOne(id, playerID);
+        return findOne(id + keyPlayerIDField, playerID);
     }
 
     public List<PlayerDBModel> getPlayers() {
@@ -60,10 +66,21 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      */
     public List<PlayerDBModel> getPlayers(UUID raceID) {
         List<PlayerDBModel> result = new ArrayList<>();
-        if (!GenericTryCatch.tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()))) {
+        if (!tryCatch(() -> result.addAll(createQuery().filter(raceIDColumn, raceID).asList()))) {
             return new ArrayList<>();
         }
         return result;
+    }
+
+    /**
+     * This method get's the player data for a specific game.
+     * @param playerID The ID of the player.
+     * @param gameID The ID of the game.
+     * @return return the found data.
+     */
+    public PlayerDBModel getPlayerFromGame(UUID playerID, UUID gameID) {
+        Query query = createQuery().filter(id + keyPlayerIDField, playerID).filter(id + keyGameIDField, gameID);
+        return findOne(query);
     }
 
     /**
@@ -73,11 +90,18 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
      * @return Return true if the save was successful.
      */
     public boolean updatePlayer(PlayerData data, Player player) {
-        PlayerDBModel playerDBModel = findOne(id, player.getUniqueId());
+        UUID gameID = GameManager.getInstance().getGameID();
+        Query query = createQuery().filter(id + keyPlayerIDField, player.getUniqueId())
+                .filter(id + keyGameIDField, gameID);
+        PlayerDBModel playerDBModel = findOne(query);
         if (playerDBModel == null) {
             return createPlayer(data, player);
         }
-        playerDBModel.update(data, player);
-        return savePlayer(playerDBModel);
+        if (data.getRace() == null) {
+            return true; // return true because not having a race doesn't need to be stored.
+        } else {
+            UpdateOperations ops = createUpdateOperations().set(raceIDColumn, data.getRace().getRaceUUID());
+            return tryCatch(() -> updateFirst(query, ops));
+        }
     }
 }
