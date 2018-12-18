@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar;
 
+import org.bukkit.ChatColor;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
@@ -95,7 +96,7 @@ public class GroundWarManager {
             return GROUND_WARS.get(playerId);
         } else {
             for (GroundWar war : GROUND_WARS.values()) {
-                if (war.containsParticipant(playerId)) {
+                if (war.containsParticipant(playerId) || war.containsPlayer(playerId)) {
                     return war;
                 }
             }
@@ -152,10 +153,10 @@ public class GroundWarManager {
 
                 //Before the ground war starts, check if there are enough players
                 if (war.checkForReady()) {
-                    war.broadcastMessage("The ground war is now starting");
+                    war.broadcastMessage(ChatColor.GREEN + "The ground war is now starting");
                     war.start();
                 } else {
-                    war.broadcastMessage("The war could not be started because there were not enough players");
+                    war.broadcastMessage(ChatColor.DARK_RED + "The war could not be started because there were not enough players");
                     removeGroundWar(war.getCreatedBy());
                 }
             });

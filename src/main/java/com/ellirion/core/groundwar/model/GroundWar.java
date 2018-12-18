@@ -144,6 +144,15 @@ public class GroundWar {
     }
 
     /**
+     * Check whether a player is in this team (for players that have quit the server and are rejoining).
+     * @param playerID the player to check
+     * @return whether the player is in this Team
+     */
+    public boolean containsPlayer(UUID playerID) {
+        return (teams[0].getPlayers().contains(playerID) || teams[1].getPlayers().contains(playerID));
+    }
+
+    /**
      * Start the ground war.
      * Teleports the players.
      */

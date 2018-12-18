@@ -31,7 +31,9 @@ public class WarTeam {
      * @param player the player to add
      */
     public void addPlayer(UUID player) {
-        players.add(player);
+        if (!players.contains(player)) {
+            players.add(player);
+        }
         Location loc = EllirionCore.getINSTANCE().getServer().getPlayer(player).getLocation();
         participants.add(new Participant(player, loc));
     }
