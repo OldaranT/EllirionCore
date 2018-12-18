@@ -61,4 +61,13 @@ public class PlotCoord {
     public String toString() {
         return Integer.toString(x) + " , " + Integer.toString(z);
     }
+
+    /**
+     * Subtract two plotcoords from each other (used for getting the direction from one plot to another).
+     * @param other the other plot
+     * @return the difference between this plotcoord and the other plot coord
+     */
+    public PlotCoord subtract(PlotCoord other) {
+        return new PlotCoord(x - other.x, z - other.z, worldName);
+    }
 }

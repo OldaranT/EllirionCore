@@ -93,6 +93,47 @@ commands:
       description: Cancel the gamemode setup.
       usage: /cancelsetup during the gamemode setup phase
       aliases: [game-cancel]
-      permission: ellirion.core.game.createrace
+      permission: ellirion.core.game.cancelsetup
+  CreateGroundWar:
+      description: create a ground war
+      usage: /creategroundwar
+      aliases: [war-create]
+      permission: ellirion.core.war.creategroundwar
+      permission-message: §4You do not have permission for this command!§r
+  WagerPlot:
+      description: wager a plot in your ground war
+      usage: /wagerplot [<plot-x> <plot-z>]
+      aliases: [war-wagerplot]
+      permission: ellirion.core.war.wagerplot
+      permission-message: §4You do not have permission for this command!§r
+  GetGroundwar:
+      description: Get the details of a grouns war
+      usage: /getgroundwar
+      aliases: [war-get]
+      permission: ellirion.core.war.getgroundwar
+      permission-message: §4You do not have permission for this command!§r
+  ConfirmGroundWar:
+      description: confirm ground war
+      usage: /confirmgroundwar
+      aliases: [war-confirm]
+      permission: ellirion.core.war.confirmgroundwar
+      permission-message: §4You do not have permission for this command!§r
+  JoinGroundWar:
+      description: join a groundwar
+      usage: /joingroundwar
+      aliases: [war-join]
+      permission: ellirion.core.war.joingroundwar
+      permission-message: §4You do not have permission for this command!§r
+  LeaveGroundWar:
+      description: Leave the ground war you're in.
+      usage: /leavegroundwar
+      aliases: [war-leave]
+      permission: ellirion.core.war.leavegroundwar
+      permission-message: §4You do not have permission for this command!§r
+  CancelGroundWar:
+      description: Cancel the ground war you created.
+      usage: /cancelgroundwar
+      aliases: [war-cancel]
+      permission: ellirion.core.war.cancelgroundwar
       permission-message: §4You do not have permission for this command!§r
 depend: [EllirionUtil]
