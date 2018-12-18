@@ -148,28 +148,6 @@ public class GroundWar {
      * Teleports the players.
      */
     public void start() {
-//        EllirionCore plugin = EllirionCore.getINSTANCE();
-//        World world = plugin.getServer().getWorld(plots[0].getPlotCoord().getWorldName());
-//        List<UUID> participantsA = teams[0].getPlayers();
-//        List<UUID> participantsB = teams[1].getPlayers();
-//        EllirionUtil ellirionUtil = (EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
-//                "EllirionUtil");
-
-        //Teleport players
-//        for (UUID playerID : participantsA) {
-//            Player player = plugin.getServer().getPlayer(playerID);
-//            Location loc = plots[0].getCenterLocation(world, player.getLocation().getYaw(),
-//                                                      player.getLocation().getPitch());
-//            ellirionUtil.loadChunk(loc);
-//            player.teleport(loc);
-//        }
-//        for (UUID playerID : participantsB) {
-//            Player player = plugin.getServer().getPlayer(playerID);
-//            Location loc = plots[1].getCenterLocation(world, player.getLocation().getYaw(),
-//                                                      player.getLocation().getPitch());
-//            ellirionUtil.loadChunk(loc);
-//            player.teleport(loc);
-//        }
         teleportPlayersToGroundWar();
 
         //Calculate team lives

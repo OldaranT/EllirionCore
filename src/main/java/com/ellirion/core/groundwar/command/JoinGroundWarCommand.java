@@ -41,7 +41,8 @@ public class JoinGroundWarCommand implements CommandExecutor {
             return true;
         }
 
-        if (GroundWarManager.getGroundWar(playerID) != null) {
+        GroundWar playerGroundWar = GroundWarManager.getGroundWar(playerID);
+        if (playerGroundWar != null && playerGroundWar.containsParticipant(playerID)) {
             player.sendMessage(ChatColor.DARK_RED + "You are already in a ground war!");
             return true;
         }

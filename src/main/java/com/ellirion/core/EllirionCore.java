@@ -23,6 +23,7 @@ import com.ellirion.core.groundwar.command.WagerPlotCommand;
 import com.ellirion.core.groundwar.listeners.MoveIntoGroundWarListener;
 import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
 import com.ellirion.core.groundwar.listeners.PlayerDeathListener;
+import com.ellirion.core.groundwar.listeners.PlayerTeleportDuringGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
 import com.ellirion.core.groundwar.command.CancelGroundWarCommand;
@@ -123,6 +124,7 @@ public class EllirionCore extends JavaPlugin {
         pluginManager.registerEvents(new MoveOffGroundWarListener(), this);
         pluginManager.registerEvents(new MoveIntoGroundWarListener(), this);
         pluginManager.registerEvents(new PlayerDeathListener(), this);
+        pluginManager.registerEvents(new PlayerTeleportDuringGroundWarListener(), this);
     }
 
     public DatabaseManager getDbManager() {
