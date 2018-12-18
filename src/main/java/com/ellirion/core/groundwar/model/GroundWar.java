@@ -417,6 +417,29 @@ public class GroundWar {
         return null;
     }
 
+    /**
+     * Check whether the ground war is ready to start.
+     * @return whether the ground war is ready to start
+     */
+    public boolean checkForReady() {
+        int playersPerTeam = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.MinPlayersPerTeam");
+        return (teams[0].getParticipants().size() >= playersPerTeam && teams[1].getParticipants().size() >= playersPerTeam);
+    }
+
+    /**
+     * Broadcast a message to all players in the ground war.
+     * @param message the message to broadcast to all players
+     */
+    public void broadcastMessage(String message) {
+        List<UUID> players = new ArrayList<>();
+        players.addAll(teams[1].getPlayers());
+        players.addAll(teams[0].getPlayers());
+
+        for (UUID player : players) {
+            EllirionCore.getINSTANCE().getServer().getPlayer(player).sendMessage(message);
+        }
+    }
+
     public enum State {
         SETUP,
         CONFIRMED,

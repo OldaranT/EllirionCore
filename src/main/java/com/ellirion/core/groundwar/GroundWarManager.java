@@ -124,12 +124,12 @@ public class GroundWarManager {
     public static void confirmGroundWar(GroundWar war) {
         war.setState(GroundWar.State.CONFIRMED);
         Promise countdownPromise = new Promise<Boolean>(f -> {
-            Set<UUID> players = war.getRaceA().getPlayers();
-            players.addAll(war.getRaceB().getPlayers());
-            int totalWaitTime = 20000;
+            int totalWaitTime = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.WaitTime") * 1000;
 
             try {
                 for (int i = 0; i < 10; i++) {
+                    Set<UUID> players = war.getRaceA().getPlayers();
+                    players.addAll(war.getRaceB().getPlayers());
                     for (UUID id : players) {
                         EllirionCore.getINSTANCE().getServer().getPlayer(id).sendMessage(
                                 "Ground war between races " + war.getRaceA().getName() + " and " +
@@ -141,9 +141,7 @@ public class GroundWarManager {
             } catch (Exception exception) {
                 Logging.printStackTrace(exception);
             }
-            for (UUID id : players) {
-                EllirionCore.getINSTANCE().getServer().getPlayer(id).sendMessage("The ground war is now starting");
-            }
+
             f.resolve(true);
         }, true);
 
@@ -151,7 +149,15 @@ public class GroundWarManager {
                 "EllirionUtil")).schedulePromise(countdownPromise).then(f -> {
             EllirionCore.getINSTANCE().getServer().getScheduler().runTask(EllirionCore.getINSTANCE(), () -> {
                 Logger.getGlobal().info("Staring GroundWar");
-                war.start();
+
+                //Before the ground war starts, check if there are enough players
+                if (war.checkForReady()) {
+                    war.broadcastMessage("The ground war is now starting");
+                    war.start();
+                } else {
+                    war.broadcastMessage("The war could not be started because there were not enough players");
+                    removeGroundWar(war.getCreatedBy());
+                }
             });
         });
     }

@@ -52,6 +52,7 @@ public class EllirionCore extends JavaPlugin {
     private static EllirionCore INSTANCE;
     private DatabaseManager dbManager;
     @Getter private FileConfiguration dbConnectionConfig;
+    @Getter private FileConfiguration config;
 
     /**
      * Constructor to set instance.
@@ -78,6 +79,7 @@ public class EllirionCore extends JavaPlugin {
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
+        createConfig();
         dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
         getLogger().info("EllirionCore is enabled.");
@@ -158,6 +160,21 @@ public class EllirionCore extends JavaPlugin {
             dbConnectionConfig.save(dbConnectionConfigFile);
         } catch (IOException e) {
             getLogger().throwing(EllirionCore.class.toString(), "createDBconnectionConfig", e);
+        }
+    }
+
+    private void createConfig() {
+        File configFile = new File(getDataFolder(), "config.yml");
+        config = YamlConfiguration.loadConfiguration(configFile);
+
+        config.addDefault("GroundWar.MinPlayersPerTeam", 2);
+        config.addDefault("GroundWar.WaitTime", 20);
+
+        config.options().copyDefaults(true);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            getLogger().throwing(EllirionCore.class.toString(), "createConfig", e);
         }
     }
 
