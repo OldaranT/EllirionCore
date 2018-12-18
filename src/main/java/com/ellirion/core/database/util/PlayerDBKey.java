@@ -27,9 +27,4 @@ public class PlayerDBKey {
         this.gameID = gameID;
         this.playerID = playerID;
     }
-    //
-    //    @Override
-    //    public String toString() {
-    //        return gameID.toString() + " , " + playerID.toString();
-    //    }
 }
