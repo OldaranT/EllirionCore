@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import xyz.morphia.query.Query;
-import xyz.morphia.query.UpdateOperations;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
@@ -97,11 +96,7 @@ public class PlayerDAO extends BasicDAO<PlayerDBModel, Datastore> {
         if (playerDBModel == null) {
             return createPlayer(data, player);
         }
-        if (data.getRace() == null) {
-            return true; // return true because not having a race doesn't need to be stored.
-        } else {
-            UpdateOperations ops = createUpdateOperations().set(raceIDColumn, data.getRace().getRaceUUID());
-            return tryCatch(() -> updateFirst(query, ops));
-        }
+        playerDBModel.update(data, player);
+        return savePlayer(playerDBModel);
     }
 }

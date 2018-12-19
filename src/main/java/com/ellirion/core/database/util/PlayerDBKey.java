@@ -3,6 +3,7 @@ package com.ellirion.core.database.util;
 import lombok.Getter;
 import xyz.morphia.annotations.Embedded;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Embedded
@@ -26,5 +27,25 @@ public class PlayerDBKey {
     public PlayerDBKey(final UUID gameID, final UUID playerID) {
         this.gameID = gameID;
         this.playerID = playerID;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(gameID, playerID);
+    }
+
+    // generated code to prevent: Object1 != Object2 errors.
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PlayerDBKey that = (PlayerDBKey) o;
+        return Objects.equals(gameID, that.gameID) &&
+               Objects.equals(playerID, that.playerID);
     }
 }

@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar;
 
+import org.bukkit.ChatColor;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.gamemanager.GameManager;
