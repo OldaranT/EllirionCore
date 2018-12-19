@@ -9,17 +9,20 @@ import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
 import com.ellirion.core.database.dao.GameDAO;
+import com.ellirion.core.database.dao.GroundWarDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
 import com.ellirion.core.database.dao.PlotCoordDAO;
 import com.ellirion.core.database.dao.RaceDAO;
 import com.ellirion.core.database.dao.TradingCenterDAO;
 import com.ellirion.core.database.model.GameDBModel;
+import com.ellirion.core.database.model.GroundwarDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
 import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.gamemanager.model.Game;
+import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
@@ -63,6 +66,7 @@ public class DatabaseManager {
     private RaceDAO raceDAO;
     private PlotCoordDAO plotCoordDAO;
     private TradingCenterDAO tradingCenterDAO;
+    private GroundWarDAO groundWarDAO;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -132,6 +136,7 @@ public class DatabaseManager {
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
         plotCoordDAO = new PlotCoordDAO(PlotCoordDBModel.class, datastore);
         tradingCenterDAO = new TradingCenterDAO(TradingCenterDBModel.class, datastore);
+        groundWarDAO = new GroundWarDAO(GroundwarDBModel.class, datastore);
     }
 
     /**
@@ -363,5 +368,18 @@ public class DatabaseManager {
         return tradingCenterDAO.updateTradingCenter(tradingCenter);
     }
 
+    //endregion
+
+    //region ===== Ground War =====
+
+    /**
+     * This creates a groundwar in the database.
+     * @param groundWar The groundwar to save to the database.
+     * @param gameID The game ID.
+     * @return Return the result of the operation.
+     */
+    public boolean createGroundWar(GroundWar groundWar, UUID gameID) {
+        return groundWarDAO.createGroundWar(groundWar, gameID);
+    }
     //endregion
 }

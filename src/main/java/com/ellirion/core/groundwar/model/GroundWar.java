@@ -32,8 +32,8 @@ public class GroundWar {
     private Plot[] plots;
     @Getter private UUID createdBy;
     @Getter private State state;
-    private WarTeam[] teams;
-    private GroundWarResults results;
+    @Getter private WarTeam[] teams;
+    @Getter private GroundWarResults results;
 
     /**
      * Create raceA ground war.
@@ -220,11 +220,13 @@ public class GroundWar {
      * @param playerID the playerID
      * @return A random location within an area of the player's own plot
      */
-    public Location getTeleportLocation(World world, int plotSize, Random random, Plot plotA, Plot plotB, UUID playerID) {
+    public Location getTeleportLocation(World world, int plotSize, Random random, Plot plotA, Plot plotB,
+                                        UUID playerID) {
         PlotCoord direction = plotA.getPlotCoord().subtract(plotB.getPlotCoord());
         Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
 
-        Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+        Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(),
+                                                          player.getLocation().getPitch());
         int outerBoundX = (int) centerLocation.getX() + (direction.getX() * plotSize / 2);
         int outerBoundZ = (int) centerLocation.getZ() + (direction.getZ() * plotSize / 2);
         int innerBoundX = (int) centerLocation.getX() + (direction.getX() * plotSize / 4);
@@ -423,7 +425,8 @@ public class GroundWar {
      */
     public boolean checkForReady() {
         int playersPerTeam = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.MinPlayersPerTeam");
-        return (teams[0].getParticipants().size() >= playersPerTeam && teams[1].getParticipants().size() >= playersPerTeam);
+        return (teams[0].getParticipants().size() >= playersPerTeam &&
+                teams[1].getParticipants().size() >= playersPerTeam);
     }
 
     /**

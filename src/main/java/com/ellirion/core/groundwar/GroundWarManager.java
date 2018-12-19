@@ -1,6 +1,8 @@
 package com.ellirion.core.groundwar;
 
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -19,6 +21,7 @@ import java.util.logging.Logger;
 public class GroundWarManager {
 
     private static Map<UUID, GroundWar> GROUND_WARS = new HashMap();
+    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
      * Add a ground war to the manager.
@@ -123,6 +126,7 @@ public class GroundWarManager {
      */
     public static void confirmGroundWar(GroundWar war) {
         war.setState(GroundWar.State.CONFIRMED);
+        DATABASE_MANAGER.createGroundWar(war, GameManager.getInstance().getGameID());
         Promise countdownPromise = new Promise<Boolean>(f -> {
             int totalWaitTime = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.WaitTime") * 1000;
 
@@ -155,7 +159,8 @@ public class GroundWarManager {
                     war.broadcastMessage("The ground war is now starting");
                     war.start();
                 } else {
-                    war.broadcastMessage("The war could not be started because there were not enough players");
+                    war.broadcastMessage(
+                            ChatColor.DARK_RED + "The war could not be started because there were not enough players");
                     removeGroundWar(war.getCreatedBy());
                 }
             });
