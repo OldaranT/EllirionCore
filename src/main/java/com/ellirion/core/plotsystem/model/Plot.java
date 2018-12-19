@@ -76,7 +76,6 @@ public class Plot {
      * @return Location of the teleport location.
      */
     public Location getCenterLocation(World world, float yaw, float pitch) {
-
         double centerX = boundingBox.getX2() - ((boundingBox.getX2() - boundingBox.getX1()) / 2);
         double centerZ = boundingBox.getZ2() - ((boundingBox.getZ2() - boundingBox.getZ1()) / 2);
         double centerY = world.getHighestBlockYAt((int) centerX, (int) centerZ);

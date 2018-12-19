@@ -15,13 +15,24 @@ import com.ellirion.core.gamemanager.command.ConfirmGamemodeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.LoadGameModeCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
-import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
+import com.ellirion.core.groundwar.command.ConfirmGroundWarCommand;
+import com.ellirion.core.groundwar.command.CreateGroundwarCommand;
+import com.ellirion.core.groundwar.command.GetGroundWarCommand;
+import com.ellirion.core.groundwar.command.JoinGroundWarCommand;
+import com.ellirion.core.groundwar.command.WagerPlotCommand;
+import com.ellirion.core.groundwar.listeners.MoveIntoGroundWarListener;
+import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
+import com.ellirion.core.groundwar.listeners.PlayerDeathListener;
+import com.ellirion.core.groundwar.listeners.PlayerTeleportDuringGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
+import com.ellirion.core.groundwar.command.CancelGroundWarCommand;
+import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotMapCommand;
+import com.ellirion.core.groundwar.command.LeaveGroundWarCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
@@ -41,6 +52,7 @@ public class EllirionCore extends JavaPlugin {
     private static EllirionCore INSTANCE;
     private DatabaseManager dbManager;
     @Getter private FileConfiguration dbConnectionConfig;
+    @Getter private FileConfiguration config;
 
     /**
      * Constructor to set instance.
@@ -67,6 +79,7 @@ public class EllirionCore extends JavaPlugin {
         registerEvents();
         registerTabCompleters();
         createDBconnectionConfig();
+        createConfig();
         dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
         getLogger().info("EllirionCore is enabled.");
@@ -93,6 +106,15 @@ public class EllirionCore extends JavaPlugin {
         getCommand("AssignTradingCenter").setExecutor(new AssignTradingCenterCommand());
         getCommand("ConfirmGamemode").setExecutor(new ConfirmGamemodeCommand());
         getCommand("CancelSetup").setExecutor(new CancelSetupCommand());
+
+        //GroundWar
+        getCommand("CreateGroundWar").setExecutor(new CreateGroundwarCommand());
+        getCommand("WagerPlot").setExecutor(new WagerPlotCommand());
+        getCommand("GetGroundwar").setExecutor(new GetGroundWarCommand());
+        getCommand("ConfirmGroundWar").setExecutor(new ConfirmGroundWarCommand());
+        getCommand("JoinGroundWar").setExecutor(new JoinGroundWarCommand());
+        getCommand("LeaveGroundWar").setExecutor(new LeaveGroundWarCommand());
+        getCommand("CancelGroundWar").setExecutor(new CancelGroundWarCommand());
     }
 
     private void registerEvents() {
@@ -101,6 +123,10 @@ public class EllirionCore extends JavaPlugin {
         pluginManager.registerEvents(new OnPlayerQuit(), this);
         pluginManager.registerEvents(new PlotListener(), this);
         pluginManager.registerEvents(new OnFriendlyFire(), this);
+        pluginManager.registerEvents(new MoveOffGroundWarListener(), this);
+        pluginManager.registerEvents(new MoveIntoGroundWarListener(), this);
+        pluginManager.registerEvents(new PlayerDeathListener(), this);
+        pluginManager.registerEvents(new PlayerTeleportDuringGroundWarListener(), this);
     }
 
     public DatabaseManager getDbManager() {
@@ -134,6 +160,21 @@ public class EllirionCore extends JavaPlugin {
             dbConnectionConfig.save(dbConnectionConfigFile);
         } catch (IOException e) {
             getLogger().throwing(EllirionCore.class.toString(), "createDBconnectionConfig", e);
+        }
+    }
+
+    private void createConfig() {
+        File configFile = new File(getDataFolder(), "config.yml");
+        config = YamlConfiguration.loadConfiguration(configFile);
+
+        config.addDefault("GroundWar.MinPlayersPerTeam", 2);
+        config.addDefault("GroundWar.WaitTime", 20);
+
+        config.options().copyDefaults(true);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            getLogger().throwing(EllirionCore.class.toString(), "createConfig", e);
         }
     }
 
