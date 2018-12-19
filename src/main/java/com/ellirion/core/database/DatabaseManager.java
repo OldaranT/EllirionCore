@@ -286,6 +286,16 @@ public class DatabaseManager {
     }
 
     /**
+     * This gets the player data for a specific game.
+     * @param gameID The ID of the game.
+     * @param playerID The ID of the player.
+     * @return Return the found data.
+     */
+    public PlayerDBModel getPlayerFromGame(UUID gameID, UUID playerID) {
+        return playerDAO.getPlayerFromGame(playerID, gameID);
+    }
+
+    /**
      * This tells the playerDAO to update the given player with the given data.
      * @param data The data to be transferred to the DB.
      * @param player The player who owns the data.

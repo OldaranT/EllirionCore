@@ -3,12 +3,14 @@ package com.ellirion.core.database.dao;
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import xyz.morphia.query.Query;
+import xyz.morphia.query.UpdateOperations;
 import com.ellirion.core.database.model.TradingCenterDBModel;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
-import com.ellirion.core.util.GenericTryCatch;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> {
 
@@ -25,7 +27,7 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
     }
 
     private boolean saveTradingCenter(TradingCenterDBModel tradingCenterDBModel) {
-        return GenericTryCatch.tryCatch(() -> save(tradingCenterDBModel));
+        return tryCatch(() -> save(tradingCenterDBModel));
     }
 
     /**
@@ -63,8 +65,8 @@ public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> 
      * @return return the result of the operation.
      */
     public boolean updateTradingCenter(TradingCenter tradingCenter) {
-        TradingCenterDBModel dbTradingCenter = findOne(id, tradingCenter.getRaceUUID());
-        dbTradingCenter.update(tradingCenter);
-        return saveTradingCenter(dbTradingCenter);
+        Query query = createQuery().filter(id, tradingCenter.getRaceUUID());
+        UpdateOperations ops = createUpdateOperations().set("ownedPlots", tradingCenter.getPlotCoords());
+        return tryCatch(() -> updateFirst(query, ops));
     }
 }
