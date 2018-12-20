@@ -25,5 +25,7 @@ public class OnPlayerJoin implements Listener {
             event.setJoinMessage("Welcome " + player.getName() + "!");
             newPlayer(player, null);
         }
+
+        updateScoreboard(player);
     }
 }

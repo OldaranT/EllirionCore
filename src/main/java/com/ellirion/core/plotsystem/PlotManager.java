@@ -48,6 +48,10 @@ public class PlotManager {
 
         int plotSize = gameManager.getPlotSize();
 
+        if (plotSize == 0) {
+            return null;
+        }
+        
         int x = location.getBlockX() - (gameManager.getXOffset() * CHUNK_SIZE);
         int z = location.getBlockZ() - (gameManager.getZOffset() * CHUNK_SIZE);
 

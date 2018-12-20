@@ -5,13 +5,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.race.RaceManager;
 
 import java.util.List;
 
+import static com.ellirion.core.playerdata.PlayerManager.*;
 import static com.ellirion.core.util.StringHelper.*;
 
 public class JoinRaceCommand implements CommandExecutor {
@@ -36,7 +36,7 @@ public class JoinRaceCommand implements CommandExecutor {
 
             raceName = plot.getOwner().getName();
 
-            if (!PlayerManager.setPlayerRace(player.getUniqueId(), plot.getOwner().getRaceUUID())) {
+            if (!setPlayerRace(player.getUniqueId(), plot.getOwner().getRaceUUID())) {
                 player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
                                    highlight(raceName, ChatColor.RESET));
                 return true;
@@ -51,12 +51,16 @@ public class JoinRaceCommand implements CommandExecutor {
                 return true;
             }
 
-            if (!PlayerManager.setPlayerRace(player.getUniqueId(), RaceManager.getRaceUUID(raceName))) {
+            if (!setPlayerRace(player.getUniqueId(), RaceManager.getRaceUUID(raceName))) {
                 player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
                                    highlight(raceName, ChatColor.RESET));
                 return true;
             }
         }
+
+        //Update color of the player.
+        updateScoreboard(player);
+
         player.sendMessage(
                 ChatColor.GREEN + "You have joined the race " + highlight(raceName, ChatColor.GREEN) +
                 "!");
