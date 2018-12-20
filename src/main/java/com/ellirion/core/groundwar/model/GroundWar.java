@@ -394,6 +394,7 @@ public class GroundWar {
         }
 
         //TODO Save GroundWar to database
+        EllirionCore.getINSTANCE().getDbManager().createGroundWar(this, GameManager.getInstance().getGameID());
 
         //Remove glowing effect for Captain.
         removeGlowingToCaptains();

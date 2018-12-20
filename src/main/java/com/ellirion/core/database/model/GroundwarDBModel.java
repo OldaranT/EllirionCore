@@ -60,4 +60,13 @@ public class GroundwarDBModel {
         result = groundWar.getResults();
         state = groundWar.getState();
     }
+
+    /**
+     * This updates the groundwar in the database.
+     * @param groundWar The groundwar that contains the data to be used for the update.
+     */
+    public void update(GroundWar groundWar) {
+        result = groundWar.getResults();
+        state = groundWar.getState();
+    }
 }

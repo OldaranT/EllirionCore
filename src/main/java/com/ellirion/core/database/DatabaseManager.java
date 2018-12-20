@@ -381,5 +381,15 @@ public class DatabaseManager {
     public boolean createGroundWar(GroundWar groundWar, UUID gameID) {
         return groundWarDAO.createGroundWar(groundWar, gameID);
     }
+
+    /**
+     * This updates the groundwar in the database.
+     * @param groundWar The groundwar to update.
+     * @param gameID The gameID.
+     * @return return the result of the operation.
+     */
+    public boolean updateGroundWar(GroundWar groundWar, UUID gameID) {
+        return groundWarDAO.updateGroundWar(groundWar, gameID);
+    }
     //endregion
 }

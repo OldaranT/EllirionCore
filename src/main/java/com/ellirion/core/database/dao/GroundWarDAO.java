@@ -52,4 +52,17 @@ public class GroundWarDAO extends BasicDAO<GroundwarDBModel, Datastore> {
                 gameIDColumn, gameID);
         return findOne(query);
     }
+
+    /**
+     * This updates the groundwar in the database.
+     * @param groundWar The groundwar to update.
+     * @param gameID The gameID of the game.
+     * @return return the result of the operation.
+     */
+    public boolean updateGroundWar(GroundWar groundWar, UUID gameID) {
+        GroundwarDBModel groundwarDBModel = getGroundWar(groundWar.getResults().getStarted(), groundWar.getCreatedBy(),
+                                                         gameID);
+        groundwarDBModel.update(groundWar);
+        return saveGroundWar(groundwarDBModel);
+    }
 }
