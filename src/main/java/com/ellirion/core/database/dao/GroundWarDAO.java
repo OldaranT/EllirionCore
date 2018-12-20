@@ -2,14 +2,20 @@ package com.ellirion.core.database.dao;
 
 import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
+import xyz.morphia.query.Query;
 import com.ellirion.core.database.model.GroundwarDBModel;
 import com.ellirion.core.groundwar.model.GroundWar;
 
+import java.util.Date;
 import java.util.UUID;
 
 import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class GroundWarDAO extends BasicDAO<GroundwarDBModel, Datastore> {
+
+    private String startDateColumn = "key.started";
+    private String createdByColumn = "key.createdBy";
+    private String gameIDColumn = "key.gameID";
 
     /**
      * This is the DAO for the GroundWar database model.
@@ -32,5 +38,18 @@ public class GroundWarDAO extends BasicDAO<GroundwarDBModel, Datastore> {
      */
     public boolean createGroundWar(GroundWar groundWar, UUID gameID) {
         return saveGroundWar(new GroundwarDBModel(groundWar, gameID));
+    }
+
+    /**
+     * This gets a groundwar from the database.
+     * @param started The date and time the ground war started.
+     * @param createdBy The player that created groundwar.
+     * @param gameID The ID of the game.
+     * @return return the found groundwar.
+     */
+    public GroundwarDBModel getGroundWar(Date started, UUID createdBy, UUID gameID) {
+        Query query = createQuery().filter(startDateColumn, started).filter(createdByColumn, createdBy).filter(
+                gameIDColumn, gameID);
+        return findOne(query);
     }
 }
