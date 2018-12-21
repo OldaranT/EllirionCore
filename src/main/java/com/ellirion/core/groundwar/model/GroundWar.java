@@ -359,7 +359,7 @@ public class GroundWar {
                     .append(ChatColor.RESET).append('\n')
                     .append(raceB.getTeamColor()).append(raceB.getName()).append(": \n")
                     .append(raceB.getTeamColor()).append("Captain: ").append(
-                    server.getOfflinePlayer(teams[1].getCaptain()).getName()).append(ChatColor.RESET).append('\n')
+                    server.getOfflinePlayer(teams[1].getCaptain()).getName()).append('\n')
                     .append(teams[1].getLives()).append(" lives remaining\nParticipants remaining: ")
                     .append(teams[1].getParticipants().size())
                     .append(ChatColor.RESET);
