@@ -3,6 +3,7 @@ package com.ellirion.core.groundwar.model;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.playerdata.PlayerManager;
 
@@ -16,24 +17,30 @@ public class WarTeam {
     @Getter private List<Participant> participants;
     @Getter private int lives;
     @Getter private UUID captain;
+    @Getter private String name;
 
     /**
      * constructor.
+     * @param name the name of the team
      */
-    public WarTeam() {
+    public WarTeam(final String name) {
         players = new ArrayList<>();
         participants = new ArrayList<>();
         lives = -1;
     }
 
     /**
-     * Add a player to this WarTeam.
-     * @param player the player to add
+     * Add a playerUUID to this WarTeam.
+     * @param playerUUID the playerUUID to add
      */
-    public void addPlayer(UUID player) {
-        players.add(player);
-        Location loc = EllirionCore.getINSTANCE().getServer().getPlayer(player).getLocation();
-        participants.add(new Participant(player, loc));
+    public void addPlayer(UUID playerUUID) {
+        if (!players.contains(playerUUID)) {
+            players.add(playerUUID);
+        }
+
+        Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerUUID);
+        Location loc = player.getLocation();
+        participants.add(new Participant(playerUUID, player.getDisplayName(), loc));
     }
 
     /**
@@ -48,7 +55,7 @@ public class WarTeam {
         ChatColor raceColor = PlayerManager.getPlayerRace(players.get(0)).getTeamColor();
         for (UUID player : players) {
             builder.append('-').append(raceColor).append(
-                    EllirionCore.getINSTANCE().getServer().getPlayer(player).getDisplayName()).append(
+                    EllirionCore.getINSTANCE().getServer().getOfflinePlayer(player).getName()).append(
                     ChatColor.RESET).append('\n');
         }
         builder.deleteCharAt(builder.length() - 1);
@@ -86,11 +93,12 @@ public class WarTeam {
      * @return a copy of this WarTeam
      */
     public WarTeam copy() {
-        WarTeam other = new WarTeam();
+        WarTeam other = new WarTeam(name);
 
         for (Participant participant : participants) {
             other.participants.add(
-                    new Participant(participant.getPlayer(), participant.getRespawnLocationAfterGroundWar().clone()));
+                    new Participant(participant.getPlayer(), participant.getDisplayName(),
+                                    participant.getRespawnLocationAfterGroundWar().clone()));
         }
         other.players.addAll(players);
         other.captain = captain;

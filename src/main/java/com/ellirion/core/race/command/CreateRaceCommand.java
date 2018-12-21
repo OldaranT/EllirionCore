@@ -28,6 +28,7 @@ public class CreateRaceCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
+        int maxNameLength = 9;
 
         GameManager gameManager = GameManager.getInstance();
         if (gameManager.getState() != GameManager.GameState.SETUP ||
@@ -46,6 +47,12 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
         String raceName = normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 1)));
+
+        if (raceName.length() > maxNameLength) {
+            player.sendMessage(ChatColor.DARK_RED + "The race name can not be longer then 9 characters");
+            return true;
+        }
+
         if (RaceManager.raceExists(raceName)) {
             player.sendMessage(ChatColor.DARK_RED + "Race already exists");
             return true;
