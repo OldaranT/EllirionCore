@@ -3,6 +3,7 @@ package com.ellirion.core.playerdata.util;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,8 +21,9 @@ public class JoinPlayer {
      */
     public static void joinPlayer(UUID playerID) {
         Player player = SERVER.getPlayer(playerID);
-        if (playerExistsInDatabase(playerID)) {
-            addPlayerFromDatabase(playerID);
+        UUID gameID = GameManager.getInstance().getGameID();
+        if (playerWithGameExistsInDatabase(gameID, playerID)) {
+            addPlayerFromDatabase(gameID, playerID);
         } else {
             newPlayer(player, null);
         }

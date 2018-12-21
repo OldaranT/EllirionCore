@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import xyz.morphia.annotations.Embedded;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
-import xyz.morphia.annotations.Indexed;
 import xyz.morphia.annotations.Property;
 import com.ellirion.core.database.util.PlayerDBKey;
 import com.ellirion.core.gamemanager.GameManager;
@@ -20,10 +19,6 @@ import java.util.UUID;
 public class PlayerDBModel {
 
     @Id @Embedded @Getter private PlayerDBKey playerDBKey;
-
-    @Indexed @Getter private UUID playerID;
-
-    @Indexed @Getter private UUID gameID;
 
     @Getter private UUID raceID;
 
@@ -45,11 +40,9 @@ public class PlayerDBModel {
      */
     public PlayerDBModel(final Player player, final UUID raceID, final UUID gameID) {
         playerDBKey = new PlayerDBKey(gameID, raceID);
-        playerID = player.getUniqueId();
         String ip = player.getAddress().getHostName();
         this.raceID = raceID;
         ipHistory.add(ip);
-        this.gameID = gameID;
     }
 
     /**
@@ -59,7 +52,6 @@ public class PlayerDBModel {
      */
     public PlayerDBModel(final PlayerData data, final Player player) {
         playerDBKey = new PlayerDBKey(GameManager.getInstance().getGameID(), player.getUniqueId());
-        playerID = player.getUniqueId();
         String ip = player.getAddress().getHostName();
         Race race = data.getRace();
         raceID = retrieveRaceID(race);
