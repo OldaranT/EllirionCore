@@ -43,7 +43,7 @@ public class GroundWarResults {
         String newLine = ChatColor.RESET + "\n";
         String spacer = "   ";
         StringBuilder stringBuilder = new StringBuilder(175);
-        Player creator = EllirionCore.getINSTANCE().getServer().getPlayer(createdBy);
+        Player creator = EllirionCore.getINSTANCE().getServer().getOfflinePlayer(createdBy).getPlayer();
         Race warWinner = PlayerManager.getPlayerRace(winner.getCaptain());
         Race warLoser = PlayerManager.getPlayerRace(loser.getCaptain());
         stringBuilder.append(newLine)
@@ -63,7 +63,7 @@ public class GroundWarResults {
             for (Participant participant : warTeam.getParticipants()) {
                 stringBuilder.append(spacer).append("- ").append(
                         PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
-                        EllirionCore.getINSTANCE().getServer().getPlayer(participant.getPlayer()).getDisplayName())
+                        participant.getDisplayName())
                         .append(newLine);
             }
         }
