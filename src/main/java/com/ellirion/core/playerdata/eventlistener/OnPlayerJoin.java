@@ -27,7 +27,7 @@ public class OnPlayerJoin implements Listener {
 
         //Give player scoreboard
         if (PlotManager.getSavedPlots().size() > 0) {
-            PlayerScoreboard board = new PlayerScoreboard(player, EllirionCore.getINSTANCE().getServer().getScoreboardManager().getNewScoreboard());
+            PlayerScoreboard board = new PlayerScoreboard(player, EllirionCore.getINSTANCE().getServer().getScoreboardManager().getMainScoreboard());
             board.showScoreboard();
             PlayerScoreboardManager.addPlayerScoreboard(playerID, board);
         }
