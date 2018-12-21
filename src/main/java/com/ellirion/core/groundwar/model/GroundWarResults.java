@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar.model;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,10 +16,10 @@ import static com.ellirion.core.util.StringHelper.*;
 
 public class GroundWarResults {
 
-    private Date started;
-    private Date ended;
-    private UUID createdBy;
-    @Setter private WarTeam[] initialTeams;
+    @Getter private Date started;
+    @Getter private Date ended;
+    @Getter private UUID createdBy;
+    @Getter @Setter private WarTeam[] initialTeams;
     @Setter private WarTeam winner;
     @Setter private WarTeam loser;
 

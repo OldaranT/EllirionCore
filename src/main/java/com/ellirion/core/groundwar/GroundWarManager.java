@@ -2,6 +2,7 @@ package com.ellirion.core.groundwar;
 
 import org.bukkit.ChatColor;
 import com.ellirion.core.EllirionCore;
+import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -20,6 +21,7 @@ import java.util.logging.Logger;
 public class GroundWarManager {
 
     private static Map<UUID, GroundWar> GROUND_WARS = new HashMap();
+    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
      * Add a ground war to the manager.
@@ -156,7 +158,8 @@ public class GroundWarManager {
                     war.broadcastMessage(ChatColor.GREEN + "The ground war is now starting");
                     war.start();
                 } else {
-                    war.broadcastMessage(ChatColor.DARK_RED + "The war could not be started because there were not enough players");
+                    war.broadcastMessage(
+                            ChatColor.DARK_RED + "The war could not be started because there were not enough players");
                     removeGroundWar(war.getCreatedBy());
                 }
             });

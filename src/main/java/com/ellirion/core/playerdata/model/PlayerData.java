@@ -26,7 +26,7 @@ public class PlayerData {
      * @param player The player that is retrieved from the database.
      */
     public PlayerData(final PlayerDBModel player) {
-        this(player.getPlayerID(), RaceManager.getRaceByID(player.getRaceID()));
+        this(player.getPlayerDBKey().getPlayerID(), RaceManager.getRaceByID(player.getRaceID()));
     }
 
     /**

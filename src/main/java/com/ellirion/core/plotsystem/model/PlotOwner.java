@@ -3,6 +3,7 @@ package com.ellirion.core.plotsystem.model;
 import lombok.Getter;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,8 +71,16 @@ public abstract class PlotOwner {
 
     /**
      * This method is used to update the database when something changes.
+     * @return return true if you are allowed to update the database.
      */
-    protected void updateDatabase() {
-        // empty on purpose;
+    protected abstract boolean updateDatabase();
+
+    /**
+     * This method checks if it is allowed to update in the database at the current moment.
+     * @return return true if allowed to update.
+     */
+    protected boolean canUpdateInDatabase() {
+        GameManager.GameState state = GameManager.getInstance().getState();
+        return state == GameManager.GameState.IN_PROGRESS || state == GameManager.GameState.SAVING;
     }
 }

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.playerdata.util.JoinPlayer.*;
 import static com.ellirion.core.util.GenericTryCatch.*;
 import static com.ellirion.core.util.StringHelper.*;
 
@@ -140,6 +141,7 @@ public class GameManager {
         createGame(databaseManager);
 
         changeState(GameState.IN_PROGRESS);
+        joinPlayers();
     }
 
     private void createGame(DatabaseManager databaseManager) {
@@ -193,6 +195,7 @@ public class GameManager {
             GameDBModel gameDBModel = db.getGame(uName);
             Game game = new Game(gameDBModel);
             this.game = game;
+            gameID = game.getGameID();
 
             //Load plots
             List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoords(game.getGameID());
@@ -212,6 +215,7 @@ public class GameManager {
             }
 
             state = GameState.IN_PROGRESS;
+            joinPlayers();
         });
     }
 

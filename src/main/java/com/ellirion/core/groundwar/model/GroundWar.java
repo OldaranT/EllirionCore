@@ -28,8 +28,8 @@ public class GroundWar {
     private Plot[] plots;
     @Getter private UUID createdBy;
     @Getter private State state;
-    private WarTeam[] teams;
-    private GroundWarResults results;
+    @Getter private WarTeam[] teams;
+    @Getter private GroundWarResults results;
 
     /**
      * Create raceA ground war.
@@ -397,6 +397,7 @@ public class GroundWar {
         }
 
         //TODO Save GroundWar to database
+        EllirionCore.getINSTANCE().getDbManager().createGroundWar(this, GameManager.getInstance().getGameID());
 
         //Remove glowing effect for Captain.
         removeGlowingFromCaptains();
