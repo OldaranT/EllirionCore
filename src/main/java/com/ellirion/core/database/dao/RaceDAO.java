@@ -76,14 +76,7 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
         if (model == null) {
             return createRace(race, gameID);
         }
-        //        Query query = createQuery().filter(id, race.getRaceUUID());
         model.update(race);
-        //        UpdateOperations ops = createUpdateOperations().set("raceName", race.getName())
-        //                .set("players", race.getPlayers())
-        //                .set("color", race.getTeamColor())
-        //                .set("homePlotCoord", race.getHomePlot().getPlotCoord())
-        //                .set("ownedPlots", race.getPlotCoords());
-        //        return tryCatch(() -> updateFirst(query, ops));
         return saveRace(model);
     }
 
