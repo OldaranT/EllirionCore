@@ -41,26 +41,22 @@ public class PlayerDeathListener implements Listener {
             return;
         }
 
-        //Check if there are lives left
-        if (groundWar.getTeam(playerID).getLives() <= 0) {
-            //Save the player's respawn location in the map
+        if (!groundWar.playerDied(playerID)) { //Save the player's respawn location in the map
             List<Participant> participants = groundWar.getTeam(playerID).getParticipants();
             Participant participant = null;
             for (Participant p : participants) {
                 if (p.getPlayer().equals(playerID)) {
                     participant = p;
+                    break;
                 }
             }
             if (participant != null) {
                 Logger.getGlobal().info("Player " + playerID + " should respawn at " + participant.getRespawnLocationAfterGroundWar());
                 PLAYERS_TO_RESPAWN.put(playerID, participant.getRespawnLocationAfterGroundWar());
             }
-
-            //Player cannot respawn and is removed from the GroundWar
-            groundWar.removeParticipant(playerID);
         }
 
-        groundWar.playerDied(playerID);
+//        groundWar.playerDied(playerID);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.ellirion.core.groundwar.model;
 
 import lombok.Getter;
 import org.bukkit.Location;
+import xyz.morphia.annotations.Transient;
 
 import com.ellirion.core.EllirionCore;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 public class Participant {
     @Getter private UUID player;
     @Getter private String displayName;
-    @Getter private Location respawnLocationAfterGroundWar;
+    @Transient @Getter private Location respawnLocationAfterGroundWar;
 
     /**
      * Create a participant.

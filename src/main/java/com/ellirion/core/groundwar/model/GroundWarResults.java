@@ -55,20 +55,20 @@ public class GroundWarResults {
                 .append("Start Date: ").append(started).append(newLine)
                 .append("Ended date: ").append(ended).append(newLine)
                 .append("CreatedBy: ").append(creator.getDisplayName()).append(newLine)
-                .append("Winner: ").append(warWinner.getTeamColor()).append(warWinner.getName()).append(newLine)
-                .append("Loser: ").append(warLoser.getTeamColor()).append(warLoser.getName()).append(newLine)
-                .append("Teams:").append(newLine);
-        for (WarTeam warTeam : initialTeams) {
-            stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor())
-                    .append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);
-            for (Participant participant : warTeam.getParticipants()) {
-                stringBuilder.append(spacer).append("- ").append(
-                        PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
-                        participant.getDisplayName())
-                        .append(newLine);
-            }
-        }
-        stringBuilder.append(newLine)
+                .append("Winner: ").append(winner.getName()).append(newLine)
+                .append("Loser: ").append(loser.getName()).append(newLine)
+//                .append("Teams:").append(newLine);
+//        for (WarTeam warTeam : initialTeams) {
+//            stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor())
+//                    .append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);
+//            for (Participant participant : warTeam.getParticipants()) {
+//                stringBuilder.append(spacer).append("- ").append(
+//                        PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
+//                        participant.getDisplayName())
+//                        .append(newLine);
+//            }
+//        }
+                .append(newLine)
                 .append(ChatColor.GREEN)
                 .append("================= ")
                 .append(highlight("END REPORT", ChatColor.GREEN))
