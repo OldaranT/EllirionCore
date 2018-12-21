@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.groundwar.GroundWarManager;
-import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.race.RaceManager;
@@ -15,6 +14,7 @@ import com.ellirion.core.race.model.Race;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.playerdata.PlayerManager.*;
 import static com.ellirion.core.util.StringHelper.*;
 
 public class JoinRaceCommand implements CommandExecutor {
@@ -47,7 +47,7 @@ public class JoinRaceCommand implements CommandExecutor {
                 return true;
             }
 
-            if (!PlayerManager.setPlayerRace(playerID, raceID)) {
+            if (!setPlayerRace(playerID, raceID)) {
                 player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
                                    highlight(raceName, ChatColor.RESET));
                 return true;
@@ -69,12 +69,16 @@ public class JoinRaceCommand implements CommandExecutor {
                 return true;
             }
 
-            if (!PlayerManager.setPlayerRace(player.getUniqueId(), RaceManager.getRaceUUID(raceName))) {
+            if (!setPlayerRace(player.getUniqueId(), RaceManager.getRaceUUID(raceName))) {
                 player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
                                    highlight(raceName, ChatColor.RESET));
                 return true;
             }
         }
+
+        //Update color of the player.
+        updateScoreboard(player);
+
         player.sendMessage(
                 ChatColor.GREEN + "You have joined the race " + highlight(raceName, ChatColor.GREEN) +
                 "!");
@@ -84,7 +88,7 @@ public class JoinRaceCommand implements CommandExecutor {
 
     private boolean canJoinRace(UUID raceID) {
         UUID playerID = player.getUniqueId();
-        Race playerRace = PlayerManager.getPlayerRace(playerID);
+        Race playerRace = getPlayerRace(playerID);
         if (playerRace != null && playerRace.getRaceUUID() == raceID) {
             player.sendMessage(ChatColor.DARK_RED + "You are already in this race.");
             return false;

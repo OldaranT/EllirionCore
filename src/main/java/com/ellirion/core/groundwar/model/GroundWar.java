@@ -2,7 +2,6 @@ package com.ellirion.core.groundwar.model;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -12,18 +11,16 @@ import org.bukkit.potion.PotionEffectType;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.GroundWarManager;
-import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.Logging;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Logger;
-
-import static com.ellirion.core.util.MinecraftHelper.*;
 
 public class GroundWar {
 
@@ -48,8 +45,7 @@ public class GroundWar {
         state = State.SETUP;
 
         teams = new WarTeam[2];
-        teams[0] = new WarTeam();
-        teams[1] = new WarTeam();
+        teams[0] = new WarTeam(raceA.getNameWithColor());
 
         results = new GroundWarResults(createdBy);
     }
@@ -60,6 +56,7 @@ public class GroundWar {
      */
     public void setRaceB(Race race) {
         raceB = race;
+        teams[1] = new WarTeam(raceB.getNameWithColor());
     }
 
     /**
@@ -115,7 +112,8 @@ public class GroundWar {
      * Remove a participant from this GroundWar.
      * @param player the player to remove
      */
-    public void removeParticipant(UUID player) {
+    public void
+    removeParticipant(UUID player) {
         List<Participant> participants = getTeam(player).getParticipants();
         Participant toRemove = null;
         for (Participant p : participants) {
@@ -141,6 +139,15 @@ public class GroundWar {
             }
         }
         return false;
+    }
+
+    /**
+     * Check whether a player is in this team (for players that have quit the server and are rejoining).
+     * @param playerID the player to check
+     * @return whether the player is in this Team
+     */
+    public boolean containsPlayer(UUID playerID) {
+        return (teams[0].getPlayers().contains(playerID) || teams[1].getPlayers().contains(playerID));
     }
 
     /**
@@ -174,14 +181,12 @@ public class GroundWar {
         for (WarTeam warTeam : teams) {
 
             Player player = EllirionCore.getINSTANCE().getServer().getPlayer(warTeam.getCaptain());
-            Race race = PlayerManager.getPlayerRace(warTeam.getCaptain());
-            Color color = translateChatColorToColor(race.getTeamColor());
             player.addPotionEffect(
-                    new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1, false, false, color));
+                    new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
         }
     }
 
-    private void removeGlowingToCaptains() {
+    private void removeGlowingFromCaptains() {
         for (WarTeam warTeam : teams) {
             Player player = EllirionCore.getINSTANCE().getServer().getPlayer(warTeam.getCaptain());
             player.removePotionEffect(PotionEffectType.GLOWING);
@@ -272,15 +277,28 @@ public class GroundWar {
     /**
      * Register a player death.
      * @param playerID the player that died
+     * @return whether the player remains in the war or is removed
      */
-    public void playerDied(UUID playerID) {
+    public boolean playerDied(UUID playerID) {
+        boolean res = true;
+
         if (teams[0].getPlayers().contains(playerID)) {
+            if (teams[0].getLives() <= 0) {
+                removeParticipant(playerID);
+                res = false;
+            }
+
             if (teams[0].getCaptain().equals(playerID)) {
                 teams[0].removeAllLives();
             } else {
                 teams[0].removeLife();
             }
         } else if (teams[1].getPlayers().contains(playerID)) {
+            if (teams[1].getLives() <= 0) {
+                removeParticipant(playerID);
+                res = false;
+            }
+
             if (teams[1].getCaptain().equals(playerID)) {
                 teams[1].removeAllLives();
             } else {
@@ -289,8 +307,16 @@ public class GroundWar {
         }
 
         if (teams[0].getParticipants().size() <= 0 || teams[1].getParticipants().size() <= 0) {
-            finish();
+            try {
+                finish();
+            } catch (Exception exception) {
+                Logging.printStackTrace(exception);
+                GroundWarManager.removeGroundWar(createdBy);
+            }
+            return false;
         }
+
+        return res;
     }
 
     /**
@@ -313,7 +339,7 @@ public class GroundWar {
 
             sb.append("GroundWar between races ").append(raceAName)
                     .append(" and ").append(raceBName)
-                    .append(" created by ").append(server.getPlayer(createdBy).getDisplayName())
+                    .append(" created by ").append(server.getOfflinePlayer(createdBy).getName())
                     .append("\ncurrent state: ").append(state.name())
                     .append("\nPlots wagered in this ground war:\n")
                     .append(plotA).append('\n')
@@ -327,13 +353,16 @@ public class GroundWar {
             //Show teams' captain and lives
             sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": \n")
                     .append(raceA.getTeamColor()).append("Captain: ").append(
-                    server.getPlayer(teams[0].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
-                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(" lives remaining").append(
-                    ChatColor.RESET).append('\n')
+                    server.getOfflinePlayer(teams[0].getCaptain()).getName()).append(ChatColor.RESET).append('\n')
+                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(" lives remaining\nParticipants remaining: ")
+                    .append(teams[0].getParticipants().size())
+                    .append(ChatColor.RESET).append('\n')
                     .append(raceB.getTeamColor()).append(raceB.getName()).append(": \n")
                     .append(raceB.getTeamColor()).append("Captain: ").append(
-                    server.getPlayer(teams[1].getCaptain()).getDisplayName()).append(ChatColor.RESET).append('\n')
-                    .append(teams[1].getLives()).append(" lives remaining").append(ChatColor.RESET);
+                    server.getOfflinePlayer(teams[1].getCaptain()).getName()).append('\n')
+                    .append(teams[1].getLives()).append(" lives remaining\nParticipants remaining: ")
+                    .append(teams[1].getParticipants().size())
+                    .append(ChatColor.RESET);
             return sb.toString();
         }
     }
@@ -393,11 +422,11 @@ public class GroundWar {
             player.teleport(loc);
         }
 
-        //TODO Save GroundWar to database
+        //TODO Save GroundWarResults to database
         EllirionCore.getINSTANCE().getDbManager().createGroundWar(this, GameManager.getInstance().getGameID());
 
         //Remove glowing effect for Captain.
-        removeGlowingToCaptains();
+        removeGlowingFromCaptains();
 
         //Broadcast a report of the results.
         EllirionCore.getINSTANCE().getServer().broadcastMessage(results.toString());

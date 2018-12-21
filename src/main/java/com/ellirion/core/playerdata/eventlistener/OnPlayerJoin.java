@@ -13,6 +13,7 @@ import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.UUID;
 
+import static com.ellirion.core.playerdata.PlayerManager.*;
 import static com.ellirion.core.playerdata.util.JoinPlayer.*;
 
 public class OnPlayerJoin implements Listener {
@@ -44,6 +45,8 @@ public class OnPlayerJoin implements Listener {
         if (state != GameManager.GameState.IN_PROGRESS && state != GameManager.GameState.SAVING) {
             return;
         }
+
+        updateScoreboard(player);
         joinPlayer(playerID);
     }
 }

@@ -5,8 +5,6 @@ import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.playerdata.PlayerManager;
-import com.ellirion.core.race.model.Race;
 
 import java.time.Instant;
 import java.util.Date;
@@ -42,11 +40,8 @@ public class GroundWarResults {
     @Override
     public String toString() {
         String newLine = ChatColor.RESET + "\n";
-        String spacer = "   ";
         StringBuilder stringBuilder = new StringBuilder(175);
-        Player creator = EllirionCore.getINSTANCE().getServer().getPlayer(createdBy);
-        Race warWinner = PlayerManager.getPlayerRace(winner.getCaptain());
-        Race warLoser = PlayerManager.getPlayerRace(loser.getCaptain());
+        Player creator = EllirionCore.getINSTANCE().getServer().getOfflinePlayer(createdBy).getPlayer();
         stringBuilder.append(newLine)
                 .append(ChatColor.GREEN)
                 .append("============== ")
@@ -55,20 +50,9 @@ public class GroundWarResults {
                 .append("Start Date: ").append(started).append(newLine)
                 .append("Ended date: ").append(ended).append(newLine)
                 .append("CreatedBy: ").append(creator.getDisplayName()).append(newLine)
-                .append("Winner: ").append(warWinner.getTeamColor()).append(warWinner.getName()).append(newLine)
-                .append("Loser: ").append(warLoser.getTeamColor()).append(warLoser.getName()).append(newLine)
-                .append("Teams:").append(newLine);
-        for (WarTeam warTeam : initialTeams) {
-            stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor())
-                    .append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);
-            for (Participant participant : warTeam.getParticipants()) {
-                stringBuilder.append(spacer).append("- ").append(
-                        PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
-                        EllirionCore.getINSTANCE().getServer().getPlayer(participant.getPlayer()).getDisplayName())
-                        .append(newLine);
-            }
-        }
-        stringBuilder.append(newLine)
+                .append("Winner: ").append(winner.getName()).append(newLine)
+                .append("Loser: ").append(loser.getName()).append(newLine)
+                .append(newLine)
                 .append(ChatColor.GREEN)
                 .append("================= ")
                 .append(highlight("END REPORT", ChatColor.GREEN))
