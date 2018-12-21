@@ -195,6 +195,7 @@ public class GameManager {
             GameDBModel gameDBModel = db.getGame(uName);
             Game game = new Game(gameDBModel);
             this.game = game;
+            gameID = game.getGameID();
 
             //Load plots
             List<PlotCoordDBModel> plotCoordDBModelList = db.getPlotCoords(game.getGameID());
