@@ -42,11 +42,8 @@ public class GroundWarResults {
     @Override
     public String toString() {
         String newLine = ChatColor.RESET + "\n";
-        String spacer = "   ";
         StringBuilder stringBuilder = new StringBuilder(175);
         Player creator = EllirionCore.getINSTANCE().getServer().getOfflinePlayer(createdBy).getPlayer();
-        Race warWinner = PlayerManager.getPlayerRace(winner.getCaptain());
-        Race warLoser = PlayerManager.getPlayerRace(loser.getCaptain());
         stringBuilder.append(newLine)
                 .append(ChatColor.GREEN)
                 .append("============== ")
@@ -57,17 +54,6 @@ public class GroundWarResults {
                 .append("CreatedBy: ").append(creator.getDisplayName()).append(newLine)
                 .append("Winner: ").append(winner.getName()).append(newLine)
                 .append("Loser: ").append(loser.getName()).append(newLine)
-//                .append("Teams:").append(newLine);
-//        for (WarTeam warTeam : initialTeams) {
-//            stringBuilder.append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor())
-//                    .append(PlayerManager.getPlayerRace(warTeam.getCaptain()).getName()).append(newLine);
-//            for (Participant participant : warTeam.getParticipants()) {
-//                stringBuilder.append(spacer).append("- ").append(
-//                        PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
-//                        participant.getDisplayName())
-//                        .append(newLine);
-//            }
-//        }
                 .append(newLine)
                 .append(ChatColor.GREEN)
                 .append("================= ")
