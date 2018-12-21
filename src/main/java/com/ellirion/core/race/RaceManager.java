@@ -32,48 +32,24 @@ public class RaceManager {
     private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
     @Getter private static Set<ChatColor> AVAILABLE_COLORS = new HashSet<>(initAvailableColors());
-    private static Race DEFAULT_RACE;
     private static HashMap<UUID, String> RACE_ID_NAME = new HashMap<>();
     private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**
-     * @param defaultRaceName The name of the default race.
-     * @return Return true if successful.
-     */
-    public static boolean createDefaultRace(String defaultRaceName) {
-        if (defaultRaceExists()) {
-            return false;
-        }
-        defaultRaceName = normalCasing(defaultRaceName);
-        Race race = new Race(defaultRaceName, ChatColor.DARK_GRAY, null);
-        RACES.put(race.getRaceUUID(), race);
-        DEFAULT_RACE = race;
-        setColorToUsed(ChatColor.DARK_GRAY);
-        RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
-        return true;
-    }
-
-    private static boolean defaultRaceExists() {
-        if (DEFAULT_RACE == null) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @param name The name of the team.
-     * @param color The color of the team.
+     * @param name The name of the race.
+     * @param alias The alias of the race.
+     * @param color The color of the race.
      * @param homePlot The homeplot of the race.
      * @return Return true if successfully added the race.
      */
-    public static boolean addRace(String name, ChatColor color, Plot homePlot) {
+    public static boolean addRace(String name, String alias, ChatColor color, Plot homePlot) {
         if (USED_COLORS.contains(color) || raceExists(name)) {
             return false;
         }
 
         name = normalCasing(name);
 
-        Race race = new Race(name, color, homePlot);
+        Race race = new Race(name, alias, color, homePlot);
         RACES.putIfAbsent(race.getRaceUUID(), race);
         setColorToUsed(color);
         homePlot.setOwner(race);
@@ -188,17 +164,6 @@ public class RaceManager {
             }
         }
         return null;
-    }
-
-    /**
-     * @return Return the default race.
-     */
-    public static Race getDefaultRace() {
-        if (!defaultRaceExists()) {
-            createDefaultRace("outsiders");
-            return DEFAULT_RACE;
-        }
-        return DEFAULT_RACE;
     }
 
     /**

@@ -18,6 +18,7 @@ import static com.ellirion.core.util.GenericTryCatch.*;
 public class Race extends PlotOwner {
 
     @Getter @Setter private String name;
+    @Getter @Setter private String alias;
     @Getter private Set<UUID> players;
     @Getter @Setter private ChatColor teamColor;
     @Getter private Plot homePlot;
@@ -25,13 +26,15 @@ public class Race extends PlotOwner {
     /**
      * This is the race that players can join.
      * @param name The name of the race.
+     * @param alias The alias of the race.
      * @param teamColor The team color.
      * @param homePlot The homeplot of the race.
      */
-    public Race(final String name, final ChatColor teamColor, final Plot homePlot) {
+    public Race(final String name, final String alias, final ChatColor teamColor, final Plot homePlot) {
         // This calls the super with null to get a random UUID assigned.
         super(null);
         this.name = name;
+        this.alias = alias;
         this.homePlot = homePlot;
         this.teamColor = teamColor;
         players = new HashSet<>();

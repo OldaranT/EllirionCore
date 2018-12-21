@@ -28,7 +28,6 @@ public class CreateRaceCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
-        int maxNameLength = 9;
 
         GameManager gameManager = GameManager.getInstance();
         if (gameManager.getState() != GameManager.GameState.SETUP ||
@@ -39,17 +38,26 @@ public class CreateRaceCommand implements CommandExecutor {
         }
 
         if (strings.length <= 0) {
-            player.sendMessage(ChatColor.DARK_RED + "Please give a race name and color");
+            player.sendMessage(
+                    ChatColor.DARK_RED +
+                    "Please give a race name , race alias needs to be between 3 to 7 characters and a color");
             return true;
         }
         if (strings.length == 1) {
-            player.sendMessage(ChatColor.DARK_RED + "You forgot either the color or the name");
+            player.sendMessage(ChatColor.DARK_RED + "You forgot either the name, the alias or the color");
             return true;
         }
-        String raceName = normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 1)));
+        if (strings.length == 2) {
+            player.sendMessage(
+                    ChatColor.DARK_RED + "You forgot on of following params: the name, the alias or the color");
+            return true;
+        }
 
-        if (raceName.length() > maxNameLength) {
-            player.sendMessage(ChatColor.DARK_RED + "The race name can not be longer then 9 characters");
+        String raceName = normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 2)));
+        String raceAlias = strings[strings.length - 2];
+
+        if (!raceAlias.matches("^[A-Z0-9]{3,7}$")) {
+            player.sendMessage(ChatColor.DARK_RED + "The race alias needs to be between 3 to 7 characters.");
             return true;
         }
 
@@ -74,7 +82,7 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (!RaceManager.addRace(raceName, color, plot)) {
+        if (!RaceManager.addRace(raceName, raceAlias, color, plot)) {
             player.sendMessage(ChatColor.DARK_RED + "Something went wrong when creating a race.");
             return true;
         }

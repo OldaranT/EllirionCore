@@ -267,7 +267,7 @@ public class GameManager {
     public String getReport() {
         String newLine = "\n";
         String spacer = "   ";
-        StringBuilder stringBuilder = new StringBuilder(175);
+        StringBuilder stringBuilder = new StringBuilder(180);
         stringBuilder.append(newLine)
                 .append("===============GAME REPORT===============").append(newLine)
                 .append("Game: ").append(uName).append(newLine)
@@ -279,6 +279,8 @@ public class GameManager {
         for (Race race : RaceManager.getRaces()) {
             stringBuilder.append(spacer).append(race.getTeamColor()).append(race.getName())
                     .append(ChatColor.RESET).append(": ").append(newLine)
+                    .append(spacer).append(spacer).append("Alias: ")
+                    .append(race.getAlias()).append(newLine)
                     .append(spacer).append(spacer).append("Homeplot: ")
                     .append(race.getHomePlot().getName()).append(newLine);
         }

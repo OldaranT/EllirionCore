@@ -23,21 +23,13 @@ public class RaceDBModel {
     @Id
     @Indexed
     @Getter private UUID raceID;
-
-    @Indexed
-    @Getter private UUID gameID;
-
+    @Indexed @Getter private UUID gameID;
     @Getter @Setter private String raceName;
-
+    @Getter @Setter private String raceAlias;
     @Getter private Set<UUID> players;
-
     @Getter @Setter private String color;
-
-    @Embedded
-    @Getter @Setter private PlotCoord homePlotCoord;
-
-    @Embedded
-    @Getter private List<PlotCoord> ownedPlots;
+    @Embedded @Getter @Setter private PlotCoord homePlotCoord;
+    @Embedded @Getter private List<PlotCoord> ownedPlots;
 
     /**
      * This is a default constructor used by morphia.
@@ -54,6 +46,7 @@ public class RaceDBModel {
     public RaceDBModel(final Race race, final UUID gameID) {
         raceID = race.getRaceUUID();
         raceName = race.getName();
+        raceAlias = race.getAlias();
         players = race.getPlayers();
         color = race.getTeamColor().toString();
         homePlotCoord = race.getHomePlot().getPlotCoord();
@@ -65,16 +58,18 @@ public class RaceDBModel {
      * This class is the database object for the race data.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
+     * @param raceAlias Alias of the race.
      * @param players The players in the team.
      * @param color The color of the team.
      * @param homePlotCoord The home plot coordinates.
      * @param ownedPlots The plots this race owns.
      * @param gameID The ID of the game this race belongs to.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color,
+    public RaceDBModel(final UUID raceID, final String raceName, final String raceAlias, final Set<UUID> players, final String color,
                        final PlotCoord homePlotCoord, final List<PlotCoord> ownedPlots, final UUID gameID) {
         this.raceID = raceID;
         this.raceName = raceName;
+        this.raceAlias = raceAlias;
         this.players = players;
         this.color = color;
         this.homePlotCoord = homePlotCoord;
@@ -86,14 +81,15 @@ public class RaceDBModel {
      * An overloaded constructor for when you don't have players.
      * @param raceID The UUID of the race.
      * @param raceName Name of the race.
+     * @param raceAlias Alias of the race.
      * @param color The color of the team.
      * @param homePlotCoord The home plot coordinates.
      * @param ownedPlots The Plots the race owns.
      * @param gameID The game ID where this race belongs to.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord,
+    public RaceDBModel(final UUID raceID, final String raceName, final String raceAlias, final String color, final PlotCoord homePlotCoord,
                        final List<PlotCoord> ownedPlots, final UUID gameID) {
-        this(raceID, raceName, new HashSet<>(), color, homePlotCoord, ownedPlots, gameID);
+        this(raceID, raceName, raceAlias, new HashSet<>(), color, homePlotCoord, ownedPlots, gameID);
     }
 
     /**
@@ -112,6 +108,7 @@ public class RaceDBModel {
     public boolean update(Race race) {
         return tryCatch(() -> {
             raceName = race.getName();
+            raceAlias = race.getAlias();
             players = race.getPlayers();
             color = race.getTeamColor().toString();
             homePlotCoord = race.getHomePlot().getPlotCoord();
