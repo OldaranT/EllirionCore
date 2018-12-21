@@ -217,7 +217,7 @@ public class PlayerManager {
         if (raceTeam == null) {
             raceTeam = mainScoreboard.registerNewTeam(race.getName());
         }
-        raceTeam.setPrefix(raceColor + "" + ChatColor.BOLD + race.getName() + ChatColor.RESET + " | ");
+        raceTeam.setPrefix(raceColor + "" + ChatColor.BOLD + race.getName() + ChatColor.RESET + " ");
         raceTeam.addPlayer(player);
     }
 
