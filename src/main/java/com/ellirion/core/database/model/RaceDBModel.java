@@ -9,9 +9,13 @@ import xyz.morphia.annotations.Indexed;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 @Entity(value = "Race", noClassnameStored = true)
 public class RaceDBModel {
@@ -19,6 +23,9 @@ public class RaceDBModel {
     @Id
     @Indexed
     @Getter private UUID raceID;
+
+    @Indexed
+    @Getter private UUID gameID;
 
     @Getter @Setter private String raceName;
 
@@ -29,6 +36,31 @@ public class RaceDBModel {
     @Embedded
     @Getter @Setter private PlotCoord homePlotCoord;
 
+    @Embedded
+    @Getter private List<PlotCoord> ownedPlots;
+
+    /**
+     * This is a default constructor used by morphia.
+     */
+    public RaceDBModel() {
+        // empty on purpose.
+    }
+
+    /**
+     * An overloaded version of the constructor that can use a race instead of multiple variables.
+     * @param race The race that needs to be saved.
+     * @param gameID The game ID this race belongs to.
+     */
+    public RaceDBModel(final Race race, final UUID gameID) {
+        raceID = race.getRaceUUID();
+        raceName = race.getName();
+        players = race.getPlayers();
+        color = race.getTeamColor().toString();
+        homePlotCoord = race.getHomePlot().getPlotCoord();
+        ownedPlots = new ArrayList<>(race.getPlotCoords());
+        this.gameID = gameID;
+    }
+
     /**
      * This class is the database object for the race data.
      * @param raceID The UUID of the race.
@@ -36,26 +68,18 @@ public class RaceDBModel {
      * @param players The players in the team.
      * @param color The color of the team.
      * @param homePlotCoord The home plot coordinates.
+     * @param ownedPlots The plots this race owns.
+     * @param gameID The ID of the game this race belongs to.
      */
     public RaceDBModel(final UUID raceID, final String raceName, final Set<UUID> players, final String color,
-                       final PlotCoord homePlotCoord) {
+                       final PlotCoord homePlotCoord, final List<PlotCoord> ownedPlots, final UUID gameID) {
         this.raceID = raceID;
         this.raceName = raceName;
         this.players = players;
         this.color = color;
         this.homePlotCoord = homePlotCoord;
-    }
-
-    /**
-     * An overloaded version of the constructor that can use a race instead of multiple variables.
-     * @param race The race that needs to be saved.
-     */
-    public RaceDBModel(final Race race) {
-        raceID = race.getRaceUUID();
-        raceName = race.getName();
-        players = race.getPlayers();
-        color = race.getTeamColor().toString();
-        homePlotCoord = race.getHomePlot().getPlotCoord();
+        this.ownedPlots = ownedPlots;
+        this.gameID = gameID;
     }
 
     /**
@@ -64,16 +88,12 @@ public class RaceDBModel {
      * @param raceName Name of the race.
      * @param color The color of the team.
      * @param homePlotCoord The home plot coordinates.
+     * @param ownedPlots The Plots the race owns.
+     * @param gameID The game ID where this race belongs to.
      */
-    public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord) {
-        this(raceID, raceName, new HashSet<>(), color, homePlotCoord);
-    }
-
-    /**
-     * This is a default constructor used by morphia.
-     */
-    public RaceDBModel() {
-        // empty on purpose.
+    public RaceDBModel(final UUID raceID, final String raceName, final String color, final PlotCoord homePlotCoord,
+                       final List<PlotCoord> ownedPlots, final UUID gameID) {
+        this(raceID, raceName, new HashSet<>(), color, homePlotCoord, ownedPlots, gameID);
     }
 
     /**
@@ -90,10 +110,12 @@ public class RaceDBModel {
      * @return Return true to signal that the operation succeeded.
      */
     public boolean update(Race race) {
-        raceName = race.getName();
-        players = race.getPlayers();
-        color = race.getTeamColor().toString();
-        homePlotCoord = race.getHomePlot().getPlotCoord();
-        return true;
+        return tryCatch(() -> {
+            raceName = race.getName();
+            players = race.getPlayers();
+            color = race.getTeamColor().toString();
+            homePlotCoord = race.getHomePlot().getPlotCoord();
+            ownedPlots = new ArrayList<>(race.getPlotCoords());
+        });
     }
 }

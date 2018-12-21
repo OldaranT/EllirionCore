@@ -11,6 +11,7 @@ public class CancelSetupCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)) {
+            commandSender.sendMessage("You need to be a player to use this command.");
             return true;
         }
 
@@ -19,7 +20,8 @@ public class CancelSetupCommand implements CommandExecutor {
 
         if (manager.getState() == GameManager.GameState.SETUP) {
             manager.cancelSetup();
-            player.sendMessage("The setup of the gamemode was canceled, use /begingamemode to start the setup phase again");
+            player.sendMessage(
+                    "The setup of the gamemode was canceled, use /begingamemode to start the setup phase again");
         }
 
         return true;

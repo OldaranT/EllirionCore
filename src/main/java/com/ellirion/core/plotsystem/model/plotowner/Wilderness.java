@@ -19,4 +19,9 @@ public class Wilderness extends PlotOwner {
     public String getName() {
         return "Wilderness";
     }
+
+    @Override
+    protected boolean updateDatabase() {
+        return true; // return true because the wilderness is never saved to the database.
+    }
 }

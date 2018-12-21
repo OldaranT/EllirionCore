@@ -3,14 +3,19 @@ package com.ellirion.core.plotsystem.model;
 import lombok.Getter;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public abstract class PlotOwner {
 
-    private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
+    /**
+     * This is the database manager that is used by the update method.
+     */
+    protected static final DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
     @Getter private final UUID raceUUID;
     @Getter private Set<PlotCoord> plotCoords = new HashSet<>();
 
@@ -27,11 +32,26 @@ public abstract class PlotOwner {
     }
 
     /**
+     * This constructor exists to turn database objects back into working Plot Owners.
+     * @param raceUUID The UUID of the race.
+     * @param plotCoords The Owned plots.
+     */
+    public PlotOwner(final UUID raceUUID, final List<PlotCoord> plotCoords) {
+        this(raceUUID);
+        if (plotCoords == null) {
+            this.plotCoords = new HashSet<>();
+        } else {
+            this.plotCoords.addAll(plotCoords);
+        }
+    }
+
+    /**
      * Add a plot to a owner.
      * @param plot The plot to add.
      */
     public void addPlot(PlotCoord plot) {
         plotCoords.add(plot);
+        updateDatabase();
     }
 
     /**
@@ -40,6 +60,7 @@ public abstract class PlotOwner {
      */
     public void removePlot(PlotCoord plot) {
         plotCoords.remove(plot);
+        updateDatabase();
     }
 
     /**
@@ -47,4 +68,19 @@ public abstract class PlotOwner {
      * @return the name of the plot owner.
      */
     public abstract String getName();
+
+    /**
+     * This method is used to update the database when something changes.
+     * @return return true if you are allowed to update the database.
+     */
+    protected abstract boolean updateDatabase();
+
+    /**
+     * This method checks if it is allowed to update in the database at the current moment.
+     * @return return true if allowed to update.
+     */
+    protected boolean canUpdateInDatabase() {
+        GameManager.GameState state = GameManager.getInstance().getState();
+        return state == GameManager.GameState.IN_PROGRESS || state == GameManager.GameState.SAVING;
+    }
 }

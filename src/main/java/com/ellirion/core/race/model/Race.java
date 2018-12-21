@@ -4,12 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class Race extends PlotOwner {
 
@@ -38,10 +42,12 @@ public class Race extends PlotOwner {
      * @param raceDBModel The database stored race.
      */
     public Race(final RaceDBModel raceDBModel) {
-        super(raceDBModel.getRaceID());
+        super(raceDBModel.getRaceID(), raceDBModel.getOwnedPlots());
         name = raceDBModel.getRaceName();
         players = raceDBModel.getPlayers();
-        teamColor = ChatColor.valueOf(raceDBModel.getColor());
+        teamColor = ChatColor.getByChar(raceDBModel.getColor());
+        PlotCoord homePlotCoord = raceDBModel.getHomePlotCoord();
+        homePlot = PlotManager.getPlotByCoordinate(homePlotCoord);
     }
 
     public String getNameWithColor() {
@@ -53,7 +59,10 @@ public class Race extends PlotOwner {
      * @return return true if successful.
      */
     public boolean addPlayer(UUID playerID) {
-        return players.add(playerID);
+        return tryCatch(() -> {
+            players.add(playerID);
+            updateDatabase();
+        });
     }
 
     /**
@@ -69,6 +78,17 @@ public class Race extends PlotOwner {
      * @return Return true if successful.
      */
     public boolean removePlayer(UUID playerID) {
-        return players.remove(playerID);
+        return tryCatch(() -> {
+            players.remove(playerID);
+            updateDatabase();
+        });
+    }
+
+    @Override
+    protected boolean updateDatabase() {
+        if (canUpdateInDatabase()) {
+            return PlotOwner.DATABASE_MANAGER.updateRace(this);
+        }
+        return true; // return true because there was no error. The game just hasn't been started yet.
     }
 }

@@ -4,6 +4,7 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
@@ -25,8 +26,11 @@ public class PlayerManager {
      * @return Return a boolean that indicates if creating the new player was a success.
      */
     public static boolean newPlayer(Player player, UUID raceID) {
-        PlayerData data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
-        if (raceID != null) {
+        PlayerData data;
+        if (raceID == null) {
+            data = new PlayerData(player.getUniqueId());
+        } else {
+            data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
             RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
         }
         UUID id = player.getUniqueId();
@@ -57,9 +61,13 @@ public class PlayerManager {
      * @return Return the result of the operation.
      */
     public static boolean updatePlayer(UUID playerID) {
-        PlayerData data = PLAYERS.get(playerID);
-        Player player = getPlayerByUUIDFromServer(playerID);
-        return DATABASE_MANAGER.updatePlayer(data, player);
+        GameManager.GameState state = GameManager.getInstance().getState();
+        if (state == GameManager.GameState.IN_PROGRESS || state == GameManager.GameState.SAVING) {
+            PlayerData data = PLAYERS.get(playerID);
+            Player player = getPlayerByUUIDFromServer(playerID);
+            return DATABASE_MANAGER.updatePlayer(data, player);
+        }
+        return true;
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
@@ -128,11 +136,60 @@ public class PlayerManager {
     }
 
     /**
+     * this checks if the player is in the database.
+     * @param playerID The id of the player to check.
+     * @return true if player exists.
+     */
+    public static boolean playerExistsInDatabase(UUID playerID) {
+        return DATABASE_MANAGER.getPlayer(playerID) != null;
+    }
+
+    /**
+     * This checks if the player exists in the given game in the database.
+     * @param gameID The id of the game.
+     * @param playerID The id of the player.
+     * @return true if the player exists.
+     */
+    public static boolean playerWithGameExistsInDatabase(UUID gameID, UUID playerID) {
+        return DATABASE_MANAGER.getPlayerFromGame(gameID, playerID) != null;
+    }
+
+    /**
      * This function gets the specified player from the server.
      * @param playerID The UUID of the player.
      * @return Return the found player.
      */
     private static Player getPlayerByUUIDFromServer(UUID playerID) {
         return SERVER.getPlayer(playerID);
+    }
+
+    /**
+     * This function retrieves a player from the database and adds it to the player list.
+     * @param playerID The ID of the player to add.
+     * @param gameID The ID of the game.
+     */
+    public static void addPlayerFromDatabase(UUID gameID, UUID playerID) {
+        try {
+            PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayerFromGame(gameID, playerID));
+            PLAYERS.putIfAbsent(playerID, data);
+            Race race = data.getRace();
+            UUID raceUUID = race.getRaceUUID();
+            RaceManager.addPlayerToRace(playerID, raceUUID);
+        } catch (Exception exception) {
+            //The player was not found in the database, so do nothing instead...
+        }
+    }
+
+    /**
+     * This removes the player from the PLAYERS list.
+     * @param playerID The ID of the player to remove.
+     */
+    public static void setPlayerOffline(UUID playerID) {
+        updatePlayer(playerID);
+        PLAYERS.remove(playerID);
+    }
+
+    public static HashMap<UUID, PlayerData> getPlayers() {
+        return (HashMap<UUID, PlayerData>) PLAYERS.clone();
     }
 }

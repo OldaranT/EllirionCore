@@ -15,7 +15,7 @@ public class CreateRaceTabCompleter implements TabCompleter {
         final List<String> completions = new ArrayList<>();
         List<String> availableColors = new ArrayList<>();
 
-        if (args.length >= 1) {
+        if (args.length > 1) {
             RaceManager.getAVAILABLE_COLORS().forEach(chatColor -> availableColors.add(chatColor.name()));
             availableColors.forEach(s -> {
                 if (s.startsWith(args[args.length - 1].toUpperCase())) {

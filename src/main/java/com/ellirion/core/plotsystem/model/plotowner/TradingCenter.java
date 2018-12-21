@@ -19,4 +19,12 @@ public class TradingCenter extends PlotOwner {
     public String getName() {
         return "TradingCenter";
     }
+
+    @Override
+    protected boolean updateDatabase() {
+        if (canUpdateInDatabase()) {
+            return PlotOwner.DATABASE_MANAGER.updateTradingCenter(this);
+        }
+        return true; // return true because there was no error. The game just hasn't been started.
+    }
 }

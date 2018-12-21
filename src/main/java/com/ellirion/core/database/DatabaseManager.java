@@ -8,21 +8,32 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import xyz.morphia.Datastore;
 import xyz.morphia.Morphia;
+import com.ellirion.core.database.dao.GameDAO;
+import com.ellirion.core.database.dao.GroundWarDAO;
 import com.ellirion.core.database.dao.PlayerDAO;
-import com.ellirion.core.database.dao.PlotDAO;
+import com.ellirion.core.database.dao.PlotCoordDAO;
 import com.ellirion.core.database.dao.RaceDAO;
+import com.ellirion.core.database.dao.TradingCenterDAO;
+import com.ellirion.core.database.model.GameDBModel;
+import com.ellirion.core.database.model.GroundwarDBModel;
 import com.ellirion.core.database.model.PlayerDBModel;
-import com.ellirion.core.database.model.PlotDBModel;
-import com.ellirion.core.database.model.PlotOwnerDBModel;
+import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.database.model.RaceDBModel;
+import com.ellirion.core.database.model.TradingCenterDBModel;
+import com.ellirion.core.gamemanager.GameManager;
+import com.ellirion.core.gamemanager.model.Game;
+import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.playerdata.model.PlayerData;
-import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
+import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.Logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class DatabaseManager {
 
@@ -31,24 +42,31 @@ public class DatabaseManager {
     private FileConfiguration connectionConfig;
     private Session session = null;
     private JSch jsch = new JSch();
+
     // ssh connection.
     private String username;
     private String host;
     private int port;
     private String privateKeyPath;
     private String passPhrase;
+
     // forwarding ports.
     private int localPort;
     private int remotePort;
     private String localHost;
     private String remoteHost;
     private String dbName;
+
     // MongoDB interfacing.
     private MongoClient mc;
+
     // The DAO's
+    private GameDAO gameDAO;
     private PlayerDAO playerDAO;
     private RaceDAO raceDAO;
-    private PlotDAO plotDAO;
+    private PlotCoordDAO plotCoordDAO;
+    private TradingCenterDAO tradingCenterDAO;
+    private GroundWarDAO groundWarDAO;
 
     /**
      * The database manager opens a session the moment it gets created which allows for access to a remote db server.
@@ -112,17 +130,13 @@ public class DatabaseManager {
         dbName = connectionConfig.getString(forwardingHeader + "DBName", "EllirionCore");
     }
 
-    private void mapDataClasses() {
-        morphia.map(PlayerDBModel.class);
-        morphia.map(RaceDBModel.class);
-        morphia.map(PlotDBModel.class);
-        morphia.map(PlotOwnerDBModel.class);
-    }
-
     private void createDatabaseAccessObjects() {
+        gameDAO = new GameDAO(GameDBModel.class, datastore);
         playerDAO = new PlayerDAO(PlayerDBModel.class, datastore);
         raceDAO = new RaceDAO(RaceDBModel.class, datastore);
-        plotDAO = new PlotDAO(PlotDBModel.class, datastore);
+        plotCoordDAO = new PlotCoordDAO(PlotCoordDBModel.class, datastore);
+        tradingCenterDAO = new TradingCenterDAO(TradingCenterDBModel.class, datastore);
+        groundWarDAO = new GroundWarDAO(GroundwarDBModel.class, datastore);
     }
 
     /**
@@ -137,6 +151,59 @@ public class DatabaseManager {
         }
     }
 
+    //region ==== Game ====
+
+    /**
+     * This saves a new game to the Database.
+     * @param game The game to be stored in the database.
+     * @return Return the outcome of the operation.
+     */
+    public boolean createGame(Game game) {
+        return gameDAO.createGame(game);
+    }
+
+    /**
+     * Get a specific game from the database.
+     * @param gameID The UUID of the game to fetch.
+     * @return return the found gameDBModel.
+     */
+    public GameDBModel getGame(UUID gameID) {
+        return gameDAO.getGame(gameID);
+    }
+
+    /**
+     * This fetches a specific game from the DB.
+     * @param uName The unique name of the game.
+     * @return Return the found game.
+     */
+    public GameDBModel getGame(String uName) {
+        return gameDAO.getGame(uName);
+    }
+
+    public List<GameDBModel> getGames() {
+        return gameDAO.getGames();
+    }
+
+    /**
+     * This updates the game in the DB.
+     * @param game The game to be updated.
+     * @return Return the result of the operation.
+     */
+    public boolean updateGame(Game game) {
+        return gameDAO.updateGame(game);
+    }
+
+    /**
+     * This deletes the game from the DB.
+     * @param game The game to be deleted.
+     * @return Return the result of the operation.
+     */
+    public boolean deleteGame(Game game) {
+        return gameDAO.deleteGame(game.getGameID());
+    }
+
+    //endregion
+
     //region ===== RACE =====
 
     /**
@@ -145,11 +212,11 @@ public class DatabaseManager {
      * @return Return the outcome of the operation.
      */
     public boolean createRace(Race race) {
-        return raceDAO.createRace(race);
+        return raceDAO.createRace(race, GameManager.getInstance().getGame().getGameID());
     }
 
-    public List<RaceDBModel> getAllRaces() {
-        return raceDAO.getAllRaces();
+    public List<RaceDBModel> getRaces() {
+        return raceDAO.getRaces();
     }
 
     /**
@@ -157,8 +224,8 @@ public class DatabaseManager {
      * @param raceID The UUID of the race to fetch.
      * @return return the found raceModel.
      */
-    public RaceDBModel getSpecificRace(UUID raceID) {
-        return raceDAO.getSpecificRace(raceID);
+    public RaceDBModel getRace(UUID raceID) {
+        return raceDAO.getRace(raceID);
     }
 
     /**
@@ -167,7 +234,20 @@ public class DatabaseManager {
      * @return Return the result of the operation.
      */
     public boolean updateRace(Race race) {
-        return raceDAO.updateRace(race);
+        return raceDAO.updateRace(race, GameManager.getInstance().getGame().getGameID());
+    }
+
+    /**
+     * This get's all the races from a specific game from the database.
+     * @param gameID The ID of the game to get the races from.
+     * @return return the found list or an empty list but not a null to prevent NPE's.
+     */
+    public List<RaceDBModel> getRaces(UUID gameID) {
+        final List<RaceDBModel> result = new ArrayList<>();
+        if (!tryCatch(() -> result.addAll(raceDAO.getGameRaces(gameID)))) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     //endregion
@@ -197,8 +277,8 @@ public class DatabaseManager {
      * Get all players from the database.
      * @return return all the users.
      */
-    public List<PlayerDBModel> getAllPlayers() {
-        return playerDAO.getAllPlayers();
+    public List<PlayerDBModel> getPlayers() {
+        return playerDAO.getPlayers();
     }
 
     /**
@@ -206,8 +286,18 @@ public class DatabaseManager {
      * @param uuid the id of the player
      * @return the player model
      */
-    public PlayerDBModel getOnePlayer(UUID uuid) {
-        return playerDAO.getSpecificPlayer(uuid);
+    public PlayerDBModel getPlayer(UUID uuid) {
+        return playerDAO.getPlayer(uuid);
+    }
+
+    /**
+     * This gets the player data for a specific game.
+     * @param gameID The ID of the game.
+     * @param playerID The ID of the player.
+     * @return Return the found data.
+     */
+    public PlayerDBModel getPlayerFromGame(UUID gameID, UUID playerID) {
+        return playerDAO.getPlayerFromGame(playerID, gameID);
     }
 
     /**
@@ -225,35 +315,81 @@ public class DatabaseManager {
     //region ===== Plot =====
 
     /**
-     * This creates a plot in the DB.
-     * @param plot The plot to be saved in the database.
-     * @return Return the result of the operation.
-     */
-    public boolean createPlot(Plot plot) {
-        return plotDAO.createPlot(plot);
-    }
-
-    /**
-     * This creates a plot in the DB from raw data.
+     * This saves a plotcoord from raw data and not a plot object to the database.
+     * @param gameID the game id of the plot.
      * @param plotCoord The plot coords class.
      * @return Return the result of the operation.
      */
-    public boolean createPlot(PlotCoord plotCoord) {
-        return plotDAO.createPlot(plotCoord);
+    public boolean createPlotCoord(UUID gameID, PlotCoord plotCoord) {
+        return plotCoordDAO.createPlotCoord(gameID, plotCoord);
     }
 
-    public List<PlotDBModel> getAllPlots() {
-        return plotDAO.getAllPlots();
+    public List<PlotCoordDBModel> getPlotCoords() {
+        return plotCoordDAO.getPlotCoords();
     }
 
     /**
-     * Get the specified plot from the DB.
-     * @param plotCoord The plot coord corrisponding with the plot
-     * @return Return the found plot.
+     * Get all plotcoords by gameID.
+     * @param gameID the gameID of the plots to fetch.
+     * @return return the found plotcoords.
      */
-    public PlotDBModel getSpecificPlot(PlotCoord plotCoord) {
-        return plotDAO.getSpecificPlot(plotCoord);
+    public List<PlotCoordDBModel> getPlotCoords(UUID gameID) {
+        return plotCoordDAO.getPlotCoords(gameID);
     }
 
+    //endregion
+
+    //region ===== Trading Center =====
+
+    /**
+     * Save the trading center to the database.
+     * @param tradingCenter The trading center to save.
+     * @return return the result of the operation.
+     */
+    public boolean createTradingCenter(TradingCenter tradingCenter) {
+        return tradingCenterDAO.createTradingCenter(tradingCenter, GameManager.getInstance().getGame().getGameID());
+    }
+
+    /**
+     * Get the trading center db model.
+     * @param game the game whose trading center model to retrieve
+     * @return a model of a trading center
+     */
+    public TradingCenterDBModel getTradingCenter(UUID game) {
+        return tradingCenterDAO.getTradingCenter(game);
+    }
+
+    /**
+     * This method calls the update method in the DAO.
+     * @param tradingCenter The tradingCenter to update.
+     * @return The result of the operation.
+     */
+    public boolean updateTradingCenter(TradingCenter tradingCenter) {
+        return tradingCenterDAO.updateTradingCenter(tradingCenter);
+    }
+
+    //endregion
+
+    //region ===== Ground War =====
+
+    /**
+     * This creates a groundwar in the database.
+     * @param groundWar The groundwar to save to the database.
+     * @param gameID The game ID.
+     * @return Return the result of the operation.
+     */
+    public boolean createGroundWar(GroundWar groundWar, UUID gameID) {
+        return groundWarDAO.createGroundWar(groundWar, gameID);
+    }
+
+    /**
+     * This updates the groundwar in the database.
+     * @param groundWar The groundwar to update.
+     * @param gameID The gameID.
+     * @return return the result of the operation.
+     */
+    public boolean updateGroundWar(GroundWar groundWar, UUID gameID) {
+        return groundWarDAO.updateGroundWar(groundWar, gameID);
+    }
     //endregion
 }

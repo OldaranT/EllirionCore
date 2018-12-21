@@ -5,12 +5,16 @@ import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.RaceDBModel;
 import com.ellirion.core.race.model.Race;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 
     private String id = "_id";
+    private String gameIDColumn = "gameID";
 
     /**
      * Create a new RaceDAO.
@@ -22,17 +26,17 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
     }
 
     private boolean saveRace(RaceDBModel race) {
-        save(race);
-        return true;
+        return tryCatch(() -> save(race));
     }
 
     /**
      * This creates a new race in the database.
      * @param race The race that is to be added to the DB.
+     * @param gameID The ID of the game where the race is from.
      * @return Return the result of the operation.
      */
-    public boolean createRace(Race race) {
-        return saveRace(new RaceDBModel(race));
+    public boolean createRace(Race race, UUID gameID) {
+        return saveRace(new RaceDBModel(race, gameID));
     }
 
     /**
@@ -40,23 +44,37 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @param raceID The UUID of the race.
      * @return Return the found race.
      */
-    public RaceDBModel getSpecificRace(UUID raceID) {
+    public RaceDBModel getRace(UUID raceID) {
         return findOne(id, raceID);
     }
 
-    public List<RaceDBModel> getAllRaces() {
+    public List<RaceDBModel> getRaces() {
         return find().asList();
+    }
+
+    /**
+     * This get's all the races from a specific game.
+     * @param gameID The ID of the game to get the races from.
+     * @return return the found races.
+     */
+    public List<RaceDBModel> getGameRaces(UUID gameID) {
+        final List<RaceDBModel> result = new ArrayList<>();
+        if (!tryCatch(() -> result.addAll(createQuery().filter(gameIDColumn, gameID).asList()))) {
+            return new ArrayList<>();
+        }
+        return result;
     }
 
     /**
      * This method updates a race in the database.
      * @param race The race that should be updated in the DB.
+     * @param gameID The ID of the game where this race belongs.
      * @return Return the result of the operation.
      */
-    public boolean updateRace(Race race) {
-        RaceDBModel model = getSpecificRace(race.getRaceUUID());
+    public boolean updateRace(Race race, UUID gameID) {
+        RaceDBModel model = getRace(race.getRaceUUID());
         if (model == null) {
-            return createRace(race);
+            return createRace(race, gameID);
         }
         model.update(race);
         return saveRace(model);
@@ -68,8 +86,6 @@ public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
      * @return Return the result of the operation.
      */
     public boolean deleteRace(UUID raceID) {
-        RaceDBModel race = findOne(id, raceID);
-        delete(race);
-        return true;
+        return tryCatch(() -> delete(findOne(id, raceID)));
     }
 }
