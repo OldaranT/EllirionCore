@@ -16,6 +16,7 @@ import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.MinecraftHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -239,6 +240,8 @@ public class GameManager {
             xOffset = 0;
             zOffset = 0;
 
+            MinecraftHelper.removeAllTeams();
+
             state = GameState.NOT_STARTED;
         });
     }
@@ -280,7 +283,7 @@ public class GameManager {
             stringBuilder.append(spacer).append(race.getTeamColor()).append(race.getName())
                     .append(ChatColor.RESET).append(": ").append(newLine)
                     .append(spacer).append(spacer).append("Alias: ")
-                    .append(race.getAlias()).append(newLine)
+                    .append(race.getTeamColor()).append(race.getAlias()).append(newLine)
                     .append(spacer).append(spacer).append("Homeplot: ")
                     .append(race.getHomePlot().getName()).append(newLine);
         }

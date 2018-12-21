@@ -36,7 +36,6 @@ public class ConfirmGroundWarCommand implements CommandExecutor {
         if (groundWar.getPlotA() != null && groundWar.getPlotB() != null) {
             GroundWarManager.confirmGroundWar(groundWar);
         }
-
         return false;
     }
 }

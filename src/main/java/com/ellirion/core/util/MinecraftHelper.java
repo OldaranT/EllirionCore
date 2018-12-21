@@ -2,6 +2,10 @@ package com.ellirion.core.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
+import com.ellirion.core.EllirionCore;
 
 public class MinecraftHelper {
 
@@ -49,5 +53,16 @@ public class MinecraftHelper {
         }
 
         return null;
+    }
+
+    /**
+     * Remove all teams from scoreboard.
+     */
+    public static void removeAllTeams() {
+        ScoreboardManager scoreboardManager = EllirionCore.getINSTANCE().getServer().getScoreboardManager();
+        Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
+        for (Team team : mainScoreboard.getTeams()) {
+            team.unregister();
+        }
     }
 }

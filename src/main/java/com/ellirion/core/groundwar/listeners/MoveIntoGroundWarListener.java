@@ -2,6 +2,7 @@ package com.ellirion.core.groundwar.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
@@ -21,6 +22,12 @@ public class MoveIntoGroundWarListener extends TeleportBackEventListener {
         //See if the player moved to a plot that isn't in the ground war
         Plot plotTo = event.getPlotTo();
         Plot plotFrom = event.getPlotFrom();
+
+        String byPassPermission = EllirionCore.getINSTANCE().getConfig().getString("GroundWar.ByPassPermission");
+
+        if (player.hasPermission(byPassPermission)) {
+            return;
+        }
 
         //Check if plotTo is involved in a ground war
         GroundWar groundWar = GroundWarManager.getGroundWar(plotTo);

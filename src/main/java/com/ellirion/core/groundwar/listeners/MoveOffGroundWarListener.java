@@ -2,6 +2,7 @@ package com.ellirion.core.groundwar.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
@@ -23,6 +24,12 @@ public class MoveOffGroundWarListener extends TeleportBackEventListener {
         Plot plotFrom = event.getPlotFrom();
 
         GroundWar groundWar = GroundWarManager.getGroundWar(plotFrom);
+
+        String byPassPermission = EllirionCore.getINSTANCE().getConfig().getString("GroundWar.ByPassPermission");
+
+        if (player.hasPermission(byPassPermission)) {
+            return;
+        }
 
         if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS &&
             groundWar.containsParticipant(player.getUniqueId()) &&

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import com.ellirion.core.EllirionCore;
 import com.ellirion.core.groundwar.GroundWarManager;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.PlotManager;
@@ -23,6 +24,12 @@ public class PlayerTeleportDuringGroundWarListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
+
+        String byPassPermission = EllirionCore.getINSTANCE().getConfig().getString("GroundWar.ByPassPermission");
+
+        if (player.hasPermission(byPassPermission)) {
+            return;
+        }
 
         Location teleportTo = event.getTo();
         Plot plotTo = PlotManager.getPlotFromLocation(teleportTo);

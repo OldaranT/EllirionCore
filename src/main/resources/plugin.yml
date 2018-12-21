@@ -83,6 +83,12 @@ commands:
       aliases: [game-load]
       permission: ellirion.core.game.loadgame
       permission-message: §4You do not have permission for this command!§r
+  UnloadGame:
+      description: Unload the game from the database by name
+      usage: /UnloadGame <GameName>
+      aliases: [game-unload]
+      permission: ellirion.core.game.unloadgame
+      permission-message: §4You do not have permission for this command!§r
   ConfirmGamemode:
       description: Confirm the gamemode and start saving configuration.
       usage: /confirmgamemode while on the last step of the setu

@@ -3,6 +3,7 @@ package com.ellirion.core.groundwar.model;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -229,6 +230,7 @@ public class GroundWar {
                                         UUID playerID) {
         PlotCoord direction = plotA.getPlotCoord().subtract(plotB.getPlotCoord());
         Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
+        Boolean isAllowedToTeleport = false;
 
         Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(),
                                                           player.getLocation().getPitch());
@@ -257,7 +259,31 @@ public class GroundWar {
         int x = random.nextInt(maxX - minX) + minX;
         int z = random.nextInt(maxZ - minZ) + minZ;
 
-        return world.getHighestBlockAt(x, z).getLocation();
+        Location teleportToLocation = world.getHighestBlockAt(x, z).getLocation();
+        while (!isAllowedToTeleport) {
+            if (checkLocation(teleportToLocation)) {
+                isAllowedToTeleport = true;
+            } else {
+                teleportToLocation.setY(teleportToLocation.getBlockY() - 1);
+            }
+        }
+        
+        return teleportToLocation;
+    }
+
+    private boolean checkLocation(Location location) {
+        List<String> allowedBlocks = EllirionCore.getINSTANCE().getConfig().getStringList(
+                "GroundWar.DefaultAllowedTeleportBlocks");
+
+        List<Material> allowedMateriel = new ArrayList<>();
+
+        for (String block : allowedBlocks) {
+            allowedMateriel.add(Material.getMaterial(block));
+        }
+
+        return allowedMateriel.contains(location.getBlock().getType()) &&
+               !location.getBlock().getRelative(0, 1, 0).getType().isSolid() &&
+               !location.getBlock().getRelative(0, 2, 0).getType().isSolid();
     }
 
     private WarTeam[] copyTeams() {
@@ -354,7 +380,8 @@ public class GroundWar {
             sb.append(raceA.getTeamColor()).append(raceA.getName()).append(": \n")
                     .append(raceA.getTeamColor()).append("Captain: ").append(
                     server.getOfflinePlayer(teams[0].getCaptain()).getName()).append(ChatColor.RESET).append('\n')
-                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(" lives remaining\nParticipants remaining: ")
+                    .append(raceA.getTeamColor()).append(teams[0].getLives()).append(
+                    " lives remaining\nParticipants remaining: ")
                     .append(teams[0].getParticipants().size())
                     .append(ChatColor.RESET).append('\n')
                     .append(raceB.getTeamColor()).append(raceB.getName()).append(": \n")

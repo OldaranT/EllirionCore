@@ -1,6 +1,7 @@
 package com.ellirion.core;
 
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
@@ -15,10 +16,14 @@ import com.ellirion.core.gamemanager.command.ConfirmGamemodeCommand;
 import com.ellirion.core.gamemanager.command.GetGameStateCommand;
 import com.ellirion.core.gamemanager.command.LoadGameModeCommand;
 import com.ellirion.core.gamemanager.command.NextSetupStepCommand;
+import com.ellirion.core.gamemanager.command.UnloadGameModeCommand;
+import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
+import com.ellirion.core.groundwar.command.CancelGroundWarCommand;
 import com.ellirion.core.groundwar.command.ConfirmGroundWarCommand;
 import com.ellirion.core.groundwar.command.CreateGroundwarCommand;
 import com.ellirion.core.groundwar.command.GetGroundWarCommand;
 import com.ellirion.core.groundwar.command.JoinGroundWarCommand;
+import com.ellirion.core.groundwar.command.LeaveGroundWarCommand;
 import com.ellirion.core.groundwar.command.WagerPlotCommand;
 import com.ellirion.core.groundwar.listeners.MoveIntoGroundWarListener;
 import com.ellirion.core.groundwar.listeners.MoveOffGroundWarListener;
@@ -27,13 +32,10 @@ import com.ellirion.core.groundwar.listeners.PlayerLeaveDuringGroundWarListener;
 import com.ellirion.core.groundwar.listeners.PlayerTeleportDuringGroundWarListener;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerJoin;
 import com.ellirion.core.playerdata.eventlistener.OnPlayerQuit;
-import com.ellirion.core.groundwar.command.CancelGroundWarCommand;
-import com.ellirion.core.gamemanager.util.GameNameTabCompleter;
 import com.ellirion.core.plotsystem.command.ClaimPlotCommand;
 import com.ellirion.core.plotsystem.command.CreatePlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotMapCommand;
-import com.ellirion.core.groundwar.command.LeaveGroundWarCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
 import com.ellirion.core.plotsystem.listener.PlotListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
@@ -43,9 +45,11 @@ import com.ellirion.core.race.eventlistener.OnFriendlyFire;
 import com.ellirion.core.race.util.CreateRaceTabCompleter;
 import com.ellirion.core.race.util.RaceNameTabCompleter;
 import com.ellirion.core.util.Logging;
+import com.ellirion.core.util.MinecraftHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class EllirionCore extends JavaPlugin {
@@ -81,6 +85,7 @@ public class EllirionCore extends JavaPlugin {
         registerTabCompleters();
         createDBconnectionConfig();
         createConfig();
+        MinecraftHelper.removeAllTeams();
         dbManager = new DatabaseManager(dbConnectionConfig);
         setup();
         getLogger().info("EllirionCore is enabled.");
@@ -104,6 +109,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("GameState").setExecutor(new GetGameStateCommand());
         getCommand("NextStep").setExecutor(new NextSetupStepCommand());
         getCommand("LoadGame").setExecutor(new LoadGameModeCommand());
+        getCommand("UnloadGame").setExecutor(new UnloadGameModeCommand());
         getCommand("AssignTradingCenter").setExecutor(new AssignTradingCenterCommand());
         getCommand("ConfirmGamemode").setExecutor(new ConfirmGamemodeCommand());
         getCommand("CancelSetup").setExecutor(new CancelSetupCommand());
@@ -171,6 +177,20 @@ public class EllirionCore extends JavaPlugin {
 
         config.addDefault("GroundWar.MinPlayersPerTeam", 2);
         config.addDefault("GroundWar.WaitTime", 20);
+        config.addDefault("GroundWar.ByPassPermission", "ellirion.core.war.bypass");
+
+        //Add allowed teleport blocks
+        config.set("GroundWar.DefaultAllowedTeleportBlocks", Arrays.asList(
+                Material.WATER.toString(),
+                Material.STONE.toString(),
+                Material.SAND.toString(),
+                Material.SNOW.toString(),
+                Material.GRASS.toString(),
+                Material.DIRT.toString(),
+                Material.GRAVEL.toString(),
+                Material.SOUL_SAND.toString(),
+                Material.COBBLESTONE.toString()
+        ));
 
         config.options().copyDefaults(true);
         try {
@@ -197,6 +217,7 @@ public class EllirionCore extends JavaPlugin {
         getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("JoinRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("LoadGame").setTabCompleter(new GameNameTabCompleter());
+        getCommand("UnloadGame").setTabCompleter(new GameNameTabCompleter());
     }
 }
 
