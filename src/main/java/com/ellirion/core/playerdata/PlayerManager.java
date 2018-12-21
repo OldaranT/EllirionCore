@@ -1,15 +1,23 @@
 package com.ellirion.core.playerdata;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
 
 import java.util.HashMap;
 import java.util.UUID;
+
+import static com.ellirion.core.util.GenericTryCatch.*;
 
 public class PlayerManager {
 
@@ -60,9 +68,13 @@ public class PlayerManager {
      * @return Return the result of the operation.
      */
     public static boolean updatePlayer(UUID playerID) {
-        PlayerData data = PLAYERS.get(playerID);
-        Player player = getPlayerByUUIDFromServer(playerID);
-        return DATABASE_MANAGER.updatePlayer(data, player);
+        GameManager.GameState state = GameManager.getInstance().getState();
+        if (state == GameManager.GameState.IN_PROGRESS || state == GameManager.GameState.SAVING) {
+            PlayerData data = PLAYERS.get(playerID);
+            Player player = getPlayerByUUIDFromServer(playerID);
+            return DATABASE_MANAGER.updatePlayer(data, player);
+        }
+        return true;
     }
 
     private static boolean savePlayer(Player player, PlayerData data) {
@@ -90,6 +102,7 @@ public class PlayerManager {
         }
         PlayerData data = getPlayerData(playerID);
         data.setRace(RaceManager.getRaceByID(raceID));
+        updateScoreboard(SERVER.getPlayer(playerID));
         DATABASE_MANAGER.updatePlayer(data, player);
         return true;
     }
@@ -140,6 +153,16 @@ public class PlayerManager {
     }
 
     /**
+     * This checks if the player exists in the given game in the database.
+     * @param gameID The id of the game.
+     * @param playerID The id of the player.
+     * @return true if the player exists.
+     */
+    public static boolean playerWithGameExistsInDatabase(UUID gameID, UUID playerID) {
+        return DATABASE_MANAGER.getPlayerFromGame(gameID, playerID) != null;
+    }
+
+    /**
      * This function gets the specified player from the server.
      * @param playerID The UUID of the player.
      * @return Return the found player.
@@ -151,10 +174,12 @@ public class PlayerManager {
     /**
      * This function retrieves a player from the database and adds it to the player list.
      * @param playerID The ID of the player to add.
+     * @param gameID The ID of the game.
      */
-    public static void addPlayerFromDatabase(UUID playerID) {
-        PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayer(playerID));
+    public static void addPlayerFromDatabase(UUID gameID, UUID playerID) {
+        PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayerFromGame(gameID, playerID));
         PLAYERS.putIfAbsent(playerID, data);
+        RaceManager.addPlayerToRace(playerID, data.getRace().getRaceUUID());
     }
 
     /**
@@ -164,5 +189,39 @@ public class PlayerManager {
     public static void setPlayerOffline(UUID playerID) {
         updatePlayer(playerID);
         PLAYERS.remove(playerID);
+    }
+
+    /**
+     * Update the scoreboard of the player.
+     * @param player the player to update scoreboard for.
+     */
+    public static void updateScoreboard(Player player) {
+
+        Race race = PlayerManager.getPlayerRace(player.getUniqueId());
+
+        if (race == null) {
+            return;
+        }
+
+        ChatColor raceColor = race.getTeamColor();
+
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
+        Team raceTeam = mainScoreboard.getTeam(race.getName());
+
+        //Remove old raceTeams first.
+        for (Team team : mainScoreboard.getTeams()) {
+            tryCatch(() -> team.removePlayer(player));
+        }
+
+        if (raceTeam == null) {
+            raceTeam = mainScoreboard.registerNewTeam(race.getName());
+        }
+        raceTeam.setPrefix(raceColor + "" + ChatColor.BOLD + race.getName() + ChatColor.RESET + " | ");
+        raceTeam.addPlayer(player);
+    }
+
+    public static HashMap<UUID, PlayerData> getPlayers() {
+        return (HashMap<UUID, PlayerData>) PLAYERS.clone();
     }
 }

@@ -1,5 +1,6 @@
 package com.ellirion.core.groundwar.model;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,10 +16,10 @@ import static com.ellirion.core.util.StringHelper.*;
 
 public class GroundWarResults {
 
-    private Date started;
-    private Date ended;
-    private UUID createdBy;
-    @Setter private WarTeam[] initialTeams;
+    @Getter private Date started;
+    @Getter private Date ended;
+    @Getter private UUID createdBy;
+    @Getter @Setter private WarTeam[] initialTeams;
     @Setter private WarTeam winner;
     @Setter private WarTeam loser;
 
@@ -43,7 +44,7 @@ public class GroundWarResults {
         String newLine = ChatColor.RESET + "\n";
         String spacer = "   ";
         StringBuilder stringBuilder = new StringBuilder(175);
-        Player creator = EllirionCore.getINSTANCE().getServer().getPlayer(createdBy);
+        Player creator = EllirionCore.getINSTANCE().getServer().getOfflinePlayer(createdBy).getPlayer();
         Race warWinner = PlayerManager.getPlayerRace(winner.getCaptain());
         Race warLoser = PlayerManager.getPlayerRace(loser.getCaptain());
         stringBuilder.append(newLine)
@@ -63,7 +64,7 @@ public class GroundWarResults {
             for (Participant participant : warTeam.getParticipants()) {
                 stringBuilder.append(spacer).append("- ").append(
                         PlayerManager.getPlayerRace(warTeam.getCaptain()).getTeamColor()).append(
-                        EllirionCore.getINSTANCE().getServer().getPlayer(participant.getPlayer()).getDisplayName())
+                        participant.getDisplayName())
                         .append(newLine);
             }
         }

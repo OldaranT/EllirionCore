@@ -4,10 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.UUID;
 
 import static com.ellirion.core.playerdata.PlayerManager.*;
+import static com.ellirion.core.playerdata.util.JoinPlayer.*;
 
 public class OnPlayerJoin implements Listener {
 
@@ -18,12 +20,12 @@ public class OnPlayerJoin implements Listener {
     public void onPlayerJoinEventListener(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
-        if (playerexists(playerID) || playerExistsInDatabase(playerID)) {
-            event.setJoinMessage("Welcome back " + player.getName() + "!");
-            addPlayerFromDatabase(playerID);
-        } else {
-            event.setJoinMessage("Welcome " + player.getName() + "!");
-            newPlayer(player, null);
+        GameManager.GameState state = GameManager.getInstance().getState();
+        if (state != GameManager.GameState.IN_PROGRESS && state != GameManager.GameState.SAVING) {
+            return;
         }
+
+        updateScoreboard(player);
+        joinPlayer(playerID);
     }
 }

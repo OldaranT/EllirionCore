@@ -2,10 +2,12 @@ package com.ellirion.core.database.model;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import xyz.morphia.annotations.Embedded;
 import xyz.morphia.annotations.Entity;
 import xyz.morphia.annotations.Id;
-import xyz.morphia.annotations.Indexed;
 import xyz.morphia.annotations.Property;
+import com.ellirion.core.database.util.PlayerDBKey;
+import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
 import com.ellirion.core.race.model.Race;
 
@@ -16,9 +18,7 @@ import java.util.UUID;
 @Entity(value = "Player", noClassnameStored = true)
 public class PlayerDBModel {
 
-    @Id @Indexed @Getter private UUID playerID;
-
-    @Indexed @Getter private UUID gameID;
+    @Id @Embedded @Getter private PlayerDBKey playerDBKey;
 
     @Getter private UUID raceID;
 
@@ -39,11 +39,10 @@ public class PlayerDBModel {
      * @param gameID The UUID of the game.
      */
     public PlayerDBModel(final Player player, final UUID raceID, final UUID gameID) {
-        playerID = player.getUniqueId();
+        playerDBKey = new PlayerDBKey(gameID, raceID);
         String ip = player.getAddress().getHostName();
         this.raceID = raceID;
         ipHistory.add(ip);
-        this.gameID = gameID;
     }
 
     /**
@@ -52,10 +51,10 @@ public class PlayerDBModel {
      * @param player The player that is going to be saved.
      */
     public PlayerDBModel(final PlayerData data, final Player player) {
-        playerID = player.getUniqueId();
+        playerDBKey = new PlayerDBKey(GameManager.getInstance().getGameID(), player.getUniqueId());
         String ip = player.getAddress().getHostName();
         Race race = data.getRace();
-        setRaceID(race);
+        raceID = retrieveRaceID(race);
         ipHistory.add(ip);
     }
 
@@ -69,15 +68,18 @@ public class PlayerDBModel {
      * @param player The player that this DB model belongs to.
      */
     public void update(PlayerData data, Player player) {
-        setRaceID(data.getRace());
+        Race race = data.getRace();
+        UUID raceID = retrieveRaceID(race);
+        this.raceID = raceID;
         ipHistory.add(player.getAddress().getHostName());
     }
 
-    private void setRaceID(Race race) {
+    private UUID retrieveRaceID(Race race) {
         if (race == null) {
-            raceID = null;
+            return null;
         } else {
-            raceID = race.getRaceUUID();
+            return race.getRaceUUID();
         }
     }
 }
+

@@ -9,15 +9,18 @@ import java.util.UUID;
 
 public class Participant {
     @Getter private UUID player;
+    @Getter private String displayName;
     @Getter private Location respawnLocationAfterGroundWar;
 
     /**
      * Create a participant.
      * @param player the player this participant represents
+     * @param displayName the display name of the player.
      * @param location the location of the participant
      */
-    public Participant(final UUID player, final Location location) {
+    public Participant(final UUID player, final String displayName, final Location location) {
         this.player = player;
+        this.displayName = displayName;
         respawnLocationAfterGroundWar = location;
     }
 

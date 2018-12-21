@@ -2,7 +2,6 @@ package com.ellirion.core.groundwar.model;
 
 import lombok.Getter;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -12,7 +11,6 @@ import org.bukkit.potion.PotionEffectType;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.GroundWarManager;
-import com.ellirion.core.playerdata.PlayerManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
@@ -23,8 +21,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static com.ellirion.core.util.MinecraftHelper.*;
-
 public class GroundWar {
 
     @Getter private Race raceA;
@@ -32,8 +28,8 @@ public class GroundWar {
     private Plot[] plots;
     @Getter private UUID createdBy;
     @Getter private State state;
-    private WarTeam[] teams;
-    private GroundWarResults results;
+    @Getter private WarTeam[] teams;
+    @Getter private GroundWarResults results;
 
     /**
      * Create raceA ground war.
@@ -144,6 +140,15 @@ public class GroundWar {
     }
 
     /**
+     * Check whether a player is in this team (for players that have quit the server and are rejoining).
+     * @param playerID the player to check
+     * @return whether the player is in this Team
+     */
+    public boolean containsPlayer(UUID playerID) {
+        return (teams[0].getPlayers().contains(playerID) || teams[1].getPlayers().contains(playerID));
+    }
+
+    /**
      * Start the ground war.
      * Teleports the players.
      */
@@ -174,14 +179,12 @@ public class GroundWar {
         for (WarTeam warTeam : teams) {
 
             Player player = EllirionCore.getINSTANCE().getServer().getPlayer(warTeam.getCaptain());
-            Race race = PlayerManager.getPlayerRace(warTeam.getCaptain());
-            Color color = translateChatColorToColor(race.getTeamColor());
             player.addPotionEffect(
-                    new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1, false, false, color));
+                    new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 1));
         }
     }
 
-    private void removeGlowingToCaptains() {
+    private void removeGlowingFromCaptains() {
         for (WarTeam warTeam : teams) {
             Player player = EllirionCore.getINSTANCE().getServer().getPlayer(warTeam.getCaptain());
             player.removePotionEffect(PotionEffectType.GLOWING);
@@ -220,11 +223,13 @@ public class GroundWar {
      * @param playerID the playerID
      * @return A random location within an area of the player's own plot
      */
-    public Location getTeleportLocation(World world, int plotSize, Random random, Plot plotA, Plot plotB, UUID playerID) {
+    public Location getTeleportLocation(World world, int plotSize, Random random, Plot plotA, Plot plotB,
+                                        UUID playerID) {
         PlotCoord direction = plotA.getPlotCoord().subtract(plotB.getPlotCoord());
         Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
 
-        Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(), player.getLocation().getPitch());
+        Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(),
+                                                          player.getLocation().getPitch());
         int outerBoundX = (int) centerLocation.getX() + (direction.getX() * plotSize / 2);
         int outerBoundZ = (int) centerLocation.getZ() + (direction.getZ() * plotSize / 2);
         int innerBoundX = (int) centerLocation.getX() + (direction.getX() * plotSize / 4);
@@ -392,9 +397,10 @@ public class GroundWar {
         }
 
         //TODO Save GroundWar to database
+        EllirionCore.getINSTANCE().getDbManager().createGroundWar(this, GameManager.getInstance().getGameID());
 
         //Remove glowing effect for Captain.
-        removeGlowingToCaptains();
+        removeGlowingFromCaptains();
 
         //Broadcast a report of the results.
         EllirionCore.getINSTANCE().getServer().broadcastMessage(results.toString());
@@ -423,7 +429,8 @@ public class GroundWar {
      */
     public boolean checkForReady() {
         int playersPerTeam = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.MinPlayersPerTeam");
-        return (teams[0].getParticipants().size() >= playersPerTeam && teams[1].getParticipants().size() >= playersPerTeam);
+        return (teams[0].getParticipants().size() >= playersPerTeam &&
+                teams[1].getParticipants().size() >= playersPerTeam);
     }
 
     /**
