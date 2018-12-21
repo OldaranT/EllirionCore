@@ -180,9 +180,11 @@ public class PlayerManager {
         try {
             PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayerFromGame(gameID, playerID));
             PLAYERS.putIfAbsent(playerID, data);
-            RaceManager.addPlayerToRace(playerID, data.getRace().getRaceUUID());
-        } catch (Exception ex) {
-            //Do nothing if we can;t load the player, bc it doesn't exist in the game
+            Race race = data.getRace();
+            UUID raceUUID = race.getRaceUUID();
+            RaceManager.addPlayerToRace(playerID, raceUUID);
+        } catch (Exception exception) {
+            //The player was not found in the database, so do nothing instead...
         }
     }
 
