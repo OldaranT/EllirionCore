@@ -13,7 +13,6 @@ import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.UUID;
 
-import static com.ellirion.core.playerdata.PlayerManager.*;
 import static com.ellirion.core.playerdata.util.JoinPlayer.*;
 
 public class OnPlayerJoin implements Listener {
@@ -46,7 +45,7 @@ public class OnPlayerJoin implements Listener {
             return;
         }
 
-        updateScoreboard(player);
+        PlayerManager.updateScoreboard(player);
         joinPlayer(playerID);
     }
 }
