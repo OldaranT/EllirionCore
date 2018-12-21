@@ -169,9 +169,15 @@ public class PlayerManager {
      * @param gameID The ID of the game.
      */
     public static void addPlayerFromDatabase(UUID gameID, UUID playerID) {
-        PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayerFromGame(gameID, playerID));
-        PLAYERS.putIfAbsent(playerID, data);
-        RaceManager.addPlayerToRace(playerID, data.getRace().getRaceUUID());
+        try {
+            PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayerFromGame(gameID, playerID));
+            PLAYERS.putIfAbsent(playerID, data);
+            Race race = data.getRace();
+            UUID raceUUID = race.getRaceUUID();
+            RaceManager.addPlayerToRace(playerID, raceUUID);
+        } catch (Exception exception) {
+            //The player was not found in the database, so do nothing instead...
+        }
     }
 
     /**
