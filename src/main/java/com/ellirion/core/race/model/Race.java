@@ -45,7 +45,7 @@ public class Race extends PlotOwner {
         super(raceDBModel.getRaceID(), raceDBModel.getOwnedPlots());
         name = raceDBModel.getRaceName();
         players = raceDBModel.getPlayers();
-        teamColor = ChatColor.getByChar(raceDBModel.getColor());
+        teamColor = ChatColor.getByChar(raceDBModel.getColor().substring(1));
         PlotCoord homePlotCoord = raceDBModel.getHomePlotCoord();
         homePlot = PlotManager.getPlotByCoordinate(homePlotCoord);
     }

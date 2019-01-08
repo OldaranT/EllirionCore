@@ -1,5 +1,6 @@
 package com.ellirion.core.plotsystem.listener;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -7,6 +8,10 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
+import com.ellirion.core.util.Logging;
+import com.ellirion.core.util.PlayerScoreboardManager;
+import com.ellirion.core.util.model.PlayerScoreboard;
+import com.ellirion.util.async.Promise;
 
 public class PlotListener implements Listener {
 
@@ -28,7 +33,15 @@ public class PlotListener implements Listener {
             }
 
             if (!from.equals(to)) {
-                new PlotChangeEvent(event.getPlayer(), from, to).call();
+                new Promise<Boolean>(r -> {
+                    try {
+                        Thread.sleep(20);
+                    } catch (Exception e) {
+                        Logging.printStackTrace(e);
+                    }
+                    new PlotChangeEvent(event.getPlayer(), from, to).call();
+                    r.resolve(true);
+                }, true);
             }
         }
     }
@@ -43,6 +56,11 @@ public class PlotListener implements Listener {
                                       event.getPlotFrom().getName() + " to " +
                                       event.getPlotTo().getName() + "\nThis Plot is owned by " +
                                       event.getPlotTo().getOwner().getName());
+
+        Player player = event.getPlayer();
+        PlayerScoreboard board = PlayerScoreboardManager.getPlayerScoreboard(player.getUniqueId());
+        board.updateBoard();
+        board.showScoreboard();
     }
 }
 

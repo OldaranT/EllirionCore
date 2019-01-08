@@ -33,7 +33,7 @@ public class PlayerLeaveDuringGroundWarListener implements Listener {
             return;
         }
 
-        groundWar.playerDied(playerID);
+        //player was not removed from the groundwar
         WarTeam team = groundWar.getTeam(playerID);
         List<Participant> participants = team.getParticipants();
         Participant toRemove = null;
@@ -44,6 +44,8 @@ public class PlayerLeaveDuringGroundWarListener implements Listener {
             }
         }
         participants.remove(toRemove);
+
+        groundWar.playerDied(playerID);
     }
 
     /**
