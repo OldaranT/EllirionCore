@@ -43,6 +43,9 @@ public class DatabaseManager {
     private Session session = null;
     private JSch jsch = new JSch();
 
+    // Is the database local?
+    private boolean localDB;
+
     // ssh connection.
     private String username;
     private String host;
@@ -75,8 +78,11 @@ public class DatabaseManager {
     public DatabaseManager(final FileConfiguration configuration) {
         connectionConfig = configuration;
         applyConfig();
+        if (!localDB)
         // try to reach the remote database.
-        connectToServer();
+        {
+            connectToServer();
+        }
         // create your mongo client.
         mc = new MongoClient(localHost, localPort);
 
@@ -114,20 +120,28 @@ public class DatabaseManager {
     }
 
     private void applyConfig() {
-        // ssh connection data.
-        String sshHeader = connectionConfig.getString("sshHeader", "ssh_connection.");
-        username = connectionConfig.getString(sshHeader + "username", "root");
-        host = connectionConfig.getString(sshHeader + "host");
-        port = connectionConfig.getInt(sshHeader + "port", 22);
-        privateKeyPath = connectionConfig.getString(sshHeader + "privateKeyPath");
-        passPhrase = connectionConfig.getString(sshHeader + "passPhrase");
-        // db coonection data.
+        // Is the DB local?
+        localDB = connectionConfig.getBoolean("localDB", false);
+
         String forwardingHeader = connectionConfig.getString("forwardingHeader", "forwarding_data.");
+
         localPort = connectionConfig.getInt(forwardingHeader + "localPort", 27017);
-        remotePort = connectionConfig.getInt(forwardingHeader + "remotePort", 27017);
         localHost = connectionConfig.getString(forwardingHeader + "localHost", "localhost");
-        remoteHost = connectionConfig.getString(forwardingHeader + "remoteHost", "localhost");
         dbName = connectionConfig.getString(forwardingHeader + "DBName", "EllirionCore");
+
+        if (!localDB) {
+            // ssh connection data.
+            String sshHeader = connectionConfig.getString("sshHeader", "ssh_connection.");
+            username = connectionConfig.getString(sshHeader + "username", "root");
+            host = connectionConfig.getString(sshHeader + "host");
+            port = connectionConfig.getInt(sshHeader + "port", 22);
+            privateKeyPath = connectionConfig.getString(sshHeader + "privateKeyPath");
+            passPhrase = connectionConfig.getString(sshHeader + "passPhrase");
+            
+            // db coonection data.
+            remotePort = connectionConfig.getInt(forwardingHeader + "remotePort", 27017);
+            remoteHost = connectionConfig.getString(forwardingHeader + "remoteHost", "localhost");
+        }
     }
 
     private void createDatabaseAccessObjects() {
