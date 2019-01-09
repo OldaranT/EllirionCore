@@ -25,7 +25,7 @@ public class OnPlayerJoin implements Listener {
             return;
         }
 
-        updateScoreboard(player);
         joinPlayer(playerID);
+        updateScoreboard(player);
     }
 }

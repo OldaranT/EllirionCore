@@ -39,8 +39,9 @@ public class CreateRaceCommand implements CommandExecutor {
 
         if (strings.length <= 0) {
             player.sendMessage(
-                    ChatColor.DARK_RED +
-                    "Please give a race name , race alias needs to be between 3 to 7 characters and a color");
+                    ChatColor.DARK_RED + "To create a race use the following arguments: \n" +
+                    "<RACE-NAME> <ALIAS> <COLOR> \n" +
+                    "The alias needs to be between 3 and 7 characters and in uppercase and you can autocomplete the color.");
             return true;
         }
         if (strings.length == 1) {
@@ -49,15 +50,16 @@ public class CreateRaceCommand implements CommandExecutor {
         }
         if (strings.length == 2) {
             player.sendMessage(
-                    ChatColor.DARK_RED + "You forgot on of following params: the name, the alias or the color");
+                    ChatColor.DARK_RED + "You forgot one of following params: the name, the alias or the color");
             return true;
         }
 
         String raceName = normalNameCasing(String.join(" ", Arrays.copyOf(strings, strings.length - 2)));
-        String raceAlias = strings[strings.length - 2];
+        String raceAlias = strings[strings.length - 2].toUpperCase();
 
         if (!raceAlias.matches("^[A-Z0-9]{3,7}$")) {
-            player.sendMessage(ChatColor.DARK_RED + "The race alias needs to be between 3 to 7 characters.");
+            player.sendMessage(
+                    ChatColor.DARK_RED + "The race alias needs to be between 3 to 7 characters and uppercase.");
             return true;
         }
 
@@ -78,7 +80,7 @@ public class CreateRaceCommand implements CommandExecutor {
 
         Plot plot = PlotManager.getPlotFromLocation(player.getLocation());
         if (!(plot.getOwner() instanceof Wilderness)) {
-            player.sendMessage(ChatColor.DARK_RED + "You can only create race on unowned plots!");
+            player.sendMessage(ChatColor.DARK_RED + "You can only create race on unowned(Wilderness) plots!");
             return true;
         }
 

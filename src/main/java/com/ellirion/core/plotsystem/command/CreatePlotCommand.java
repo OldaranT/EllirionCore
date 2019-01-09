@@ -48,7 +48,8 @@ public class CreatePlotCommand implements CommandExecutor {
         // Check if a name was entered
         if (strings.length < 4 || strings.length > 4) {
             player.sendMessage(ChatColor.DARK_RED +
-                               "Please give the template a name with the following arguments: <PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>");
+                               "To create a plot use the following arguments: \n " +
+                               "<PLOT-SIZE> <MAP-RADIUS> <CENTER-X> <CENTER-Z>");
             return true;
         }
         int plotSize = Integer.parseInt(strings[0]);

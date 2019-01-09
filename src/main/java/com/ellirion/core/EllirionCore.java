@@ -217,7 +217,6 @@ public class EllirionCore extends JavaPlugin {
         getCommand("RemoveRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("JoinRace").setTabCompleter(new RaceNameTabCompleter());
         getCommand("LoadGame").setTabCompleter(new GameNameTabCompleter());
-        getCommand("UnloadGame").setTabCompleter(new GameNameTabCompleter());
     }
 }
 

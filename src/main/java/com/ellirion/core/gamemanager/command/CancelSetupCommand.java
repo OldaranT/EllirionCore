@@ -16,10 +16,10 @@ public class CancelSetupCommand implements CommandExecutor {
         }
 
         Player player = (Player) commandSender;
-        GameManager manager = GameManager.getInstance();
+        GameManager gameManager = GameManager.getInstance();
 
-        if (manager.getState() == GameManager.GameState.SETUP) {
-            manager.cancelSetup();
+        if (gameManager.getState() == GameManager.GameState.SETUP) {
+            gameManager.cancelSetup();
             player.sendMessage(
                     "The setup of the gamemode was canceled, use /begingamemode to start the setup phase again");
         }

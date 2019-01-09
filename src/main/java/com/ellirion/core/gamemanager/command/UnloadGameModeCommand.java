@@ -20,14 +20,9 @@ public class UnloadGameModeCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        if (strings.length <= 0) {
-            player.sendMessage(ChatColor.DARK_RED + "Please give the name of the game you want to unload.");
-            return true;
-        }
+        String uName = GameManager.getInstance().getUName();
 
-        String uName = String.join(" ", strings);
-
-        if (!GameManager.getInstance().unloadGame(uName)) {
+        if (!GameManager.getInstance().unloadGame()) {
             player.sendMessage(ChatColor.DARK_RED + "Could not unload the game with name: " +
                                highlight(uName, ChatColor.RESET));
             return true;

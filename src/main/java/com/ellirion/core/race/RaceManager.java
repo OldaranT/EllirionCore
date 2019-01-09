@@ -69,6 +69,7 @@ public class RaceManager {
             setColorToUsed(race.getTeamColor());
             Plot homePlot = race.getHomePlot();
             homePlot.setOwner(race);
+            race.setAlias(databaseRace.getRaceAlias());
             RACE_ID_NAME.put(race.getRaceUUID(), race.getName());
         });
     }

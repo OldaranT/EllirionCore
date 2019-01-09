@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ellirion.core.playerdata.PlayerManager.*;
 import static com.ellirion.core.playerdata.util.JoinPlayer.*;
 import static com.ellirion.core.util.GenericTryCatch.*;
 import static com.ellirion.core.util.StringHelper.*;
@@ -176,6 +177,7 @@ public class GameManager {
      */
     public void cancelSetup() {
         init();
+        TradingCenter.getInstance().getPlotCoords().clear();
         PlotManager.removeAllPlots();
         RaceManager.removeAllRaces();
     }
@@ -186,10 +188,12 @@ public class GameManager {
      * @return returns true if game has been loaded correctly.
      */
     public boolean loadGame(String uName) {
-        unloadGame(this.uName);
+        unloadGame();
 
         return tryCatch(() -> {
             state = GameState.LOADING;
+
+            this.uName = uName;
 
             DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
             //Load game
@@ -217,25 +221,26 @@ public class GameManager {
 
             state = GameState.IN_PROGRESS;
             joinPlayers();
+            EllirionCore.getINSTANCE().getServer().getOnlinePlayers().forEach(p -> updateScoreboard(p.getPlayer()));
         });
     }
 
     /**
      * Unload a gamemode from name.
-     * @param uName the unique name of the game.
      * @return returns true if game has been loaded correctly.
      */
-    public boolean unloadGame(String uName) {
+    public boolean unloadGame() {
         return tryCatch(() -> {
             state = GameState.UNLOADING;
 
             game = null;
+            TradingCenter.getInstance().getPlotCoords().clear();
             PlotManager.removeAllPlots();
             RaceManager.removeAllRaces();
 
             //Reset all game info in gamemanger.
             gameID = null;
-            this.uName = "";
+            uName = "";
             plotSize = 0;
             xOffset = 0;
             zOffset = 0;
@@ -243,6 +248,8 @@ public class GameManager {
             MinecraftHelper.removeAllTeams();
 
             state = GameState.NOT_STARTED;
+
+            getPlayers().keySet().forEach(key -> setPlayerOffline(key));
         });
     }
 
@@ -268,11 +275,11 @@ public class GameManager {
      * @return string with the report of the game.
      */
     public String getReport() {
-        String newLine = "\n";
+        String newLine = ChatColor.RESET + "\n";
         String spacer = "   ";
-        StringBuilder stringBuilder = new StringBuilder(180);
+        StringBuilder stringBuilder = new StringBuilder(187);
         stringBuilder.append(newLine)
-                .append("===============GAME REPORT===============").append(newLine)
+                .append(ChatColor.GREEN).append("===============GAME REPORT===============").append(newLine)
                 .append("Game: ").append(uName).append(newLine)
                 .append("Plot data:").append(newLine)
                 .append(spacer).append("X/Z offset: ").append(getXOffset()).append(" / ")
@@ -285,13 +292,14 @@ public class GameManager {
                     .append(spacer).append(spacer).append("Alias: ")
                     .append(race.getTeamColor()).append(race.getAlias()).append(newLine)
                     .append(spacer).append(spacer).append("Homeplot: ")
-                    .append(race.getHomePlot().getName()).append(newLine);
+                    .append(race.getTeamColor()).append(race.getHomePlot().getName()).append(newLine);
         }
         stringBuilder.append("Trading center Data: ");
         for (PlotCoord plotCoord : TradingCenter.getInstance().getPlotCoords()) {
-            stringBuilder.append(newLine).append(spacer).append("Name: ").append(plotCoord.toString());
+            stringBuilder.append(newLine).append(spacer).append("Plot Coords: ").append(plotCoord.toString());
         }
         stringBuilder.append(newLine)
+                .append(ChatColor.GREEN)
                 .append("===================END===================")
                 .append(newLine);
         return stringBuilder.toString();
