@@ -27,7 +27,7 @@ public class BeginGameModeCommand implements CommandExecutor {
         UUID gameID = UUID.randomUUID();
 
         if (strings.length <= 0) {
-            player.sendMessage(ChatColor.DARK_RED + "please give a unique name for the game.");
+            player.sendMessage(ChatColor.DARK_RED + "Please give a unique name for the game.");
             return true;
         }
 

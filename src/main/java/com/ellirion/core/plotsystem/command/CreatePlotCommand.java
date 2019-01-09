@@ -16,7 +16,9 @@ import com.ellirion.util.async.Promise;
 import java.util.HashMap;
 import java.util.List;
 
-public class CreatePlotCommand implements CommandExecutor {
+public class
+
+CreatePlotCommand implements CommandExecutor {
 
     private JavaPlugin plugin;
 
@@ -58,8 +60,14 @@ public class CreatePlotCommand implements CommandExecutor {
 
         //Check if plotsize is chunksize(16) friendly
         if (plotSize <= 0 || plotSize % 16 != 0) {
-            player.sendMessage(ChatColor.DARK_RED + "Make sure your plot size is not negative.");
+            player.sendMessage(ChatColor.DARK_RED + "Make sure your plot size is not negative and a whole number");
             player.sendMessage(ChatColor.DARK_RED + "The plot size needs to be a factor of 16. Like : 16,32,48,64,128");
+            return true;
+        }
+
+        //Check if plotsize is chunksize(16) friendly
+        if (mapRadius <= 0) {
+            player.sendMessage(ChatColor.DARK_RED + "Make sure your map radius is not negative and a whole number.");
             return true;
         }
 
