@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.plotsystem.PlotManager;
+import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 
@@ -45,6 +46,9 @@ public class TeleportToPlotCommand implements CommandExecutor {
                                                              player.getLocation().getPitch());
 
         player.teleport(teleportToLocation);
+
+        PlotChangeEvent event = new PlotChangeEvent(player, PlotManager.getPlotFromLocation(player.getLocation()), plot);
+        event.call();
 
         return true;
     }

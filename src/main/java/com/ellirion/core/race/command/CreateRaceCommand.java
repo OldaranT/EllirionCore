@@ -10,6 +10,7 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.util.PlayerScoreboardManager;
 
 import java.util.Arrays;
 
@@ -88,9 +89,8 @@ public class CreateRaceCommand implements CommandExecutor {
             player.sendMessage(ChatColor.DARK_RED + "Something went wrong when creating a race.");
             return true;
         }
-
         player.sendMessage(ChatColor.GREEN + raceName + " created.");
-
+        PlayerScoreboardManager.updateBoards();
         return true;
     }
 }

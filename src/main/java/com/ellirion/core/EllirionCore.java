@@ -147,6 +147,8 @@ public class EllirionCore extends JavaPlugin {
 
         dbConnectionConfig.options().header("These are all the connection variables needed to access the database.");
 
+        dbConnectionConfig.addDefault("localDB", false);
+
         String sshHeader = "ssh_connection.";
         dbConnectionConfig.addDefault("sshHeader", sshHeader);
         dbConnectionConfig.addDefault(sshHeader + "privateKeyPath", "place here the system path to the private key.");
