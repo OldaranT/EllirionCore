@@ -17,7 +17,7 @@ public class OnPlayerQuit implements Listener {
         Player player = event.getPlayer();
         event.setQuitMessage("bye bye " + player.getName());
         player.getServer().broadcastMessage(player.getName() + " logged out");
-        PlayerManager.updatePlayer(player.getUniqueId());
+
         PlayerScoreboardManager.removePlayerScoreboard(player.getUniqueId());
 
         PlayerManager.setPlayerOffline(player.getUniqueId());

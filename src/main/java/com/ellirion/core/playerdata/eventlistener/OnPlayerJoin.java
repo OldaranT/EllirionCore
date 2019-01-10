@@ -32,14 +32,6 @@ public class OnPlayerJoin implements Listener {
             PlayerScoreboardManager.addPlayerScoreboard(playerID, board);
         }
 
-        if (PlayerManager.playerexists(playerID)) {
-            event.setJoinMessage("Welcome back!");
-            PlayerManager.updatePlayer(playerID);
-        } else {
-            event.setJoinMessage("Welcome!");
-            PlayerManager.newPlayer(player, null);
-        }
-
         GameManager.GameState state = GameManager.getInstance().getState();
         if (state != GameManager.GameState.IN_PROGRESS && state != GameManager.GameState.SAVING) {
             return;
