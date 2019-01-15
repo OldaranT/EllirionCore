@@ -17,6 +17,7 @@ import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
 import com.ellirion.core.util.MinecraftHelper;
+import com.ellirion.core.util.PlayerScoreboardManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -221,7 +222,8 @@ public class GameManager {
 
             state = GameState.IN_PROGRESS;
             joinPlayers();
-            EllirionCore.getINSTANCE().getServer().getOnlinePlayers().forEach(p -> updateScoreboard(p.getPlayer()));
+            EllirionCore.getINSTANCE().getServer().getOnlinePlayers().forEach(
+                    p -> PlayerScoreboardManager.updateTeams(p.getPlayer()));
         });
     }
 

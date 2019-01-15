@@ -10,6 +10,7 @@ import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.race.RaceManager;
 import com.ellirion.core.race.model.Race;
+import com.ellirion.core.util.PlayerScoreboardManager;
 
 import java.util.List;
 import java.util.UUID;
@@ -77,7 +78,7 @@ public class JoinRaceCommand implements CommandExecutor {
         }
 
         //Update color of the player.
-        updateScoreboard(player);
+        PlayerScoreboardManager.updateTeams(player);
 
         player.sendMessage(
                 ChatColor.GREEN + "You have joined the race " + highlight(raceName, ChatColor.GREEN) +
