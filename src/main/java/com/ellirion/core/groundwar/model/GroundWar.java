@@ -3,7 +3,6 @@ package com.ellirion.core.groundwar.model;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,6 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.util.LocationHelper;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
@@ -230,7 +230,6 @@ public class GroundWar {
                                         UUID playerID) {
         PlotCoord direction = plotA.getPlotCoord().subtract(plotB.getPlotCoord());
         Player player = EllirionCore.getINSTANCE().getServer().getPlayer(playerID);
-        Boolean isAllowedToTeleport = false;
 
         Location centerLocation = plotA.getCenterLocation(world, player.getLocation().getYaw(),
                                                           player.getLocation().getPitch());
@@ -259,31 +258,7 @@ public class GroundWar {
         int x = random.nextInt(maxX - minX) + minX;
         int z = random.nextInt(maxZ - minZ) + minZ;
 
-        Location teleportToLocation = world.getHighestBlockAt(x, z).getLocation();
-        while (!isAllowedToTeleport) {
-            if (checkLocation(teleportToLocation)) {
-                isAllowedToTeleport = true;
-            } else {
-                teleportToLocation.setY(teleportToLocation.getBlockY() - 1);
-            }
-        }
-        
-        return teleportToLocation;
-    }
-
-    private boolean checkLocation(Location location) {
-        List<String> allowedBlocks = EllirionCore.getINSTANCE().getConfig().getStringList(
-                "GroundWar.DefaultAllowedTeleportBlocks");
-
-        List<Material> allowedMateriel = new ArrayList<>();
-
-        for (String block : allowedBlocks) {
-            allowedMateriel.add(Material.getMaterial(block));
-        }
-
-        return allowedMateriel.contains(location.getBlock().getType()) &&
-               !location.getBlock().getRelative(0, 1, 0).getType().isSolid() &&
-               !location.getBlock().getRelative(0, 2, 0).getType().isSolid();
+        return LocationHelper.getSafeLocation(world, x, z);
     }
 
     private WarTeam[] copyTeams() {

@@ -1,6 +1,8 @@
 package com.ellirion.core.groundwar;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.groundwar.model.GroundWar;
@@ -125,19 +127,24 @@ public class GroundWarManager {
      * @param war the war to confirm
      */
     public static void confirmGroundWar(GroundWar war) {
+        EllirionCore ellirionCore = EllirionCore.getINSTANCE();
+        Server server = ellirionCore.getServer();
         war.setState(GroundWar.State.CONFIRMED);
         Promise countdownPromise = new Promise<Boolean>(f -> {
-            int totalWaitTime = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.WaitTime") * 1000;
+            int totalWaitTime = ellirionCore.getConfig().getInt("GroundWar.WaitTime") * 1000;
 
             try {
                 for (int i = 0; i < 10; i++) {
                     Set<UUID> players = war.getRaceA().getPlayers();
                     players.addAll(war.getRaceB().getPlayers());
                     for (UUID id : players) {
-                        EllirionCore.getINSTANCE().getServer().getPlayer(id).sendMessage(
-                                "Ground war between races " + war.getRaceA().getName() + " and " +
-                                war.getRaceB().getName() + " is starting in " +
-                                ((totalWaitTime - (i * totalWaitTime / 10)) / 1000) + " seconds");
+                        Player player = server.getPlayer(id);
+                        if (player != null) {
+                            server.getPlayer(id).sendMessage(
+                                    "Ground war between races " + war.getRaceA().getName() + " and " +
+                                    war.getRaceB().getName() + " is starting in " +
+                                    ((totalWaitTime - (i * totalWaitTime / 10)) / 1000) + " seconds");
+                        }
                     }
                     Thread.sleep(totalWaitTime / 10);
                 }
@@ -148,9 +155,9 @@ public class GroundWarManager {
             f.resolve(true);
         }, true);
 
-        ((EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
+        ((EllirionUtil) server.getPluginManager().getPlugin(
                 "EllirionUtil")).schedulePromise(countdownPromise).then(f -> {
-            EllirionCore.getINSTANCE().getServer().getScheduler().runTask(EllirionCore.getINSTANCE(), () -> {
+            server.getScheduler().runTask(ellirionCore, () -> {
                 Logger.getGlobal().info("Staring GroundWar");
 
                 //Before the ground war starts, check if there are enough players

@@ -3,6 +3,7 @@ package com.ellirion.core.groundwar.listeners;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import com.ellirion.core.groundwar.util.LocationHelper;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 
@@ -21,7 +22,8 @@ public class TeleportBackEventListener implements Listener {
         int deltaX = -5 * direction.getX();
         int deltaZ = -5 * direction.getZ();
 
-        Location newLocation = player.getLocation().getBlock().getLocation().add(deltaX, 0, deltaZ);
+        Location newLocation = LocationHelper.getSafeLocation(player.getLocation().getBlock().getLocation()
+                                                                      .add(deltaX, 0, deltaZ));
         newLocation.setYaw(player.getLocation().getYaw());
         newLocation.setPitch(player.getLocation().getPitch());
         player.teleport(newLocation);
