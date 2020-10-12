@@ -9,7 +9,7 @@ import com.ellirion.core.groundwar.model.GroundWar;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 public class GroundWarDAO extends BasicDAO<GroundwarDBModel, Datastore> {
 

@@ -9,7 +9,7 @@ import com.ellirion.core.gamemanager.model.Game;
 
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 @Entity(value = "Game", noClassnameStored = true)
 public class GameDBModel {

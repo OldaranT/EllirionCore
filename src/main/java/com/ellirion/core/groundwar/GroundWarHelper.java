@@ -4,10 +4,10 @@ import org.bukkit.ChatColor;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.groundwar.model.GroundWar;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.Logging;
+import com.ellirion.core.util.LoggingUtils;
 import com.ellirion.util.EllirionUtil;
 import com.ellirion.util.async.Promise;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class GroundWarManager {
+public class GroundWarHelper {
 
     private static Map<UUID, GroundWar> GROUND_WARS = new HashMap();
     private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
@@ -28,7 +28,7 @@ public class GroundWarManager {
      * @param player th eplayer that added the ground war
      */
     public static void addGroundWar(UUID player) {
-        Race race = PlayerManager.getPlayerRace(player);
+        Race race = PlayerHelper.getPlayerRace(player);
         GROUND_WARS.put(player, new GroundWar(player, race));
     }
 
@@ -39,7 +39,7 @@ public class GroundWarManager {
      */
     public static void addPlotToGroundWar(UUID player, Plot plot) {
         GroundWar war = GROUND_WARS.get(player);
-        Race race = PlayerManager.getPlayerRace(player);
+        Race race = PlayerHelper.getPlayerRace(player);
         if (plot.getOwner().equals(race)) {
             war.setPlotA(plot);
         } else {
@@ -63,7 +63,7 @@ public class GroundWarManager {
         //a) your race owns the plot, or
         //b) the plot neighbours your plot
         GroundWar war = GROUND_WARS.get(player);
-        Race race = PlayerManager.getPlayerRace(player);
+        Race race = PlayerHelper.getPlayerRace(player);
         if (plot.getOwner().equals(race)) {
             Plot opponentsPlot = war.getPlotB();
             if (opponentsPlot != null) {
@@ -142,7 +142,7 @@ public class GroundWarManager {
                     Thread.sleep(totalWaitTime / 10);
                 }
             } catch (Exception exception) {
-                Logging.printStackTrace(exception);
+                LoggingUtils.printStackTrace(exception);
             }
 
             f.resolve(true);

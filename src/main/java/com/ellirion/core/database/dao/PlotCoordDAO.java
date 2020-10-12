@@ -4,7 +4,7 @@ import xyz.morphia.Datastore;
 import xyz.morphia.dao.BasicDAO;
 import com.ellirion.core.database.model.PlotCoordDBModel;
 import com.ellirion.core.plotsystem.model.PlotCoord;
-import com.ellirion.core.util.GenericTryCatch;
+import com.ellirion.core.util.GenericTryCatchUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +24,7 @@ public class PlotCoordDAO extends BasicDAO<PlotCoordDBModel, Datastore> {
     }
 
     private boolean savePlotCoord(PlotCoordDBModel plot) {
-        return GenericTryCatch.tryCatch(() -> save(plot));
+        return GenericTryCatchUtils.tryCatch(() -> save(plot));
     }
 
     /**

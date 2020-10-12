@@ -5,17 +5,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 import com.ellirion.core.race.model.Race;
 
 import java.util.List;
 import java.util.UUID;
 
-import static com.ellirion.core.playerdata.PlayerManager.*;
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.playerdata.PlayerHelper.setPlayerRace;
+import static com.ellirion.core.playerdata.PlayerHelper.getPlayerRace;
+import static com.ellirion.core.playerdata.PlayerHelper.updateScoreboard;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class JoinRaceCommand implements CommandExecutor {
 
@@ -55,7 +57,7 @@ public class JoinRaceCommand implements CommandExecutor {
         } else {
             raceName = strings[0];
 
-            List<String> raceNames = RaceManager.getAllRaceNames();
+            List<String> raceNames = RaceHelper.getAllRaceNames();
             if (!raceNames.contains(raceName)) {
                 player.sendMessage(
                         ChatColor.DARK_RED + "The race " + highlight(raceName, ChatColor.DARK_RED) +
@@ -63,13 +65,13 @@ public class JoinRaceCommand implements CommandExecutor {
                 return true;
             }
 
-            UUID raceID = RaceManager.getRaceUUID(raceName);
+            UUID raceID = RaceHelper.getRaceUUID(raceName);
 
             if (!canJoinRace(raceID)) {
                 return true;
             }
 
-            if (!setPlayerRace(player.getUniqueId(), RaceManager.getRaceUUID(raceName))) {
+            if (!setPlayerRace(player.getUniqueId(), RaceHelper.getRaceUUID(raceName))) {
                 player.sendMessage(ChatColor.DARK_RED + "It was not possible to add you to the race " +
                                    highlight(raceName, ChatColor.RESET));
                 return true;
@@ -94,7 +96,7 @@ public class JoinRaceCommand implements CommandExecutor {
             return false;
         }
 
-        if (GroundWarManager.getGroundWar(playerID) != null) {
+        if (GroundWarHelper.getGroundWar(playerID) != null) {
             player.sendMessage(ChatColor.DARK_RED +
                                "You are currently in a groundwar. You are not allowed to change your race.");
             return false;

@@ -10,7 +10,7 @@ import com.ellirion.core.gamemanager.model.Game;
 
 import java.util.UUID;
 
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class BeginGameModeCommand implements CommandExecutor {
 

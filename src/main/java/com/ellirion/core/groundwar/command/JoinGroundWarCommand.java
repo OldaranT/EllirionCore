@@ -5,9 +5,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.race.model.Race;
 
 import java.util.UUID;
@@ -23,8 +23,8 @@ public class JoinGroundWarCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
         UUID playerID = player.getUniqueId();
-        Race race = PlayerManager.getPlayerRace(playerID);
-        GroundWar groundWar = GroundWarManager.findGroundWarFromRace(race);
+        Race race = PlayerHelper.getPlayerRace(playerID);
+        GroundWar groundWar = GroundWarHelper.findGroundWarFromRace(race);
 
         if (race == null) {
             player.sendMessage(ChatColor.DARK_RED + "You need to be in a race to join a ground war.");
@@ -41,7 +41,7 @@ public class JoinGroundWarCommand implements CommandExecutor {
             return true;
         }
 
-        GroundWar playerGroundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar playerGroundWar = GroundWarHelper.getGroundWar(playerID);
         if (playerGroundWar != null && playerGroundWar.containsParticipant(playerID)) {
             player.sendMessage(ChatColor.DARK_RED + "You are already in a ground war!");
             return true;

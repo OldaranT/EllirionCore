@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class GetGroundWarCommand implements CommandExecutor {
         Player player = (Player) commandSender;
         UUID playerId = player.getUniqueId();
 
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerId);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerId);
         if (groundWar == null) {
             player.sendMessage(ChatColor.DARK_RED + "You are not currently in a ground war.");
             return true;

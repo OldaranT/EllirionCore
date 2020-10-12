@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 public class Race extends PlotOwner {
 

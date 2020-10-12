@@ -10,10 +10,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.groundwar.model.Participant;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.plotsystem.model.Plot;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player player = e.getEntity();
         UUID playerID = player.getUniqueId();
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerID);
 
         if (groundWar == null || groundWar.getState() != GroundWar.State.IN_PROGRESS) {
             return;
@@ -68,7 +68,7 @@ public class PlayerDeathListener implements Listener {
 
         Player player = e.getPlayer();
         UUID playerID = player.getUniqueId();
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerID);
 
         if (PLAYERS_TO_RESPAWN.containsKey(playerID)) {
             e.setRespawnLocation(PLAYERS_TO_RESPAWN.remove(playerID));
@@ -81,7 +81,7 @@ public class PlayerDeathListener implements Listener {
 
         //make it so the player respawns in the desired plot
         int plotSize = GameManager.getInstance().getPlotSize();
-        if (PlayerManager.getPlayerRace(playerID).equals(groundWar.getRaceA())) {
+        if (PlayerHelper.getPlayerRace(playerID).equals(groundWar.getRaceA())) {
             Plot plot = groundWar.getPlotA();
             World w = EllirionCore.getINSTANCE().getServer().getWorld(plot.getPlotCoord().getWorldName());
             Location respawnLoc = groundWar.getTeleportLocation(w, plotSize, new Random(), groundWar.getPlotA(), groundWar.getPlotB(), playerID);

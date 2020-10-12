@@ -10,7 +10,7 @@ import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 public class TradingCenterDAO extends BasicDAO<TradingCenterDBModel, Datastore> {
 

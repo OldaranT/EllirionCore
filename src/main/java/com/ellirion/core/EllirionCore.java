@@ -42,7 +42,7 @@ import com.ellirion.core.race.command.JoinRaceCommand;
 import com.ellirion.core.race.eventlistener.OnFriendlyFire;
 import com.ellirion.core.race.util.CreateRaceTabCompleter;
 import com.ellirion.core.race.util.RaceNameTabCompleter;
-import com.ellirion.core.util.Logging;
+import com.ellirion.core.util.LoggingUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -190,7 +190,7 @@ public class EllirionCore extends JavaPlugin {
                 GameManager.addGame(gameDbModel);
             }
         } catch (Exception exception) {
-            Logging.printStackTrace(exception);
+            LoggingUtils.printStackTrace(exception);
         }
     }
 

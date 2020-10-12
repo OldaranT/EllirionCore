@@ -3,7 +3,7 @@ package com.ellirion.core.race.util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +15,14 @@ public class RaceNameTabCompleter implements TabCompleter {
         final List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            RaceManager.getAllRaceNames().forEach(name -> {
+            RaceHelper.getAllRaceNames().forEach(name -> {
                 if (name.startsWith(args[args.length - 1])) {
                     completions.add(name);
                 }
             });
         }
         if (completions.isEmpty()) {
-            completions.addAll(RaceManager.getAllRaceNames());
+            completions.addAll(RaceHelper.getAllRaceNames());
         }
 
         return completions;

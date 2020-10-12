@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public class OnFriendlyFire implements Listener {
             UUID attackerID = attacker.getUniqueId();
             UUID defenderID = defender.getUniqueId();
 
-            if (PlayerManager.comparePlayerTeams(attackerID, defenderID)) {
+            if (PlayerHelper.comparePlayerTeams(attackerID, defenderID)) {
                 event.setCancelled(true);
             }
         }

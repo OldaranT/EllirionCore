@@ -8,8 +8,8 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
-import com.ellirion.core.util.Logging;
-import com.ellirion.core.util.PlayerScoreboardManager;
+import com.ellirion.core.util.LoggingUtils;
+import com.ellirion.core.util.PlayerScoreboardHelper;
 import com.ellirion.core.util.model.PlayerScoreboard;
 import com.ellirion.util.async.Promise;
 
@@ -37,7 +37,7 @@ public class PlotListener implements Listener {
                     try {
                         Thread.sleep(20);
                     } catch (Exception e) {
-                        Logging.printStackTrace(e);
+                        LoggingUtils.printStackTrace(e);
                     }
                     new PlotChangeEvent(event.getPlayer(), from, to).call();
                     r.resolve(true);
@@ -58,7 +58,7 @@ public class PlotListener implements Listener {
                                       event.getPlotTo().getOwner().getName());
 
         Player player = event.getPlayer();
-        PlayerScoreboard board = PlayerScoreboardManager.getPlayerScoreboard(player.getUniqueId());
+        PlayerScoreboard board = PlayerScoreboardHelper.getPlayerScoreboard(player.getUniqueId());
         board.updateBoard();
         board.showScoreboard();
     }

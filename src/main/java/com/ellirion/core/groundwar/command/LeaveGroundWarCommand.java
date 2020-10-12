@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class LeaveGroundWarCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
         UUID playerID = player.getUniqueId();
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerID);
 
         if (groundWar == null) {
             player.sendMessage(ChatColor.DARK_RED + "You were not in a groundwar.");

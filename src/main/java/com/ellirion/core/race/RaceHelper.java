@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.database.model.RaceDBModel;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
-public class RaceManager {
+public class RaceHelper {
 
     private static HashMap<UUID, Race> RACES = new HashMap<>();
     private static Set<ChatColor> USED_COLORS = new HashSet<>();
@@ -257,7 +257,7 @@ public class RaceManager {
         Set<UUID> players = race.getPlayers();
 
         for (UUID id : players) {
-            PlayerManager.setPlayerRace(id, null);
+            PlayerHelper.setPlayerRace(id, null);
         }
 
         setColorToAvailable(race.getTeamColor());

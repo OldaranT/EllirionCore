@@ -9,7 +9,7 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class GetPlotCommand implements CommandExecutor {
 

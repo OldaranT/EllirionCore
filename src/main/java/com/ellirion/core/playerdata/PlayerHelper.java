@@ -11,15 +11,15 @@ import com.ellirion.core.EllirionCore;
 import com.ellirion.core.database.DatabaseManager;
 import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.playerdata.model.PlayerData;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 import com.ellirion.core.race.model.Race;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
-public class PlayerManager {
+public class PlayerHelper {
 
     private static HashMap<UUID, PlayerData> PLAYERS = new HashMap<>();
     private static EllirionCore INSTANCE = EllirionCore.getINSTANCE();
@@ -37,8 +37,8 @@ public class PlayerManager {
         if (raceID == null) {
             data = new PlayerData(player.getUniqueId());
         } else {
-            data = new PlayerData(player.getUniqueId(), RaceManager.getRaceByID(raceID));
-            RaceManager.addPlayerToRace(player.getUniqueId(), raceID);
+            data = new PlayerData(player.getUniqueId(), RaceHelper.getRaceByID(raceID));
+            RaceHelper.addPlayerToRace(player.getUniqueId(), raceID);
         }
         UUID id = player.getUniqueId();
         PLAYERS.putIfAbsent(id, data);
@@ -94,14 +94,14 @@ public class PlayerManager {
         }
 
         if ((getPlayerRaceID(playerID) != null) &&
-            !(RaceManager.changePlayerRace(playerID, getPlayerRaceID(playerID), raceID))) {
+            !(RaceHelper.changePlayerRace(playerID, getPlayerRaceID(playerID), raceID))) {
             return false;
         }
-        if ((getPlayerRaceID(playerID) == null) && !(RaceManager.addPlayerToRace(playerID, raceID))) {
+        if ((getPlayerRaceID(playerID) == null) && !(RaceHelper.addPlayerToRace(playerID, raceID))) {
             return false;
         }
         PlayerData data = getPlayerData(playerID);
-        data.setRace(RaceManager.getRaceByID(raceID));
+        data.setRace(RaceHelper.getRaceByID(raceID));
         updateScoreboard(SERVER.getPlayer(playerID));
         DATABASE_MANAGER.updatePlayer(data, player);
         return true;
@@ -182,7 +182,7 @@ public class PlayerManager {
             PLAYERS.putIfAbsent(playerID, data);
             Race race = data.getRace();
             UUID raceUUID = race.getRaceUUID();
-            RaceManager.addPlayerToRace(playerID, raceUUID);
+            RaceHelper.addPlayerToRace(playerID, raceUUID);
         } catch (Exception exception) {
             //The player was not found in the database, so do nothing instead...
         }
@@ -203,7 +203,7 @@ public class PlayerManager {
      */
     public static void updateScoreboard(Player player) {
 
-        Race race = PlayerManager.getPlayerRace(player.getUniqueId());
+        Race race = PlayerHelper.getPlayerRace(player.getUniqueId());
 
         if (race == null) {
             return;

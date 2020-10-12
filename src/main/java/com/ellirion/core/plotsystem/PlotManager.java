@@ -1,7 +1,7 @@
 package com.ellirion.core.plotsystem;
 
 import lombok.Getter;
-import net.minecraft.server.v1_12_R1.Tuple;
+import net.minecraft.server.v1_16_R2.Tuple;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,7 +15,7 @@ import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.Logging;
+import com.ellirion.core.util.LoggingUtils;
 import com.ellirion.util.model.BoundingBox;
 import com.ellirion.util.model.Point;
 
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 public class PlotManager {
 
@@ -137,7 +137,7 @@ public class PlotManager {
                         result.add(new Plot(name, plotCoord, boundingBox, plotSize));
                     }
                 } catch (Exception e) {
-                    Logging.printStackTrace(e);
+                    LoggingUtils.printStackTrace(e);
                     return new ArrayList<>();
                 }
             }

@@ -3,7 +3,7 @@ package com.ellirion.core.race.util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class CreateRaceTabCompleter implements TabCompleter {
         List<String> availableColors = new ArrayList<>();
 
         if (args.length > 1) {
-            RaceManager.getAVAILABLE_COLORS().forEach(chatColor -> availableColors.add(chatColor.name()));
+            RaceHelper.getAVAILABLE_COLORS().forEach(chatColor -> availableColors.add(chatColor.name()));
             availableColors.forEach(s -> {
                 if (s.startsWith(args[args.length - 1].toUpperCase())) {
                     completions.add(s);

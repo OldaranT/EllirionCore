@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 import com.ellirion.core.util.StringHelper;
 
 public class DeleteRaceCommand implements CommandExecutor {
@@ -24,11 +24,11 @@ public class DeleteRaceCommand implements CommandExecutor {
             return true;
         }
         String raceName = String.join(" ", strings);
-        if (!RaceManager.raceExists(raceName)) {
+        if (!RaceHelper.raceExists(raceName)) {
             player.sendMessage(ChatColor.DARK_RED + "Given race does not exist.");
             return true;
         }
-        if (!RaceManager.deleteRace(raceName)) {
+        if (!RaceHelper.deleteRace(raceName)) {
             player.sendMessage(ChatColor.DARK_RED + "Could not delete the race.");
             return true;
         }

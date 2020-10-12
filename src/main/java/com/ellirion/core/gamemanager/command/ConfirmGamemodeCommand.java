@@ -10,7 +10,7 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.util.EllirionUtil;
 import com.ellirion.util.async.Promise;
 
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class ConfirmGamemodeCommand implements CommandExecutor {
 
