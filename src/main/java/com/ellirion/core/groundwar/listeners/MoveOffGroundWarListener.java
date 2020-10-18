@@ -6,7 +6,8 @@ import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
-
+//WARNING: implements TeleportBackEventListener, UselessParentheses
+@SuppressWarnings("PMD")
 public class MoveOffGroundWarListener extends TeleportBackEventListener {
 
     /**

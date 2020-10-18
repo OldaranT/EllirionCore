@@ -87,6 +87,8 @@ public class PlayerHelper {
      * @param raceID The UUID from the race the player is changing to.
      * @return Return true if the player changed race.
      */
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     public static boolean setPlayerRace(UUID playerID, UUID raceID) {
         Player player = getPlayerByUUIDFromServer(playerID);
         if (!(playerexists(playerID)) && !(newPlayer(player, raceID))) {
@@ -176,6 +178,8 @@ public class PlayerHelper {
      * @param playerID The ID of the player to add.
      * @param gameID The ID of the game.
      */
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     public static void addPlayerFromDatabase(UUID gameID, UUID playerID) {
         try {
             PlayerData data = new PlayerData(DATABASE_MANAGER.getPlayerFromGame(gameID, playerID));

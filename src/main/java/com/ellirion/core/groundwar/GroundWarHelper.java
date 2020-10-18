@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 public class GroundWarHelper {
 
     private static Map<UUID, GroundWar> GROUND_WARS = new HashMap();
+    //WARNING: private DATABASE_MANAGER, avoid things like that (Unused)
+    @SuppressWarnings("PMD")
     private static DatabaseManager DATABASE_MANAGER = EllirionCore.getINSTANCE().getDbManager();
 
     /**

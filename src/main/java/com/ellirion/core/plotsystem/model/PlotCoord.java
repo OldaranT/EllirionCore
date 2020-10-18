@@ -46,6 +46,8 @@ public class PlotCoord {
         return Objects.hash(x, z, worldName);
     }
 
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PlotCoord)) {

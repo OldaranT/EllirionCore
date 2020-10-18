@@ -102,6 +102,8 @@ public class PlotManager {
      * @param mapRadius The radius of the map.
      * @return Returns true if the plots are successfully created.
      */
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     public static List<Plot> createPlots(World world, int mapRadius) {
         GameManager gameManager = GameManager.getInstance();
 

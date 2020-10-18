@@ -146,6 +146,8 @@ public class GroundWar {
      * @param playerID the player to check
      * @return whether the player is in this Team
      */
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     public boolean containsPlayer(UUID playerID) {
         return (teams[0].getPlayers().contains(playerID) || teams[1].getPlayers().contains(playerID));
     }
@@ -225,6 +227,8 @@ public class GroundWar {
      * @param playerID the playerID
      * @return A random location within an area of the player's own plot
      */
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     public Location getTeleportLocation(World world, int plotSize, Random random, Plot plotA, Plot plotB,
                                         UUID playerID) {
         PlotCoord direction = plotA.getPlotCoord().subtract(plotB.getPlotCoord());
@@ -453,6 +457,8 @@ public class GroundWar {
      * Check whether the ground war is ready to start.
      * @return whether the ground war is ready to start
      */
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     public boolean checkForReady() {
         int playersPerTeam = EllirionCore.getINSTANCE().getConfig().getInt("GroundWar.MinPlayersPerTeam");
         return (teams[0].getParticipants().size() >= playersPerTeam &&

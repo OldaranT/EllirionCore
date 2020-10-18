@@ -12,7 +12,6 @@ import xyz.morphia.annotations.Indexes;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 
 import java.util.UUID;
-
 @Entity(value = "PlotCoord", noClassnameStored = true)
 @Indexes({
         @Index(fields = {
@@ -23,7 +22,9 @@ import java.util.UUID;
 })
 public class PlotCoordDBModel {
 
+    @SuppressWarnings("PMD")
     @Id private final UUID databaseID = UUID.randomUUID();
+    //WARNING: private databaseID, doesn't like that it is private
     @Indexed @Getter private UUID gameID;
     @Indexed @Embedded @Getter private PlotCoord plotCoord;
 

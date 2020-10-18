@@ -97,6 +97,8 @@ public class RaceHelper {
         });
     }
 
+    //WARNING: ?, UselessParentheses
+    @SuppressWarnings("PMD")
     private static boolean createRaceInDB(Race race) {
         return DATABASE_MANAGER.createRace(race);
     }

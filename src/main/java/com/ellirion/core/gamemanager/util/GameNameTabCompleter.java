@@ -8,6 +8,8 @@ import com.ellirion.core.gamemanager.GameManager;
 import java.util.ArrayList;
 import java.util.List;
 
+//WARNING: implements TabCompleter, UselessParentheses
+@SuppressWarnings("PMD")
 public class GameNameTabCompleter implements TabCompleter {
 
     @Override

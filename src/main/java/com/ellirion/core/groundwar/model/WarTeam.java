@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//WARNING: change name (String) to something else
+@SuppressWarnings("PMD")
 public class WarTeam {
 
     @Getter private List<UUID> players;

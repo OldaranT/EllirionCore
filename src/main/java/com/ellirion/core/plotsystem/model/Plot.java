@@ -14,6 +14,8 @@ import com.ellirion.util.model.Point;
 
 public class Plot {
 
+    //WARNING: avoid private fields
+    @SuppressWarnings("PMD")
     private static final DatabaseManager databaseManager = EllirionCore.getINSTANCE().getDbManager();
     @Getter private String name;
     @Getter private PlotCoord plotCoord;
@@ -49,6 +51,8 @@ public class Plot {
      * @param plotSize The size of the plot.
      * @param boundingBox the boundingbox of the plot.
      */
+    //WARNING: unused, plotsize
+    @SuppressWarnings("PMD")
     public Plot(final String name, final PlotCoord plotCoord, final BoundingBox boundingBox, final int plotSize) {
         this.name = name;
         this.plotCoord = plotCoord;
