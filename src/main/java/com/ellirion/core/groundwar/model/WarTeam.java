@@ -24,6 +24,7 @@ public class WarTeam {
      * @param name the name of the team
      */
     public WarTeam(final String name) {
+        this.name = name;
         players = new ArrayList<>();
         participants = new ArrayList<>();
         lives = -1;
