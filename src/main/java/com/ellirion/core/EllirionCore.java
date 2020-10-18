@@ -35,7 +35,7 @@ import com.ellirion.core.plotsystem.command.GetPlotCommand;
 import com.ellirion.core.plotsystem.command.GetPlotMapCommand;
 import com.ellirion.core.groundwar.command.LeaveGroundWarCommand;
 import com.ellirion.core.plotsystem.command.TeleportToPlotCommand;
-import com.ellirion.core.plotsystem.listener.PlotListener;
+import com.ellirion.core.plotsystem.listener.OnPlayerMoveListener;
 import com.ellirion.core.race.command.CreateRaceCommand;
 import com.ellirion.core.race.command.DeleteRaceCommand;
 import com.ellirion.core.race.command.JoinRaceCommand;
@@ -122,7 +122,7 @@ public class EllirionCore extends JavaPlugin {
         PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new OnPlayerJoin(), this);
         pluginManager.registerEvents(new OnPlayerQuit(), this);
-        pluginManager.registerEvents(new PlotListener(), this);
+        pluginManager.registerEvents(new OnPlayerMoveListener(), this);
         pluginManager.registerEvents(new OnFriendlyFire(), this);
         pluginManager.registerEvents(new MoveOffGroundWarListener(), this);
         pluginManager.registerEvents(new MoveIntoGroundWarListener(), this);
