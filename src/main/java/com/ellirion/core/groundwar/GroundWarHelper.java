@@ -151,7 +151,7 @@ public class GroundWarHelper {
         ((EllirionUtil) EllirionCore.getINSTANCE().getServer().getPluginManager().getPlugin(
                 "EllirionUtil")).schedulePromise(countdownPromise).then(f -> {
             EllirionCore.getINSTANCE().getServer().getScheduler().runTask(EllirionCore.getINSTANCE(), () -> {
-                Logger.getGlobal().info("Staring GroundWar");
+                Logger.getGlobal().info("Starting GroundWar");
 
                 //Before the ground war starts, check if there are enough players
                 if (war.checkForReady()) {
