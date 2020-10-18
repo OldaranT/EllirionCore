@@ -257,7 +257,7 @@ public class GroundWar {
         int x = random.nextInt(maxX - minX) + minX;
         int z = random.nextInt(maxZ - minZ) + minZ;
 
-        return world.getHighestBlockAt(x, z).getLocation();
+        return world.getHighestBlockAt(x, z).getLocation().add(0, 1, 0);
     }
 
     private WarTeam[] copyTeams() {

@@ -45,7 +45,9 @@ public class TeleportToPlotCommand implements CommandExecutor {
         Location teleportToLocation = plot.getCenterLocation(player.getWorld(), player.getLocation().getYaw(),
                                                              player.getLocation().getPitch());
 
-        player.teleport(teleportToLocation);
+        Location teleportToLocationAbove = teleportToLocation.add(0, 1, 0);
+
+        player.teleport(teleportToLocationAbove);
 
         PlotChangeEvent event = new PlotChangeEvent(player, PlotManager.getPlotFromLocation(player.getLocation()), plot);
         event.call();

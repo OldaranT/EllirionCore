@@ -104,9 +104,6 @@
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <compilerArgs>
-                                <arg>--illegal-access=warn</arg>
-                            </compilerArgs>
                         </configuration>
                         <goals>
                             <goal>check</goal>
