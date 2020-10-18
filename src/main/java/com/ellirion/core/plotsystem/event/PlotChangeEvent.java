@@ -1,10 +1,10 @@
 package com.ellirion.core.plotsystem.event;
 
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import com.ellirion.core.EllirionCore;
 import com.ellirion.core.plotsystem.model.Plot;
 
 public class PlotChangeEvent extends Event {
@@ -38,7 +38,7 @@ public class PlotChangeEvent extends Event {
      * Create a call to trigger the event.
      */
     public void call() {
-        EllirionCore.getINSTANCE().getServer().getPluginManager().callEvent(this);
+        Bukkit.getPluginManager().callEvent(this);
     }
 
     @Override
