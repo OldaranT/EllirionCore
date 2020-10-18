@@ -10,11 +10,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import com.ellirion.core.EllirionCore;
 import com.ellirion.core.gamemanager.GameManager;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.race.model.Race;
-import com.ellirion.core.util.Logging;
+import com.ellirion.core.util.LoggingUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -310,8 +310,8 @@ public class GroundWar {
             try {
                 finish();
             } catch (Exception exception) {
-                Logging.printStackTrace(exception);
-                GroundWarManager.removeGroundWar(createdBy);
+                LoggingUtils.printStackTrace(exception);
+                GroundWarHelper.removeGroundWar(createdBy);
             }
             return false;
         }
@@ -432,7 +432,7 @@ public class GroundWar {
         EllirionCore.getINSTANCE().getServer().broadcastMessage(results.toString());
 
         //Remove ground war
-        GroundWarManager.removeGroundWar(createdBy);
+        GroundWarHelper.removeGroundWar(createdBy);
     }
 
     /**

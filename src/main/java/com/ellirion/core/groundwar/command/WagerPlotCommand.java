@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -24,7 +24,7 @@ public class WagerPlotCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
         UUID playerID = player.getUniqueId();
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerID);
 
         if (groundWar == null) {
             player.sendMessage(ChatColor.DARK_RED + "You are not in a ground war, therefore you cannot wager a plot.");
@@ -56,8 +56,8 @@ public class WagerPlotCommand implements CommandExecutor {
         }
 
         //Check if plot can be added to ground war
-        if (GroundWarManager.canAddPlot(playerID, plot)) {
-            GroundWarManager.addPlotToGroundWar(playerID, plot);
+        if (GroundWarHelper.canAddPlot(playerID, plot)) {
+            GroundWarHelper.addPlotToGroundWar(playerID, plot);
             player.sendMessage(ChatColor.GREEN + "The plot was added to the ground war.");
         } else {
             player.sendMessage(ChatColor.DARK_RED + "The plot could not be added to the ground war.");

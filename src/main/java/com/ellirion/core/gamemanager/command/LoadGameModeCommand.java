@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.ellirion.core.gamemanager.GameManager;
 
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class LoadGameModeCommand implements CommandExecutor {
 

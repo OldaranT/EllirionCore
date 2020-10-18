@@ -6,11 +6,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.groundwar.model.Participant;
 import com.ellirion.core.groundwar.model.WarTeam;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +28,7 @@ public class PlayerLeaveDuringGroundWarListener implements Listener {
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
 
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerID);
         if (groundWar == null) {
             return;
         }
@@ -57,7 +57,7 @@ public class PlayerLeaveDuringGroundWarListener implements Listener {
         //If players join during a groundwar, check if they need to be added to a ground war
         Player player = event.getPlayer();
         UUID playerID = player.getUniqueId();
-        GroundWar groundWar = GroundWarManager.getGroundWar(playerID);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(playerID);
 
         //Player is not in a ground war
         if (groundWar == null) {
@@ -65,6 +65,6 @@ public class PlayerLeaveDuringGroundWarListener implements Listener {
         }
 
         //Player is in a ground war, add them as participant again
-        groundWar.addPlayer(PlayerManager.getPlayerRace(playerID), playerID);
+        groundWar.addPlayer(PlayerHelper.getPlayerRace(playerID), playerID);
     }
 }

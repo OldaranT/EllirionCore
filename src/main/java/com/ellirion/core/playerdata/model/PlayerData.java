@@ -3,7 +3,7 @@ package com.ellirion.core.playerdata.model;
 import lombok.Getter;
 import lombok.Setter;
 import com.ellirion.core.database.model.PlayerDBModel;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 import com.ellirion.core.race.model.Race;
 
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class PlayerData {
      * @param player The player that is retrieved from the database.
      */
     public PlayerData(final PlayerDBModel player) {
-        this(player.getPlayerDBKey().getPlayerID(), RaceManager.getRaceByID(player.getRaceID()));
+        this(player.getPlayerDBKey().getPlayerID(), RaceHelper.getRaceByID(player.getRaceID()));
     }
 
     /**

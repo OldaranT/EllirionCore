@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 @Entity(value = "TradingCenter", noClassnameStored = true)
 public class TradingCenterDBModel {

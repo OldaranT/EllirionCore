@@ -9,9 +9,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.ellirion.core.playerdata.PlayerManager.*;
+import static com.ellirion.core.playerdata.PlayerHelper.playerWithGameExistsInDatabase;
+import static com.ellirion.core.playerdata.PlayerHelper.addPlayerFromDatabase;
+import static com.ellirion.core.playerdata.PlayerHelper.newPlayer;
+import static com.ellirion.core.playerdata.PlayerHelper.getPlayers;
 
-public class JoinPlayer {
+public class JoinPlayerUtils {
 
     private static Server SERVER = EllirionCore.getINSTANCE().getServer();
 

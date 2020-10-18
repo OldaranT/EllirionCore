@@ -1,6 +1,6 @@
 package com.ellirion.core.util;
 
-public class GenericTryCatch {
+public class GenericTryCatchUtils {
 
     /**
      * This function does the try and catch for every DAO to prevent duplicated code.
@@ -12,7 +12,7 @@ public class GenericTryCatch {
             toTry.run();
             return true;
         } catch (Exception exception) {
-            Logging.printStackTrace(exception);
+            LoggingUtils.printStackTrace(exception);
             return false;
         }
     }

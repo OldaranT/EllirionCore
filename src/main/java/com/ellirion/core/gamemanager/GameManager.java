@@ -14,16 +14,16 @@ import com.ellirion.core.gamemanager.setup.Step;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
-import com.ellirion.core.race.RaceManager;
+import com.ellirion.core.race.RaceHelper;
 import com.ellirion.core.race.model.Race;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ellirion.core.playerdata.util.JoinPlayer.*;
-import static com.ellirion.core.util.GenericTryCatch.*;
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.playerdata.util.JoinPlayerUtils.joinPlayers;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class GameManager {
 
@@ -84,7 +84,7 @@ public class GameManager {
         setupSteps = new Step[4];
         setupSteps[0] = new Step(CREATE_PLOT, f -> PlotManager.getSavedPlots().size() > 0);
         setupSteps[1] = new Step(ASSIGN_TRADING_CENTER);
-        setupSteps[2] = new Step(CREATE_RACE, f -> RaceManager.getRaceCount() >= 2);
+        setupSteps[2] = new Step(CREATE_RACE, f -> RaceHelper.getRaceCount() >= 2);
         setupSteps[3] = new Step(CONFIRM_SETUP);
         currentStep = 0;
     }
@@ -161,7 +161,7 @@ public class GameManager {
     }
 
     private void createRaces(DatabaseManager databaseManager) {
-        for (Race race : RaceManager.getRaces()) {
+        for (Race race : RaceHelper.getRaces()) {
             databaseManager.createRace(race);
         }
     }
@@ -176,7 +176,7 @@ public class GameManager {
     public void cancelSetup() {
         init();
         PlotManager.removeAllPlots();
-        RaceManager.removeAllRaces();
+        RaceHelper.removeAllRaces();
     }
 
     /**
@@ -204,7 +204,7 @@ public class GameManager {
 
             //Load races
             List<RaceDBModel> racesModel = db.getRaces(game.getGameID());
-            RaceManager.loadRaces(racesModel);
+            RaceHelper.loadRaces(racesModel);
 
             //Load TradingCenter
             TradingCenterDBModel tcModel = db.getTradingCenter(game.getGameID());
@@ -230,7 +230,7 @@ public class GameManager {
 
             game = null;
             PlotManager.removeAllPlots();
-            RaceManager.removeAllRaces();
+            RaceHelper.removeAllRaces();
 
             //Reset all game info in gamemanger.
             gameID = null;
@@ -276,7 +276,7 @@ public class GameManager {
                 .append(getZOffset()).append(newLine)
                 .append(spacer).append("Plot size: ").append(getPlotSize()).append(newLine)
                 .append("Race data:").append(newLine);
-        for (Race race : RaceManager.getRaces()) {
+        for (Race race : RaceHelper.getRaces()) {
             stringBuilder.append(spacer).append(race.getTeamColor()).append(race.getName())
                     .append(ChatColor.RESET).append(": ").append(newLine)
                     .append(spacer).append(spacer).append("Homeplot: ")

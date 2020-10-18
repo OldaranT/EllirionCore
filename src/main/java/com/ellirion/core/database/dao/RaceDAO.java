@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
 
 public class RaceDAO extends BasicDAO<RaceDBModel, Datastore> {
 

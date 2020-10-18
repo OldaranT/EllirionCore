@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerScoreboardManager {
+public class PlayerScoreboardHelper {
     private static Map<UUID, PlayerScoreboard> PLAYER_SCOREBOARDS = new HashMap();
 
     /**

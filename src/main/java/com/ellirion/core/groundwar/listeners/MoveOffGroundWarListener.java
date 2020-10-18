@@ -2,7 +2,7 @@ package com.ellirion.core.groundwar.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import com.ellirion.core.groundwar.GroundWarManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
 import com.ellirion.core.groundwar.model.GroundWar;
 import com.ellirion.core.plotsystem.event.PlotChangeEvent;
 import com.ellirion.core.plotsystem.model.Plot;
@@ -22,7 +22,7 @@ public class MoveOffGroundWarListener extends TeleportBackEventListener {
         Plot plotTo = event.getPlotTo();
         Plot plotFrom = event.getPlotFrom();
 
-        GroundWar groundWar = GroundWarManager.getGroundWar(plotFrom);
+        GroundWar groundWar = GroundWarHelper.getGroundWar(plotFrom);
 
         if (groundWar != null && groundWar.getState() == GroundWar.State.IN_PROGRESS &&
             groundWar.containsParticipant(player.getUniqueId()) &&

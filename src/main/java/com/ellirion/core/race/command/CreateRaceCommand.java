@@ -9,13 +9,13 @@ import com.ellirion.core.gamemanager.GameManager;
 import com.ellirion.core.plotsystem.PlotManager;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.plotowner.Wilderness;
-import com.ellirion.core.race.RaceManager;
-import com.ellirion.core.util.PlayerScoreboardManager;
+import com.ellirion.core.race.RaceHelper;
+import com.ellirion.core.util.PlayerScoreboardHelper;
 
 import java.util.Arrays;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
+import static com.ellirion.core.util.StringHelper.normalNameCasing;
 
 public class CreateRaceCommand implements CommandExecutor {
 
@@ -54,7 +54,7 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (RaceManager.raceExists(raceName)) {
+        if (RaceHelper.raceExists(raceName)) {
             player.sendMessage(ChatColor.DARK_RED + "Race already exists");
             return true;
         }
@@ -64,7 +64,7 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (color == null || RaceManager.isColerInUse(color)) {
+        if (color == null || RaceHelper.isColerInUse(color)) {
             player.sendMessage(ChatColor.DARK_RED + "You either miss spelled the color or the color is in use");
             return true;
         }
@@ -75,12 +75,12 @@ public class CreateRaceCommand implements CommandExecutor {
             return true;
         }
 
-        if (!RaceManager.addRace(raceName, color, plot)) {
+        if (!RaceHelper.addRace(raceName, color, plot)) {
             player.sendMessage(ChatColor.DARK_RED + "Something went wrong when creating a race.");
             return true;
         }
         player.sendMessage(ChatColor.GREEN + raceName + " created.");
-        PlayerScoreboardManager.updateBoards();
+        PlayerScoreboardHelper.updateBoards();
         return true;
     }
 }

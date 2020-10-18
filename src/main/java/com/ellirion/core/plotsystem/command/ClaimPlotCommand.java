@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotOwner;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
@@ -34,7 +34,7 @@ public class ClaimPlotCommand implements CommandExecutor {
 
         Plot[] neighbourPlots = plotToCheck.getNeighbours();
 
-        Race playerRace = PlayerManager.getPlayerRace(player.getUniqueId());
+        Race playerRace = PlayerHelper.getPlayerRace(player.getUniqueId());
 
         if (playerRace == null) {
             player.sendMessage(ChatColor.DARK_RED + "You need to be in a race to claim a plot.");

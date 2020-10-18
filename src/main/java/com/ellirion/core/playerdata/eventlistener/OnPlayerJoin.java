@@ -5,15 +5,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.plotsystem.PlotManager;
-import com.ellirion.core.util.PlayerScoreboardManager;
+import com.ellirion.core.util.PlayerScoreboardHelper;
 import com.ellirion.core.util.model.PlayerScoreboard;
 import com.ellirion.core.gamemanager.GameManager;
 
 import java.util.UUID;
 
-import static com.ellirion.core.playerdata.util.JoinPlayer.*;
+import static com.ellirion.core.playerdata.util.JoinPlayerUtils.joinPlayer;
 
 public class OnPlayerJoin implements Listener {
 
@@ -29,7 +29,7 @@ public class OnPlayerJoin implements Listener {
         if (PlotManager.getSavedPlots().size() > 0) {
             PlayerScoreboard board = new PlayerScoreboard(player, EllirionCore.getINSTANCE().getServer().getScoreboardManager().getMainScoreboard());
             board.showScoreboard();
-            PlayerScoreboardManager.addPlayerScoreboard(playerID, board);
+            PlayerScoreboardHelper.addPlayerScoreboard(playerID, board);
         }
 
         GameManager.GameState state = GameManager.getInstance().getState();
@@ -37,7 +37,7 @@ public class OnPlayerJoin implements Listener {
             return;
         }
 
-        PlayerManager.updateScoreboard(player);
+        PlayerHelper.updateScoreboard(player);
         joinPlayer(playerID);
     }
 }

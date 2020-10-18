@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import com.ellirion.core.EllirionCore;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.playerdata.PlayerHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class WarTeam {
             return "";
         }
         StringBuilder builder = new StringBuilder();
-        ChatColor raceColor = PlayerManager.getPlayerRace(players.get(0)).getTeamColor();
+        ChatColor raceColor = PlayerHelper.getPlayerRace(players.get(0)).getTeamColor();
         for (UUID player : players) {
             builder.append('-').append(raceColor).append(
                     EllirionCore.getINSTANCE().getServer().getOfflinePlayer(player).getName()).append(

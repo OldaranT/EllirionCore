@@ -33,6 +33,6 @@
         <exclude name="AvoidFieldNameMatchingMethodName"/>
     </rule>
 
-    <rule ref="rulesets/java/strictexception.xml/AvoidRethrowingException"/>
-    <rule ref="rulesets/java/design.xml/UncommentedEmptyConstructor"/>
+    <rule ref="category/java/design.xml/AvoidRethrowingException"/>
+    <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor"/>
 </ruleset>

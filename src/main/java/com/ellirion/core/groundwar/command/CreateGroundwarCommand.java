@@ -5,8 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import com.ellirion.core.groundwar.GroundWarManager;
-import com.ellirion.core.playerdata.PlayerManager;
+import com.ellirion.core.groundwar.GroundWarHelper;
+import com.ellirion.core.playerdata.PlayerHelper;
 import com.ellirion.core.race.model.Race;
 
 import java.util.UUID;
@@ -22,9 +22,9 @@ public class CreateGroundwarCommand implements CommandExecutor {
 
         Player player = (Player) commandSender;
         UUID playerId = player.getUniqueId();
-        Race race = PlayerManager.getPlayerRace(playerId);
+        Race race = PlayerHelper.getPlayerRace(playerId);
 
-        if (GroundWarManager.findGroundWarFromRace(race) != null) {
+        if (GroundWarHelper.findGroundWarFromRace(race) != null) {
             player.sendMessage(ChatColor.DARK_RED + "Your race already has a ground war.");
             return true;
         }
@@ -35,7 +35,7 @@ public class CreateGroundwarCommand implements CommandExecutor {
             return true;
         }
 
-        GroundWarManager.addGroundWar(playerId);
+        GroundWarHelper.addGroundWar(playerId);
         player.sendMessage(ChatColor.GREEN +
                            "Successfully started a ground war. Now select plots by using the /wagerplot command");
 

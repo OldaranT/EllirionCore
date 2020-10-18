@@ -11,8 +11,8 @@ import com.ellirion.core.plotsystem.model.Plot;
 import com.ellirion.core.plotsystem.model.PlotCoord;
 import com.ellirion.core.plotsystem.model.plotowner.TradingCenter;
 
-import static com.ellirion.core.util.GenericTryCatch.*;
-import static com.ellirion.core.util.StringHelper.*;
+import static com.ellirion.core.util.GenericTryCatchUtils.tryCatch;
+import static com.ellirion.core.util.StringHelper.highlight;
 
 public class AssignTradingCenterCommand implements CommandExecutor {
 
