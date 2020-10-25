@@ -49,7 +49,7 @@ commands:
       permission-message: §4You do not have permission for this command!§r
   PlotMap:
       description: Get a map of surrounding plots.
-      usage: /PlotMap
+      usage: /PlotMap [<radius>]
       aliases: [plot-map]
       permission: ellirion.core.plot.plotmap
       permission-message: §4You do not have permission for this command!§r
