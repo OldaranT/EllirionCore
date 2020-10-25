@@ -47,7 +47,9 @@ public class WagerPlotCommand implements CommandExecutor {
                 plot = PlotManager.getPlotByCoordinate(coord);
             } catch (Exception e) {
                 player.sendMessage(ChatColor.DARK_RED +
-                                   "Could not get plot. Please try again, entering the correct coordinates or standing in the plot you want to add.");
+                                   "Could not get the plot, this means the plot is probably not next to the other wagered plot." +
+                        " Or the plot you are selecting is not yours when you have already selected an enemies plot." +
+                        " Use /getgroundwar to find out which plots you already have selected.");
                 return true;
             }
         } else {
