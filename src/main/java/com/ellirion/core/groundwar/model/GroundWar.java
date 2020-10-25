@@ -147,7 +147,8 @@ public class GroundWar {
      * @return whether the player is in this Team
      */
     public boolean containsPlayer(UUID playerID) {
-        return (teams[0].getPlayers().contains(playerID) || teams[1].getPlayers().contains(playerID));
+        return (teams[0].getPlayers().contains(playerID) ||
+               (teams.length > 1 && teams[1].getPlayers().contains(playerID)));
     }
 
     /**
@@ -270,7 +271,8 @@ public class GroundWar {
     private List<UUID> getParticipants() {
         List<UUID> participants = new ArrayList<>();
         participants.addAll(teams[0].getPlayers());
-        participants.addAll(teams[1].getPlayers());
+        if (teams.length > 1)
+            participants.addAll(teams[1].getPlayers());
         return participants;
     }
 
