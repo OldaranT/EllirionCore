@@ -187,8 +187,10 @@ public class GameManager {
     public boolean loadGame(String uName) {
         unloadGame(this.uName);
 
-        return tryCatch(() -> {
+        try {
             state = GameState.LOADING;
+
+            this.uName = uName;
 
             DatabaseManager db = EllirionCore.getINSTANCE().getDbManager();
             //Load game
@@ -216,7 +218,12 @@ public class GameManager {
 
             state = GameState.IN_PROGRESS;
             joinPlayers();
-        });
+
+            return true;
+        } catch (Exception ex) {
+            unloadGame(uName);
+            return false;
+        }
     }
 
     /**
