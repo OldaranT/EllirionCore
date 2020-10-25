@@ -157,12 +157,16 @@ public class DatabaseManager {
      * This function should be called in the onDisable function to close the connection.
      */
     public void disconnectFromServer() {
-        try {
-            session.delPortForwardingL(localPort);
-            session.disconnect();
-        } catch (JSchException e) {
-            LoggingUtils.printStackTrace(e);
+        if (localDB) {
+            LoggingUtils.printMessage("You are connected to a local Database. Ignore this.");
+            return;
         }
+            try {
+                session.delPortForwardingL(localPort);
+                session.disconnect();
+            } catch (JSchException e) {
+                LoggingUtils.printStackTrace(e);
+            }
     }
 
     //region ==== Game ====

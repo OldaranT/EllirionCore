@@ -19,4 +19,12 @@ public class LoggingUtils {
         exception.printStackTrace(new PrintWriter(errors));
         LOGGER.severe(errors.toString());
     }
+
+    /**
+     * This makes it able to send an info message to the console.
+     * @param message The message you want to send.
+     */
+    public static void printMessage(String message) {
+        LOGGER.info(message);
+    }
 }
