@@ -30,7 +30,20 @@ public class GetPlotMapCommand implements CommandExecutor {
         //TODO get player race
         PlotOwner owner = Wilderness.getInstance();
 
-        player.sendMessage(PlotManager.getPlotMap(plot, 2, owner));
+        int radius = 2;
+        if (strings.length > 0) {
+            try {
+                radius = Integer.parseInt(strings[0]);
+            } catch (Exception ex) {
+                // Do nothing
+            }
+        }
+
+        // Clamp radius between 1 and 9
+        radius = Math.max(1, radius);
+        radius = Math.min(radius, 9);
+
+        player.sendMessage(PlotManager.getPlotMap(plot, radius, owner));
         return true;
     }
 }
