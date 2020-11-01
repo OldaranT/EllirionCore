@@ -13,7 +13,7 @@ install:
 script:
     # grep so that download counts don't appear in log files
     - if [ ! -d $HOME/.m2/repository/org/spigotmc/spigot/1.16.3-R0.1-SNAPSHOT/ ]; then echo "Spigot build not found, running BuildTools."; java -jar BuildTools.jar --rev 1.16.3; fi;
-    - git clone git@github.com:OldaranT/EllirionUtil.git --single-branch --branch develop ${ELLIRION_UTIL_PATH}
+    - git clone https://EllirionAcces:AXGzfE53Mef7KJ82b@github.com:OldaranT/EllirionUtil.git --single-branch --branch develop ${ELLIRION_UTIL_PATH}
   #    - echo "<settings><servers><server><id>jitpack.io</id><username>\${env.JITPACK_AUTH}</username><password>.</password></server></servers></settings>" > $HOME/.m2/settings.xml
     - mvn verify
     
