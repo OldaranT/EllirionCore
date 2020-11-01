@@ -10,9 +10,6 @@ env:
 install:
     - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
     - git clone https://EllirionAcces:AXGzfE53Mef7KJ82b@github.com/OldaranT/EllirionUtil.git --single-branch --branch develop ${ELLIRION_UTIL_PATH}
-    - cd ${ELLIRION_UTIL_PATH}
-    - git branch
-    - cd /home/travis
     
 script:
     # grep so that download counts don't appear in log files
