@@ -4,14 +4,20 @@ cache:
   - .autoconf
   - $HOME/.m2
 
+env:
+  - ELLIRION_UTIL_PATH="/home/travis/EllirionUtil"
+
 install:
     - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+    - git clone https://EllirionAcces:AXGzfE53Mef7KJ82b@github.com/OldaranT/EllirionUtil.git --single-branch --branch develop ${ELLIRION_UTIL_PATH}
     
 script:
     # grep so that download counts don't appear in log files
-    - if [ ! -d $HOME/.m2/repository/org/spigotmc/spigot/1.12.2-R0.1-SNAPSHOT/ ]; then echo "Spigot build not found, running BuildTools."; java -jar BuildTools.jar --rev 1.12.2; fi;
-    - echo "<settings><servers><server><id>jitpack.io</id><username>\${env.JITPACK_AUTH}</username><password>.</password></server></servers></settings>" > $HOME/.m2/settings.xml
-    - mvn verify
+    - if [ ! -d $HOME/.m2/repository/org/spigotmc/spigot/1.16.3-R0.1-SNAPSHOT/ ]; then echo "Spigot build not found, running BuildTools."; java -jar BuildTools.jar --rev 1.16.3; fi;
+  #    - echo "<settings><servers><server><id>jitpack.io</id><username>\${env.JITPACK_AUTH}</username><password>.</password></server></servers></settings>" > $HOME/.m2/settings.xml
+    - ls -l /home/travis
+    - ls -l ${ELLIRION_UTIL_PATH}
+    - mvn verify -X
     
 before_script:
   - export AUTHOR_NAME="$(git log -1 $TRAVIS_COMMIT --pretty="%aN")"

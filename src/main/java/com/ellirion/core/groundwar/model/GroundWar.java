@@ -271,8 +271,10 @@ public class GroundWar {
     private List<UUID> getParticipants() {
         List<UUID> participants = new ArrayList<>();
         participants.addAll(teams[0].getPlayers());
-        if (teams.length > 1)
+        if (teams.length > 1) {
             participants.addAll(teams[1].getPlayers());
+        }
+
         return participants;
     }
 
