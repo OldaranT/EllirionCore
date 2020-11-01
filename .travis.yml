@@ -16,6 +16,7 @@ script:
     - git clone https://EllirionAcces:AXGzfE53Mef7KJ82b@github.com/OldaranT/EllirionUtil.git --single-branch --branch develop ~/EllirionUtil
   #    - echo "<settings><servers><server><id>jitpack.io</id><username>\${env.JITPACK_AUTH}</username><password>.</password></server></servers></settings>" > $HOME/.m2/settings.xml
     - ls -l ${ELLIRION_UTIL_PATH}
+    - ls -l ~
     - mvn verify -X
     
 before_script:
