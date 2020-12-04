@@ -1,5 +1,6 @@
 package com.ellirion.core.gamemanager;
 
+import jdk.nashorn.internal.runtime.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
@@ -37,6 +38,8 @@ public class GameManager {
     @Getter private static String CONFIRM_SETUP = "CONFIRM_SETUP";
     @Getter private static String CREATE_RACE = "CREATE_RACES";
     @Getter private static String ASSIGN_TRADING_CENTER = "ASSIGN_TRADING_CENTER_PLOTS";
+    @Getter private static String CREATE_RESOURCES = "CREATE_RESOURCES";
+    @Getter private static String CONFIRM_RESOURCES = "CONFIRM_RESOURCES";
 
     //Setup
     private Step[] setupSteps;
@@ -85,7 +88,9 @@ public class GameManager {
         setupSteps[0] = new Step(CREATE_PLOT, f -> PlotManager.getSavedPlots().size() > 0);
         setupSteps[1] = new Step(ASSIGN_TRADING_CENTER);
         setupSteps[2] = new Step(CREATE_RACE, f -> RaceHelper.getRaceCount() >= 2);
-        setupSteps[3] = new Step(CONFIRM_SETUP);
+        setupSteps[3] = new Step(CREATE_RESOURCES);
+        setupSteps[4] = new Step(CONFIRM_RESOURCES);
+        setupSteps[5] = new Step(CONFIRM_SETUP);
         currentStep = 0;
     }
 
